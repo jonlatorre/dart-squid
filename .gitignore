@@ -1,0 +1,9 @@
+*.scc
+.idea/
+.project
+.children
+*.map
+*.bak
+.7z
+*.js
+TODO/
