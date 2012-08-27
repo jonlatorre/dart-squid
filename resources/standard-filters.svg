@@ -1,0 +1,30 @@
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   id="TsvgResources-test">
+    <defs>
+      <!-- Our default "3D" look that places shadows around objects and makes surfaces appear more "rounded.
+           Note that applying this to an element with a "Fill" will lighten that fill-color; also, this will
+           propagate down through hierarchy of owned-elements. -->
+      <filter id="Effect_3D">
+        <!--stdDeviation of 1 yields just outer dark shadow effect; 2 - medium shadow; ...4 = close to Win7/Aero shadows-->
+        <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+        <feOffset in="blur" dx="4" dy="4" result="offsetBlur"/>
+        <!--increasing the lighting-color brightness will makes surfaces more reflective/lighter, and
+            increasing the specularConstant makes for a more reflectively-rounded surface (more gradation in colors) -->
+        <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".5"
+                            specularExponent="20" lighting-color="#cccccc"
+                            result="specOut">
+            <fePointLight x="-5000" y="-10000" z="20000"/>
+        </feSpecularLighting>
+        <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut"/>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic"
+                     k1="0" k2="1" k3="1" k4="0" result="litPaint"/>
+        <feMerge>
+          <feMergeNode in="offsetBlur"/>
+          <feMergeNode in="litPaint"/>
+        </feMerge>
+      </filter>
+    </defs>
+</svg>
