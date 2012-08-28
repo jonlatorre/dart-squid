@@ -52,7 +52,6 @@ main() {
     Tsvg.Widget         menuButtonsContainer    = null;
     List<Tsvg.TextWidget> menuButtons   = null;
 
-    Tsvg.Button         testButton      = null;
     Tsvg.TextWidget     embeddedWebPage = null;
     Tsvg.TextWidget     notesPage       = null;
     Tsvg.iFrameWidget   webIFrame       = null;
