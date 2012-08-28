@@ -598,21 +598,20 @@ main() {
         ''';
 
         //ONLY POSSIBLE WHEN ACCESSING VIA HTTP..., otherwise, we will get hit with:
-        //XMLHttpRequest cannot load file:///drive:/pathtofile/readme.html. Cross origin requests are only supported for HTTP.
-        //TODO: XMLHttpRequest IS CHANGING to just HttpRequest soon per: http://news.dartlang.org/2012/08/breaking-change-xmlhttprequest-becomes.html
-        //Exception: Error: NETWORK_ERR: XMLHttpRequest Exception 101
+        //HttpRequest cannot load file:///drive:/pathtofile/readme.html. Cross origin requests are only supported for HTTP.
+        //Exception: Error: NETWORK_ERR: HttpRequest Exception 101
         if (globalApplicationObject.isRunningOnServer) {
-            getWebPageContent(String url, onSuccess(XMLHttpRequest req)) {
+            getWebPageContent(String url, onSuccess(HttpRequest req)) {
               // call the web server asynchronously
-              var request = new XMLHttpRequest.get(url, onSuccess);
+              var request = new HttpRequest.get(url, onSuccess);
             }
 
             //load the raw response text from the server into our foreign object
-            onSuccess(XMLHttpRequest req) {
+            onSuccess(HttpRequest req) {
                embeddedWebPage.embeddedFO.htmlDiv.innerHTML= req.responseText;
             }
 
-            getWebPageContent("README.html", onSuccess);
+            getWebPageContent("README.html", onSuccess);    //TODO: Create example-file and push to samples dir.
         }
 
 
@@ -751,32 +750,13 @@ main() {
 
         //Some tests that make use of the setURL method...
         webIFrame.setURL('http://www.intersoftdevelopment.com');
-//        webIFrame.setURL('http://www.intersoftdevelopment.com/IDI-ASPNET/Display-Article-Content.aspx?ArticleID=76');
-        //webIFrame.setURL('.');
-        //webIFrame.setURL('README.html');
+        //webIFrame.setURL('.');            //display local file directory tree from where we run
+        //webIFrame.setURL('README.html');  //display local file in that directory
 
         webIFrame.isMovable.x = true;
         webIFrame.isMovable.y = true;
         webIFrame.isSizable.x = true;
         webIFrame.isSizable.y = true;
-//        webIFrame.show();
-
-        //ONLY POSSIBLE WHEN ACCESSING VIA HTTP..., otherwise, we will get hit with:
-        //XMLHttpRequest cannot load file:///drive:/pathtofile/README.html. Cross origin requests are only supported for HTTP.
-        //Exception: Error: NETWORK_ERR: XMLHttpRequest Exception 101
-//        if (globalApplicationObject.isRunningOnServer) {
-//            getWebPageContent(String url, onSuccess(XMLHttpRequest req)) {
-//              // call the web server asynchronously
-//              var request = new XMLHttpRequest.get(url, onSuccess);
-//            }
-//
-//            //load the raw response text from the server into our foreign object
-//            onSuccess(XMLHttpRequest req) {
-//               webIFrame.embeddedFO.HTMLDiv.innerHTML= req.responseText;
-//            }
-//
-//            getWebPageContent("README.html", onSuccess);
-//        }
 
         Tsvg.logToConsole([
             'LINE1',
