@@ -414,7 +414,7 @@ class Application {
                     ((ptrChildWidgetAlignObj.B.objToAlignTo == null) && (ptrChildWidgetAlignObj.B.dimension > eSides.None)))
                 {
                     ptrChildWidget.reAlign();
-                    ptrChildWidget.ReAlignSiblings();  //since other top-level widgets could align to the re-aligned widget
+                    ptrChildWidget.reAlignSiblings();  //since other top-level widgets could align to the re-aligned widget
                 }
             }
         }

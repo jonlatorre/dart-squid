@@ -2241,7 +2241,7 @@ class Widget {
     SVGElement          _selectionRect          = null;
 
     //IF exists, _ParentWidget holds a reference to our ParentWidget (must be a Widget or subclass of)
-    //that "owns" this one, if any. "Owner" in implementation hierarchy. Othewise null
+    //that "owns" this one, if any. "Owner" in implementation hierarchy. Otherwise null
     Widget              _parentWidget           = null;
 
     //IF exists, stores quick reference to SVGElement in which this Widget's generated-SVG element(s) reside (i.e., hierarchically embedded)
@@ -2657,8 +2657,8 @@ class Widget {
         if ( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) return;  //bypass during mass-updates
 
         if (_cssChangedSinceRepaint) {
-            _UpdateStylePropertiesListValuesFromCSS();
-            _ApplyStylesToWidgetParts();
+            _updateStylePropertiesListValuesFromCSS();
+            _applyStylesToWidgetParts();
         }
         reAlign();
 
@@ -2779,7 +2779,7 @@ class Widget {
 
         //Group[n]...  added in subclasses
 
-    } //..._LoadStylablePropertiesList
+    } //..._loadStylablePropertiesList
 
 
 
@@ -2788,20 +2788,20 @@ class Widget {
     Call the method that will peform an off-screen computation by applying any CSS-class-selectors
     as they apply to our standard Widget base/border elements.
 
-    See: _LoadStylablePropertiesList (for more related comments)
+    See: _loadStylablePropertiesList (for more related comments)
 
     NOTE: Sub-classes must extend this function to apply/calc CSS to any applicable SVG elements owned by a derived Widget
 
     TODO: Address pseudo-SELECTORS (HOVER, etc) via ONLY CSS
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void _UpdateStylePropertiesListValuesFromCSS() {
+    void _updateStylePropertiesListValuesFromCSS() {
         //Widget_Base, Widget_Frame,Widget_BorderOuter, Widget_BorderInner
         _applicationObject.getCSSPropertyValuesForClassNames(sWBase,  classesCSS[sWBase],  _stylablePropertiesList);
         _applicationObject.getCSSPropertyValuesForClassNames(sWFrame, classesCSS[sWFrame], _stylablePropertiesList);
         _applicationObject.getCSSPropertyValuesForClassNames(sWOuter, classesCSS[sWOuter], _stylablePropertiesList);
         _applicationObject.getCSSPropertyValuesForClassNames(sWInner, classesCSS[sWInner], _stylablePropertiesList);
-    } //_UpdateStylePropertiesListValuesFromCSS
+    } //_updateStylePropertiesListValuesFromCSS
 
 
 
@@ -2819,7 +2819,7 @@ class Widget {
     we need to return the calculated value PER-SIDE (for our internal drawing routines).
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void _ApplyStylesToWidgetParts() {
+    void _applyStylesToWidgetParts() {
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         a method to simplify life a bit...
@@ -2852,7 +2852,7 @@ class Widget {
         Frame, Outer, Inner: each use CSS prop values similarly
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        void ApplyStylesToWidgetPart(WidgetBorder bPart, String objName) {
+        void applyStylesToWidgetPart(WidgetBorder bPart, String objName) {
             String  sTemp       = '';
 
             //workaround for issue with non-100%-zoom-factor-getcomputedstyle returning bogus non-INT values!
@@ -2895,11 +2895,11 @@ class Widget {
         Frame, Outer, Inner processing
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        ApplyStylesToWidgetPart(_borders.Frame, sWFrame);
-        ApplyStylesToWidgetPart(_borders.Outer, sWOuter);
-        ApplyStylesToWidgetPart(_borders.Inner, sWInner);
+        applyStylesToWidgetPart(_borders.Frame, sWFrame);
+        applyStylesToWidgetPart(_borders.Outer, sWOuter);
+        applyStylesToWidgetPart(_borders.Inner, sWInner);
 
-    } //_ApplyStylesToWidgetParts
+    } //_applyStylesToWidgetParts
 
 
 
@@ -2911,7 +2911,7 @@ class Widget {
     the background, border(s), or selection-rect position.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void RenderBordersAndBackground() {
+    void renderBordersAndBackground() {
 
         ObjectBounds ptrBoundsForBgRect      = _widgetMetrics.Inner;
 
@@ -2962,7 +2962,7 @@ class Widget {
         _borders[eWidgetPart.Inner].B.UpdateBorderLineElements();
         _borders[eWidgetPart.Inner].L.UpdateBorderLineElements();
 
-    } //...RenderBordersAndBackground
+    } //...renderBordersAndBackground
 
 
 
@@ -2975,8 +2975,6 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    UpdateWidgetMetrics
-
     This method is called when any change occurs that could affect Widget's "Metrics" property;
     in particular, a ReAlign operation has the potential to alter these Metrics (bounds info).
 
@@ -2987,7 +2985,7 @@ class Widget {
     that forms a distinct boundary, with each bounding box being the *outside* of the respective component.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    bool _UpdateWidgetMetrics() {
+    bool _updateWidgetMetrics() {
         ObjectBounds ptrWidgetBounds = _widgetMetrics.Margin;
 
         //Pre-calc the R,B,CX,CY (unaligned) values for quick reference later
@@ -3002,7 +3000,7 @@ class Widget {
         Separated out for better scope-control.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        void AcquireReferencedAlignValues() {
+        void acquireReferencedAlignValues() {
 
             //Get index for quick access during compares; get value each time this method is called since value could change as
             //sibling widgets (earlier in parent's widgets-create-order) can be removed or moved in a way that affects this index.
@@ -3027,7 +3025,7 @@ class Widget {
                     //make sure referenced widget is earlier in SVG node list than THIS widget.
                     //this implies both our object and sibling have same parent SVG element for starters..
                     if (objAlignPart.objToAlignTo.parentSVGElement != _parentSVGElement) {
-                        throw new Exception('(AcquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a direct Sibling of ${_instanceName}.' );
+                        throw new Exception('(acquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a direct Sibling of ${_instanceName}.' );
                     }
 
                     siblingWidgetIndexInParent = (_hasParent ? _parentWidget.indexOfWidget(objAlignPart.objToAlignTo) : _applicationObject.indexOfWidget(objAlignPart.objToAlignTo));
@@ -3047,7 +3045,7 @@ class Widget {
                         //our widget part's dimension value depends on the bounds-subcomponent value from the Widget we are aligned to (e.g., it's Margin.Left value)
                         objAlignPart.dimensionValue = (objAlignPart.objToAlignTo.metrics[objAlignPart.part][alignToDimName]) + translationAdj;
                     } else {
-                        throw new Exception('(AcquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a Sibling of ${_instanceName} in previous SVG Nodes.' );
+                        throw new Exception('(acquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a Sibling of ${_instanceName} in previous SVG Nodes.' );
                     }
                 } else {
                     switch (objAlignPart.dimension) {
@@ -3080,20 +3078,19 @@ class Widget {
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
-        CalcBounds
         We move from "outside" (outer-most boundary) to "inside" when performing bounds-calcs.
         When this method is first called, the outermost bounds Margin(WidgetBounds) has been computed.
         Then, we move toward ClientBounds (inner-most bounds) one layer at a time.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        void CalcBounds() {
+        void calcBounds() {
 
             /*
             ═══════════════════════════════════════════════════════════════════════════════════════
             Helper method. Both parms must be a valid eWidgetPart enumeration value (int)
             ═══════════════════════════════════════════════════════════════════════════════════════
             */
-            void _CalcSingleBounds(int boundsType, int prevBoundsType) {
+            void _calcSingleBounds(int boundsType, int prevBoundsType) {
                 ObjectBounds ptrCurrBounds = _widgetMetrics[boundsType];
                 ObjectBounds ptrPrevBounds = _widgetMetrics[prevBoundsType];
 
@@ -3103,16 +3100,16 @@ class Widget {
                 ptrCurrBounds.L = ptrPrevBounds.L + ((_borders[prevBoundsType].L != null) ? _borders[prevBoundsType].L.width : 0 );
             }
 
-            _CalcSingleBounds(eWidgetPart.Outer,        eWidgetPart.Margin);
-            _CalcSingleBounds(eWidgetPart.Frame,        eWidgetPart.Outer);
-            _CalcSingleBounds(eWidgetPart.Inner,        eWidgetPart.Frame);
-            _CalcSingleBounds(eWidgetPart.Padding,      eWidgetPart.Inner);
-            _CalcSingleBounds(eWidgetPart.ClientBounds, eWidgetPart.Padding);
-        } //...CalcBounds
+            _calcSingleBounds(eWidgetPart.Outer,        eWidgetPart.Margin);
+            _calcSingleBounds(eWidgetPart.Frame,        eWidgetPart.Outer);
+            _calcSingleBounds(eWidgetPart.Inner,        eWidgetPart.Frame);
+            _calcSingleBounds(eWidgetPart.Padding,      eWidgetPart.Inner);
+            _calcSingleBounds(eWidgetPart.ClientBounds, eWidgetPart.Padding);
+        } //...calcBounds
 
 
 
-        AcquireReferencedAlignValues();
+        acquireReferencedAlignValues();
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -3204,15 +3201,14 @@ class Widget {
             }
         }  //...y-Axis alignment code...
 
-        CalcBounds();
-    } //...UpdateWidgetMetrics.
+        calcBounds();
+    } //... _updateWidgetMetrics.
 
 
 
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    ReAlignSiblings.
     If a widget's position has changed by way of movement, and thus altered the position of
     the bounds of the Widget, any sibling widgets may have their bounds and/or position
     affected IF they aligned to this widget's bounds.
@@ -3220,8 +3216,8 @@ class Widget {
     This method finds any affected siblings and triggers realignment for them as needed.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void ReAlignSiblings() {
-        //print('${instanceName} ReAlignSiblings');  //TODO: TRACING
+    void reAlignSiblings() {
+        //print('${instanceName} reAlignSiblings');  //TODO: TRACING
 
         Widget ptrWidget = null;
         int countWidgets = 0;
@@ -3251,13 +3247,12 @@ class Widget {
 
         //Performance optimization -- we can redraw now.
         _applicationObject.canvas.unsuspendRedraw(handle);
-    } //...ReAlignSiblings()
+    } //...reAlignSiblings()
 
 
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    ReAlign.
     If a widget's metrics are changing by way of setting a property that could alter the bounds
     of the Widget, any owned child widgets may have their bounds and/or position affected.
     (e.g., X, Y, Width, Height, Align, Anchors)
@@ -3278,9 +3273,9 @@ class Widget {
         //This makes a HUGE difference in rendering times!  Much like Delphi's BeginUpdate / EndUpdate abilities.
         var handle = _applicationObject.canvas.suspendRedraw(5000);
 
-        _UpdateWidgetMetrics();   //Needed by any cascading re-alignments that call ReAlign;
+        _updateWidgetMetrics();   //Needed by any cascading re-alignments that call ReAlign;
 
-        RenderBordersAndBackground();
+        renderBordersAndBackground();
 
         //Call any descendant-specific realignment code (if there is any). See Placeholder extendedRealign() below...
         //By default there is an empty placeholder for extendedRealign(); child controls (e.g., Text / Foreign-Object)
@@ -3308,9 +3303,9 @@ class Widget {
     } //...ReAlign()
 
 
+
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    extendedRealign.
     Descendant-specific realignment code (if there is any). Called during move().
     This empty placeholder for extendedRealign() can be overridden in child controls
     (e.g., Text / Foreign-Object) that may implement code needed to properly realign
@@ -3419,7 +3414,6 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    mouseClick
     By default, we make a mouse-click event available for the whole Widget.
     The border-region mouse-handling will override this, but the "center" of the Widget
     will remain clickable (for buttons).
@@ -3434,7 +3428,6 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    mouseDown
     When any UI interaction is initiated with the left-mouse button being depressed, this
     event code fires. Determine intention based on further examination of simultaneously
     depressed key(s).
@@ -3526,12 +3519,11 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    mouseMove
     We could be tracking mouse movements for either:
         1) a widget being moved, or
         2) a widget being resized
 
-    The MouseDown event code determines which of these two scenarios we are currently in,
+    The mouseDown event code determines which of these two scenarios we are currently in,
     and has set the widget state accordingly.  Furthermore, we may be in a multi-selected
     move operation.
 
@@ -3582,7 +3574,7 @@ class Widget {
         extendedRealign();
 
         //Handle any potentially-affected sibling alignments : TODO: Optimize!!
-        ReAlignSiblings();
+        reAlignSiblings();
 
     } //... mouseMove()
 
@@ -3590,7 +3582,6 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    mouseUp
     When a MouseUp event is detected, we have detected the end of either:
         1) a widget being moved, or
         2) a widget being resized
@@ -3629,8 +3620,7 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Move:
-    As compared to ReAlign, moving does not incur issues of internal realignment;
+    As compared to reAlign, moving does not incur issues of internal realignment;
     i.e., any owned child-widgets are moved in conjunction with this widget since they belong 
     to SVG child node(s) whose coordinate systems are *relative* to this widget's coordinate system, 
     and during a Move operation, this widget's coordinate system remains static since we are 
@@ -3648,7 +3638,7 @@ class Widget {
     things like a scrollbar even if you slip off the trackbar a bit or whatever.
     
     NOTES:
-    The logic for AcceptProposedX/Y checks to see if the proposed new position is within
+    The logic for acceptProposedX/Y checks to see if the proposed new position is within
     bounds returned by min/max callbacks; BUT NOTICE that it also includes an examination 
     of the shiftX/Y values.  This is done to accommodate the condition where a Widget is
     already positioned in a location that is not within the specified min/max values, and
@@ -3765,9 +3755,8 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Show.
     This method is executed when:
-        1) first showing widget content - from initialize - during creation; State = eWidgetState.Loading
+        1) first showing widget content - during obj creation; State = eWidgetState.Loading
         2) when a widget is shown after previously being hidden with Hide()
 
     Render visual components (border/background); set state to Normal.
@@ -3809,8 +3798,7 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    hide.
-    Rather obvious.
+    Rather obvious; opposite of show.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void hide() {
@@ -3829,7 +3817,7 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Create (i.e., when first setting up widget during initialize - this is executed)
+    When first setting up and instantiating a widget, this is executed.
     Essentially, we just moved some chunks of logic out of constructor into here.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
