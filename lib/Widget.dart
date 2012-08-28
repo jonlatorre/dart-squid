@@ -653,8 +653,8 @@ those implement a (potential) two-line-per-side ability (depending on style) in 
 to the fact that is where these styles make the most visual sense.
 The EffectsLineCount array indicates how many strokes(lines) are used to create effect.
 
-CRITICAL NOTE: BorderStyleSpecs (const map in WidgetBorderSide) must be kept in-sync
-with this enumeration, such that indexing into BorderStyleSpecs array for a given
+CRITICAL NOTE: borderStyleSpecs (const map in WidgetBorderSide) must be kept in-sync
+with this enumeration, such that indexing into borderStyleSpecs array for a given
 BorderStyle returns desired information.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
@@ -697,7 +697,7 @@ of each line in a dual-line border style.
 
 Use mid-point (mid-width) of Stroke-Width for calculations
 ═══════════════════════════════════════════════════════════════════════════════════════
-BorderStyleSpecs:
+borderStyleSpecs:
 
 When drawing a "border" effect, there are two potential lines-per-border-side that
 comprise an effect; lets call the lines "exterior (e)" and "interior (i)", with exterior
@@ -756,7 +756,7 @@ class WidgetBorderSide {
         255 = 'white'
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    static final Map<String, Map<String, int>> BorderStyleSpecs =
+    static final Map<String, Map<String, int>> borderStyleSpecs =
         const   {
             'none'      : const {'TLe':0,   'BRe':0,    'TLi':0,    'BRi':0     },
             'solid'     : const {'TLe':105, 'BRe':105,  'TLi':0,    'BRi':0     },
@@ -828,7 +828,7 @@ class WidgetBorderSide {
     coordinate to not inset (lengthwise) for stroke-width if bevel or no linejoin specified.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    void UpdateBorderLineElements() {
+    void updateBorderLineElements() {
         String displayAttrValLine1  = ( ((_width != 0.0) && (opacity != '0.0') && (_style > eBorderStyle.None)) ? 'inherit' : 'none');
         String displayAttrValLine2  = ( ((_width != 0.0) && (opacity != '0.0') && (eBorderStyle.EffectsLineCount[_style] == 2)) ? 'inherit' : 'none');
         String colorValue1 = color;
@@ -844,16 +844,16 @@ class WidgetBorderSide {
             if (eBorderStyle.EffectsLineCount[_style] == 2) {
                 switch (side) {
                     case eSides.L   :
-                    case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? BorderStyleSpecs[sStyleName]['TLe'] : BorderStyleSpecs[sStyleName]['TLi'])); break;}
+                    case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['TLe'] : borderStyleSpecs[sStyleName]['TLi'])); break;}
                     case eSides.R   :
-                    case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? BorderStyleSpecs[sStyleName]['BRe'] : BorderStyleSpecs[sStyleName]['BRi'])); break;}
+                    case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['BRe'] : borderStyleSpecs[sStyleName]['BRi'])); break;}
                 }
             } else {
                 switch (side) {
                     case eSides.L   :
-                    case eSides.T   : {lineColor.shiftColor(BorderStyleSpecs[sStyleName]['TLe']); break;}
+                    case eSides.T   : {lineColor.shiftColor(borderStyleSpecs[sStyleName]['TLe']); break;}
                     case eSides.R   :
-                    case eSides.B   : {lineColor.shiftColor(BorderStyleSpecs[sStyleName]['BRe']); break;}
+                    case eSides.B   : {lineColor.shiftColor(borderStyleSpecs[sStyleName]['BRe']); break;}
                 }
             }
             colorValue1 = lineColor.formattedRGBString();
@@ -890,14 +890,14 @@ class WidgetBorderSide {
         }
 
         //restore color to original state prior to potential color-shifting.
-        lineColor.LoadFromRGBString(colorValue2);
+        lineColor.loadFromRGBString(colorValue2);
 
         if (_style > eBorderStyle.Solid) {
             switch (side) {
                 case eSides.L   :
-                case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? BorderStyleSpecs[sStyleName]['TLi'] : BorderStyleSpecs[sStyleName]['TLe'])); break;}
+                case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['TLi'] : borderStyleSpecs[sStyleName]['TLe'])); break;}
                 case eSides.R   :
-                case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? BorderStyleSpecs[sStyleName]['BRi'] : BorderStyleSpecs[sStyleName]['BRe'])); break;}
+                case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['BRi'] : borderStyleSpecs[sStyleName]['BRe'])); break;}
             }
             colorValue2 = lineColor.formattedRGBString();
         }
@@ -2667,7 +2667,7 @@ class Widget {
     } //...RePaint
 
 
-    void RePaintFull() {
+    void rePaintFull() {
         _cssChangedSinceRepaint = true;
         rePaint();
         //TODO : Remove updating from state if it exists?
@@ -2949,18 +2949,18 @@ class Widget {
         _borders.Frame.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Frame);
         _borders.Inner.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Inner);
 
-        _borders[eWidgetPart.Frame].T.UpdateBorderLineElements();
-        _borders[eWidgetPart.Frame].R.UpdateBorderLineElements();
-        _borders[eWidgetPart.Frame].B.UpdateBorderLineElements();
-        _borders[eWidgetPart.Frame].L.UpdateBorderLineElements();
-        _borders[eWidgetPart.Outer].T.UpdateBorderLineElements();
-        _borders[eWidgetPart.Outer].R.UpdateBorderLineElements();
-        _borders[eWidgetPart.Outer].B.UpdateBorderLineElements();
-        _borders[eWidgetPart.Outer].L.UpdateBorderLineElements();
-        _borders[eWidgetPart.Inner].T.UpdateBorderLineElements();
-        _borders[eWidgetPart.Inner].R.UpdateBorderLineElements();
-        _borders[eWidgetPart.Inner].B.UpdateBorderLineElements();
-        _borders[eWidgetPart.Inner].L.UpdateBorderLineElements();
+        _borders[eWidgetPart.Frame].T.updateBorderLineElements();
+        _borders[eWidgetPart.Frame].R.updateBorderLineElements();
+        _borders[eWidgetPart.Frame].B.updateBorderLineElements();
+        _borders[eWidgetPart.Frame].L.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].T.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].R.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].B.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].L.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].T.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].R.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].B.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].L.updateBorderLineElements();
 
     } //...renderBordersAndBackground
 

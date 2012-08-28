@@ -23,7 +23,7 @@ This file contains "global" constants, types, etc.; i.e., Commonly needed functi
 BEGIN: GLOBAL constants and types
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
-final String Version        = '2012-08-24 : 0.3.1';
+final String Version        = '2012-08-28 : 0.3.2';
 final String SeparatorLine1 = '███████████████████████████████████████████████████████████████████████████████████████████';
 final String SeparatorLine2 = '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
 final String SeparatorLine3 = '▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪';
@@ -219,13 +219,13 @@ class Color {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    FUNCTION: LoadFromRGBString
+    FUNCTION: loadFromRGBString
     Our off-page CSS style calculations will return colors (in Chrome/Dartium) in the
     form: "rgb(255, 255, 255)"
     Parse that String and load our Color object R,G,B values from it.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void LoadFromRGBString(String RGBString) {
+    void loadFromRGBString(String RGBString) {
         if (!(RGBString.startsWith('rgb(')) ) return;
 
         List<String>    colorsSplit    = null;
@@ -255,7 +255,7 @@ class Color {
     */
     Color.empty();
     Color.fromIntRGB(this.R, this.G, this.B);
-    Color.fromBrowserRBGString(String RGBString) {LoadFromRGBString(RGBString);}
+    Color.fromBrowserRBGString(String RGBString) {loadFromRGBString(RGBString);}
 
 } //Color
 
