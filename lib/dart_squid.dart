@@ -11,6 +11,7 @@
 #library("dart_squid");
 
 #import('dart:html');
+#import('dart:math', prefix: 'Math');
 
 //------------------------------------------------------
 
