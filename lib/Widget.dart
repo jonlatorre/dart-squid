@@ -353,10 +353,10 @@ class ObjectBounds {
     num R = 0.0;
     num B = 0.0;
     num L = 0.0;
-    num get Width ()    => R - L;
-    num get Height ()   => B - T;
-    num get CX ()       => ((R - L) / 2) + L;
-    num get CY ()       => ((B - T) / 2) + T;
+    num get Width   => R - L;
+    num get Height  => B - T;
+    num get CX      => ((R - L) / 2) + L;
+    num get CY      => ((B - T) / 2) + T;
 
     num operator [] (String part) => _getPart(part);
 
