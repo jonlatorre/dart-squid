@@ -9,87 +9,42 @@
 */
 
 
-/*
-███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: Application Class
-
-DESCRIPTION
-This is the global application-wide class that should be instantiated once per each
-SVG applications using our Widgets and components.
-
-This class will maintain important references to our "Canvas" as well as lists of widgets
-in use, standard fonts, settings, and more.
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-PROPERTIES
-
-(inherited)
-- N/A
-
-(introduced in this Class)
-- name ................ (string) Application Name; notational only, though perhaps useful in setting Caption, etc.
-
-- canvas .............. (obj) the SVG object (of element type 'svg') that will act as an application's "canvas" on
-which all widgets will be placed directly or hierarchically nested within other widgets.
-
-- backgroundRect ...... (obj) the SVG 'rect' element that exists on within our canvas solely for allowing an
-easy way to style our canvas fill-color
-
-- classesCSS .......... (string) comma-delim list of Class Names that CSS selectors will
-be able to target and Style.
-
-
-- selectedWidgetsList... (List<Widget>) used to keep track of which widgets are "Selected";
-especially useful during multi-select operations.  TODO: This will be related
-to some ability to "draw" a selection-box and select all (appropriate) widgets within that
-box for some type of further manipulation (be it movement/sizing, or otherwise)
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-METHODS
-
-(inherited)
-- N/A
-
-(introduced in this Class - SUMMARY)
-- addWidget .......... (returns: integer index to item added)  Add a Widget-instance reference to our Widgets list
-                        after making sure that the Widget's InstanceName will be unique across entire application.
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-HELPER METHODS (in Common.dart file) that are very relevant and useful...
-- isInstanceNameUnique
-- indexOfInstanceName
-- indexOfTag
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-EVENTS
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-EXAMPLES:  N/A
-
-
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-TODO: POTENTIAL DESIGN THOUGHTS / IDEAS / CONSIDERATIONS
-
-appViewBox - OUTERMOST VIEWBOX/SVG VALUES - FOR QUICK ACCESS, READ-ONLY (this needs updated on ReSize!)
-
-activeWidget - keep track of which one has focus in the application
-"Widget" list could be extended to keep track of which Widgets are "Forms"; also which are modal: T/F
-
-Help dispatcher
-
-Exceptions handler -- setup standard exceptions also here in Core
-
-mainForm - so we know where to set focus when an application starts up; a bit overkill, or
-necessary for restoring saved state?
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-
-includeCanvasNavigation/Sizing? T/F -- does main canvas need to stretch beyond view bounds?
-includeCanvasNavigationPanel (true/false) - zoom/pan,etc
-
-███████████████████████████████████████████████████████████████████████████████████████████
+//███████████████████████████████████████████████████████████████████████████████████████
+/**
+* This is the global application-wide class that should be instantiated once per each
+* SVG applications using our Widgets and components.
+*
+* This class will maintain important references to our "Canvas" as well as lists of widgets
+* in use, standard fonts, settings, and more.
+*
+* ---
+* ## See Also
+* There are some related "helper methods" (in Common.dart) that are relevant and useful:
+* [isInstanceNameUnique], [indexOfInstanceName], and [indexOfTag].
+*  ---
 */
+
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//TODO: POTENTIAL DESIGN THOUGHTS / IDEAS / CONSIDERATIONS
+//
+//appViewBox - OUTERMOST VIEWBOX/SVG VALUES - FOR R/O QUICK ACCESS (updated on ReSize!)
+//
+//activeWidget - keep track of which one has focus in the application
+//
+//"Widget" list could be extended to keep track of which Widgets are "Forms"; also which are modal: T/F
+//
+//Help dispatcher
+//
+//Exceptions handler -- setup standard exceptions also here in Core
+//
+//mainForm - so we know where to set focus when an application starts up; a bit overkill, or
+//necessary for restoring saved state?
+//
+//▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+//
+//includeCanvasNavigation/Sizing? T/F -- does main canvas need to stretch beyond view bounds?
+//includeCanvasNavigationPanel (true/false) - zoom/pan,etc
+//███████████████████████████████████████████████████████████████████████████████████████
 class Application {
 
     /*
@@ -98,21 +53,19 @@ class Application {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     String         _name            = 'SVGApplication';
+
+    /// The SVG 'rect' element that exists as the first element on our canvas solely
+    /// for allowing an easy way to style our application canvas fill-color, etc.
     SVGRectElement _backgroundRect  = null;
+
     SVGElement     _cssTestingRect  = null;
     SVGSVGElement  _canvas          = null;
     String         _classesCSS      = 'ApplicationCanvas';
     ObjectBounds   _canvasBounds    = null;
     num            _marginLeft      = 0.0;
     num            _marginTop       = 0.0;
-
-    //is this application within an SVG document (true) or is it an SVG embedded in HTML (false)
     bool           _isStandaloneSVG = true;
-
-    //see if we're hosting this app from an http server
     bool           _isRunningOnServer   = false;
-
-    //Detect Chromium vs. any other type (for now, only concerned with FireFox potentially)
     String         _browserType     = null;
 
     /*
@@ -128,40 +81,40 @@ class Application {
     I.e., this is a HACK due to the fact that the only *accurate* and *predictable* way
     to get screen-dimensions (browser-viewable-region) is through these futures, since
     Dart no longer exposes the values in non-future-ways. (LAME!) JS had no such issues.
-    I belive this is over-engineering (by Dart team) of client.values (screen dimensions)
-    access... if JS can expose without futures, why did Dart choose to make these deferred
-    values?  It is not like it takes more than a couple milliseconds to obtain these!
+    Is this perhaps over-engineering (by Dart team) of client.values (screen dimensions)
+    access? ...if JS can expose without futures, why did Dart choose to make these deferred
+    values?  It is not like it takes more than a couple milliseconds to obtain these, right?
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     ChangeHandler   _onAppReady     = null;
     bool            _isAppReady     = false;
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    _widgetsList
-
-    List of Widget references (i.e., object pointers to Widgets) used throughout our application.
-    Widget (Instance) Names must be unique, since these are used in SVG code for "id" values
-    of SVG elements that we will need to add/modify/remove from our SVG application.
-
-    NOTE: the accessor is here for easy debug-dumps; though, direct-use is discouraged
-    for all but read-only operations
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
     List<Widget>    _widgetsList    = null;
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * List of [Widget] references (i.e., object pointers to Widgets) used throughout our application.
+    * Widget (instance) Names must be unique, since these are used in SVG code for "id" values
+    * of SVG elements that we will need to add/modify/remove from within our SVG application.
+    *
+    * *NOTE:* the public accessor is here currently for easy debug inspection and such;
+    * direct-use is discouraged for all but read-only operations
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     List<Widget>    get widgetsList => _widgetsList;
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    selectedWidgetsList
-
-    Zero or more widgets in an application can be "selected" via Cick (shift-click for
-    multiples).
-    TODO: In addition, we will have a bounds-box-drawing-based selection mechanism too.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * List used to keep track of which widgets are "Selected";
+    * especially useful during multi-select operations. Zero or more widgets in an
+    * application can be "selected" via click (shift-click for multiples).
     */
+    //---------------------------------------------------------------------------------------
+    //TODO: This will be related to some ability to "draw" a selection-box and select all
+    //(appropriate) widgets within that box for some type of further manipulation
+    //(be it movement/sizing, or otherwise)
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     List<Widget>    selectedWidgetsList = null;
 
 
@@ -170,11 +123,18 @@ class Application {
     BEGIN: Public variables/accessors.
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
+
     //Implement Hint processing in Widgets; this is to be app-wide default value
     final bool  showHint        = true;
     final int   hintPause       = 1000;
 
-    SVGSVGElement get canvas    => _canvas;     //read-only accessor to our private variable
+
+    /**
+    * The SVG object (of element type 'svg') that will act as an application's "canvas"
+    * onto which all widgets will be placed directly or indirectly via hierarchical
+    * nesting within other widgets residing directly on this "canvas" element.
+    */
+    SVGSVGElement get canvas    => _canvas;
 
 
     /*
@@ -183,18 +143,31 @@ class Application {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
+    /**
+    * Application Name; notational only, though perhaps useful when setting a page
+    * title / caption or including in debug / tracing / testing output.
+    */
     String  get name                => _name;
+
+    /// Is this application running within an SVG document [:true:] or is it an SVG embedded in HTML [:false:].
     bool    get isStandaloneSVG     => _isStandaloneSVG;
+
+    /// Are we serving this app from an http server?
     bool    get isRunningOnServer   => _isRunningOnServer;
+
+    /// Detect Chromium vs. any other type (for now, only concerned with FireFox potentially).
     String  get browserType         => _browserType;
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    classesCSS (String of comma-delimited name-strings)
-    See Widget classesCSS property for detailed comments.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Comma-delimited list of Class Names that CSS selectors will be able to target
+    * and Style.
+    *
+    * See [Widget.classesCSS] property for detailed comments.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     String get classesCSS           => _classesCSS;
     void set classesCSS(String sClasses) {
         _classesCSS = sClasses;
@@ -202,17 +175,19 @@ class Application {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    canvasBounds : READ ONLY
-    Returns an object (group of properties) that provides quick-access to our
-    Canvas's Bounding-Box information. This information is updated in our resize event.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Returns an [ObjectBounds] object that provides quick-access to our
+    * [canvas] Bounding-Box information. This information is updated from within the
+    * private _resize method (which executes on resize events).
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     ObjectBounds get canvasBounds   => _canvasBounds;
 
-    //Quick access to the margins (SVG inset within HTML doc, when applicable)
+    ///The [canvas] SVG element's left-inset within HTML doc, when applicable.
     num get marginLeft              => _marginLeft;
+
+    ///The [canvas] SVG element's right-inset within HTML doc, when applicable.
     num get marginTop               => _marginTop;
 
     /*
@@ -385,6 +360,7 @@ class Application {
     When the canvas is resized (by shrinking or expanding the browser application's Window),
     any widgets that are aligned to the right and/or bottom bounds of the canvas will have
     their bounds and/or position affected.
+
     Here we loop through the application's widgets only looking at "top" (parent-less) widgets
     since it is only that set of widgets that can be aligned to the canvas (their "container");
     furthermore, since the upper-left corner always remains position (0,0) for the canvas's
@@ -423,19 +399,6 @@ class Application {
 
 
     /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    addCanvasResizeWatcher
-    For functionality like aligning to the right or bottom of browswer's current window
-    bounds, we need to be able to detect Canvas resize events and handle appropriately.
-    The called ReSize() event will update bounds information.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    void _addCanvasResizeWatcher() {
-        window.on.resize.add( (event) => _resize(event) );
-    }
-
-
-    /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     BEGIN: PUBLIC METHODS
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -445,47 +408,16 @@ class Application {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     getCSSPropertyValuesForClassNames
 
-    Pass in space-delim list of selector (class) names as String, and array of PropertyNames
-    that we wish to fetch values for (as well as default-values, if none are found here).
-    The return values are placed in the passed-in array (which is passed by reference).
-    See CSSTargetsMap (Class) documentation for more... it provides eash space-delim value.
-
-    CRITICALLY IMPORTANT FORMAT: Browser (Chrome 18+) ONLY processes SelectorNames properly
-    if SPACE-DELIMITED (commas cause issues!)  So, make sure to pass formatted appropriately.
-
-    NOTE:
-    Even thouch SVG-SPECIFIC PropertyNames appear in Chrome's object-inspector (debugger)
-    as non-hyphenated camelCase (e.g., strokeWidth), our getPropertyValue lookups must use
-    use the hyphenated lower-case form (e.g., stroke-width) --at least for Chrome v18+ -- to get values.
-    Caller must load PropertyName values within array appropriately!
-
-    NOTE:
-    Border-STYLE(s) are at end of each array passed to this routine (for border groups),
-    and when we reach the style attribute(s), we can then look at already-encountered
-    border-width data to determine our enumerated internal "eBorderStyle").
-
-        FURTHER STYLING NOTE: Include "UseVirtualBorder" in the SelectorNames list to access our
-        "virtual" styles of "Raised" and "Lowered" when the provided CSS Style is Outset/Inset
-        respectively (i.e., we use this phrase to detect our desire for an enhanced
-        double-line version of outset/inset border).
-
-    NOTE: The CSS StyleSheet values MUST USE A valid unit of measure (e.g., px, pt, em)
-    AFTER ANY SIZES or they will intrepret to zero here!!!  Numbers without UOM suffix yield ZERO!
-    The getComputedStyle ==> getPropertyValue ==> yields WHOLE NUMBER (INT) VALUES (in px),
-    and REQUIRES a specified UOM in the CSS stylesheet definitions.
-
-    MORE NOTES:
     I TRIED to use the Future<CSSStyleDeclaration> implementation of getComputedStyle(),
     but NOTHING would work (UPDATE: this was probably due to same issue as getting window-size
     using a Future, which had to wait for all code in main() to finish before run).
-    So, I looked into the Dart source code, and it is just returning window.$dom_getComputedStyle() anyhow.
+
+    The Dart source code appears to just be returning window.$dom_getComputedStyle() anyhow.
+
     http://code.google.com/searchframe#TDGadvYaD94/trunk/dart/lib/html/dartium/html_dartium.dart
         (search for "getComputedStyle" to find relevant lines)
-    So, INSTEAD OF USING a FUTURE, I just hard-coded the $dom_... approach here.
 
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    RELATED IDEA: make more generic; rect-only for now... may eventually need text-metrics
-    calcs if native SVG-Text is used (which requires manual metrics calcs, line-splits, etc)
+    So, INSTEAD OF USING a FUTURE, I just hard-coded the $dom_... approach here.
 
     ═══════════════════════════════════════════════════════════════════════════════════════
     ISSUES! BUG IN WEBKIT!  (NEED TO REPORT - TODO)
@@ -516,9 +448,79 @@ class Application {
 
     I suspect this is some issue resulting from typecasting, e.g., .astype(Float32) or
     some matrix used to calc zooms is off a bit, etc.?  Wild guess.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    CONSIDER: make this more generic; rect-only for now... may eventually need text-metrics
+    calcs if native SVG-Text is used (which requires manual metrics calcs, line-splits, etc)
+
     */
-    getCSSPropertyValuesForClassNames(String targetName, String SelectorNames, List<StyleTarget> listStylable) {
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    // BEGIN: dartdoc comments for getCSSPropertyValuesForClassNames...
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * This routine is called from the [Widget] private method [_updateStylePropertiesListValuesFromCSS]
+    * in order to obtain calculated property values, from CSS, that will be applied to the
+    * various visual parts of the widget.  It can be used for any off-screen CSS-style-calculation
+    * work as needed, so long as parameter compatibility is maintained.
+    *
+    * ### Parameters (required)
+    *   * [String] targetName: the logical visual sub-component of the [Widget] being styled (e.g., its Frame).
+    *   * [String] selectorNames: a **space-delimited** list of CSS selector (class) names
+    *   that will be applied to the Widget sub-component being styled in order to compute property values
+    *   reflecting the application of CSS.
+    *   * [:List:] listStylable: each element within this list of [StyleTarget] objects
+    *   specify details that include "target properties" to calculate values for (e.g., 'margin-left'),
+    *   plus a default value for these properties.
+    *
+    * ### Returns
+    * Value is returned via the (by reference parameter) listStylable's [CSSTargetsMap.calcValue] field.
+    * Value is result computed using off-screen application of CSS, or the
+    * specified default-value if unable to compute a result.
+    *
+    * ## See Also
+    * * [StyleTarget] — very important and integral to this widget-styling process.
+    * * [CSSTargetsMap] — the [Widget.classesCSS] property maintains such a [Map]
+    * .
+    *
+    * ## IMPORTANT NOTES
+    * ### Note 1
+    * *Critically important format*: Browser (Chrome 18+) ONLY processes SelectorNames properly
+    * if *space-delimited* (commas cause issues!)
+    *
+    * ### Note 2
+    * Even though SVG-SPECIFIC PropertyNames appear in Chrome's object-inspector (debugger)
+    * as non-hyphenated camelCase (e.g., strokeWidth), our getPropertyValue lookups must use
+    * use the hyphenated lowercase form (e.g., stroke-width) — at least for Chrome v18+ —
+    * to get values. Caller must load "target property" values within List appropriately!
+    *
+    * ### Note 3
+    * *Border-style(s)* are at *end of each list* passed to this routine (for border groups),
+    * and when we reach the style attribute(s), we have access to already-encountered
+    * border-width data to determine our enumerated internal [eBorderStyle]).
+    *
+    *     FURTHER STYLING NOTE: Include "UseVirtualBorder" in the SelectorNames list to access our
+    *     "virtual" styles of "Raised" and "Lowered" when the provided CSS Style is Outset/Inset
+    *     respectively (i.e., we use this phrase to detect our desire for an enhanced
+    *     double-line version of outset/inset border).
+    *
+    * ### Note 4
+    * The CSS StyleSheet values *must use* a valid unit of measure (e.g., px, pt, em)
+    * *after any size properties* or they will interpret to zero here!!!
+    * Numbers without UOM (unit of measure) suffix will always yield *zero*!
+    *
+    * Within this method, the calls to [window.$dom_getComputedStyle] ==>
+    * [CSSStyleDeclaration.getPropertyValue] ==>
+    * yields *whole number* ([int]) values (in *px*),
+    * and *requires* a specified UOM in the CSS stylesheet definitions to yield desired value.
+    *
+    * ## MORE NOTES IN SOURCE CODE:
+    * Refer to the source-code for additional detailed comments regarding some of the
+    * challenges encountered with this routine, including apparent Webkit bugs that are of
+    * some concern.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    getCSSPropertyValuesForClassNames(String targetName, String selectorNames, List<StyleTarget> listStylable) {
         String  sPropertyName       = '';
         String  sPropertyValue      = '';
         String  sCalculatedValue    = '';
@@ -526,9 +528,9 @@ class Application {
         int     iIndex              = 0;
         bool    useVirtualBorder    = false;
 
-        if (SelectorNames.indexOf('UseVirtualBorder') > -1) {useVirtualBorder = true;}
+        if (selectorNames.indexOf('UseVirtualBorder') > -1) {useVirtualBorder = true;}
 
-        setSVGAttributes(_cssTestingRect, {'class': SelectorNames});
+        setSVGAttributes(_cssTestingRect, {'class': selectorNames});
         //print("BEGIN GetCSSPropertyValuesForClassNames WITH SelectorNames: ${SelectorNames}  targetName: ${targetName}");
 
         //TODO: NOTE THAT SECOND PARM OF getComputedStyle is String name of a pseudo-element (e.g., :first-line or :hover and so forth)
@@ -568,21 +570,25 @@ class Application {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    addWidget
-
-    InstanceName must be unique to our application when we add a reference to our WidgetsList.
-    This method expects to be invoked by a Widget (during Widget initialization)
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Add the [Widget] instance reference specified in the [objToAdd] parameter
+    * to the Application object's [widgetsList] after making sure that:
+    *
+    *   1. specified [objToAdd] truly is a [Widget] or subclass thereof.
+    *   2. the Widget's [Widget.instanceName] will be unique across entire application.
+    *
+    * This method will be invoked by all Widget derivations, via the [Widget]
+    * constructor object initialization process.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void addWidget (Widget objToAdd) {
         //make sure objToAdd is proper Type before allowing add...
         if (objToAdd is! Widget) {
             throw new InvalidTypeException('Application.AddWidget',  'Widget', objToAdd);
         }
 
-        //make sure InstanceName (of object being added to list) is Unique
+        //make sure instanceName (of object being added to list) is Unique
         if (isInstanceNameUnique(_widgetsList, objToAdd.instanceName)) {
             _widgetsList.add(objToAdd);
         } else {
@@ -591,17 +597,16 @@ class Application {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    removeWidget
-
-    This method is called from Widget destructor methods to free application references
-    to any Widget being destroyed. We clear "selected" widgets too, since the removal
-    of a widget could otherwise leave straggling widget references in selected-list.
-
-    If a given InstanceName exists in our app's WidgetsList, remove it.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * If a given [instanceNameToRemove] exists in our Application object's [widgetsList],
+    * remove it.
+    *
+    * This method is called from [Widget.destroy] — i.e., destructor — methods to free application
+    * references to any Widget being destroyed. We clear "selected" widgets too, since the removal
+    * of a widget could otherwise leave straggling widget references in [selectedWidgetsList].
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void removeWidget(String instanceNameToRemove) {
         int indexToRemove = indexOfInstanceName(_widgetsList, instanceNameToRemove);
 
@@ -613,31 +618,42 @@ class Application {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    The following are various helper-functions for accessing Widget-List information that
-    would otherwise be private.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //The following are various helper-functions for accessing Widget-List information that
+    //would otherwise be private.
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    /**
+    * Quick access to the value of [widgetsList.length]; remember that directly accessing
+    * that list is discouraged as it may be made private in the future.
     */
     int getWidgetCount() {
         return _widgetsList.length;
     }
 
-    Widget getWidgetByIndex(int IndexOfObjectToGet) {
-        return _widgetsList[IndexOfObjectToGet];
+    /**
+    * Return the [Widget] reference stored in [widgetsList] at [indexOfObjectToGet].
+    */
+    Widget getWidgetByIndex(int indexOfObjectToGet) {
+        return _widgetsList[indexOfObjectToGet];
     }
 
 
+    /**
+    * Return the index of the [widgetToLocateInList] stored in [widgetsList].
+    */
     int indexOfWidget(Widget widgetToLocateInList) {
         return _widgetsList.indexOf(widgetToLocateInList);
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Selection-list handling routines
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Handles the process of removing all Widgets from [selectedWidgetsList].
+    *
+    * Performs UI display updates to visually reflect selection of no widgets.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void clearWidgetSelection() {
         for (Widget widget in selectedWidgetsList) {
             widget.selectionRect.attributes['display'] = 'none';
@@ -646,14 +662,19 @@ class Application {
         selectedWidgetsList.clear();
     }
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    When adding to what Widgets are "selected", re-selecting an already selected Widget
-    will de-selcect it and return false (true otherwise).
-    Additional logic herein also prevents situations like multi-selecting children
-    of a selected widget (since, they are "owned" by selection already).
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Handles the process of adding a Widget to [selectedWidgetsList].
+    *
+    * When adding to what Widgets are "selected", re-selecting an already selected Widget
+    * will de-select it and return [:false:], otherwise [:true:] is returned.
+    * Additional logic in this method also prevents situations like multi-selecting children
+    * of a selected widget (where they are hierarchically "owned" by selection already).
+    *
+    * Performs UI display updates to visually reflect resultant selection.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     bool addWidgetToSelection(Widget widgetToAdd) {
         int             indexTest       = -1;
         bool            alreadySelected = false;
@@ -725,12 +746,13 @@ class Application {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Count all the top-level Widgets (i.e., those residing on our Canvas object);
-    if optional parm specified, return count of only those widgets later (after specified index) in list.
-     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Get count of all the top-level Widgets (i.e., those residing directly on our [canvas]
+    * object); if optional parm [stopAtIndex] is specified, return count of only those widgets
+    * appearing later (after specified index) in [widgetsList].
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     int getTopLevelWidgetsCount ([int stopAtIndex = 0]) {
         int countWidgets = 0;
         int i = _widgetsList.length;
@@ -741,29 +763,29 @@ class Application {
             }
         }
         return countWidgets;
-    } //...getTopLevelWidgetsCount()
+    }
 
 
 
 
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    CONSTRUCTOR
-
-    Parameters:
-        ourAppName: should be obvious; just notational
-        canvasElement: the SVG element (obj reference) to use as our Canvas
-        _onAppReady: the ChangeHandler (a method) called when this app is "ready"
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    /**
+    * Constructs an Application object, initializes various properties, and once the
+    * _updateCanvasBounds private method completes its [Future] operations, returns control
+    * to the caller by way of executing the callback handler (method) specified in the
+    * constructor parameter _onAppReady.
+    *
+    * ### Parameters (required)
+    *   * [String] _name: whatever name you wish to give your application — simply notational.
+    *   * [SVGSVGElement] canvasElement: the SVG element (obj reference) to use as our Canvas.
+    *   * [ChangeHandler] _onAppReady: method called when this application is "ready" to start
     */
-    Application(String ourAppName, SVGSVGElement canvasElement, this._onAppReady) :
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    Application(this._name, SVGSVGElement canvasElement, this._onAppReady) :
         //Create list to track Widgets owned by this application
         _widgetsList        = new List<Widget>(),
         selectedWidgetsList = new List<Widget>()
     {
-
-        _name = ourAppName;
-
         if (canvasElement is! SVGSVGElement) {
             throw new InvalidTypeException('$_name (Application Object) Constructor : canvasElement is not an instance of SVGSVGElement.',  'SVGSVGElement', canvasElement);
         }
@@ -780,7 +802,20 @@ class Application {
         _isStandaloneSVG    = (window.location.pathname.toLowerCase().endsWith(".svg") );
 
         _updateCanvasAttributes();
-        _addCanvasResizeWatcher();
+
+
+        /*
+        ═══════════════════════════════════════════════════════════════════════════════════════
+        Essentially, an "_addCanvasResizeWatcher()" bit of functionality.
+
+        In order to align to the right and/or bottom of browswer's current (visible region)
+        window bounds, we need to be able to detect Canvas resize events and handle appropriately.
+        So, we specify a callback to our _resize() method that will update this bounds
+        information when the window.on.resize event is triggered by user resizing
+        browser-window or such.
+        ═══════════════════════════════════════════════════════════════════════════════════════
+        */
+        window.on.resize.add( (event) => _resize(event) );
 
         //Make sure our testing objects are available once canvas is ready
         _createMetricsTestingObjects();
