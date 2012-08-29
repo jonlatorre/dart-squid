@@ -675,54 +675,56 @@ class eBorderStyle {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetBorderSide: one for each Side of a border (T/R/B/L)
-
-We hold references to the SVG line element(s) applicable to the border side (if any).
-"Virtual" borders have no lines and IsSpacingOnly is true.
-
-═══════════════════════════════════════════════════════════════════════════════════════
-Certain BorderStyle "effects" of raised, lowered, etc. can be applied to the inner/outer
-borders.  The effects are achieved by using two side-by-side lines with varied colors.
-In cases where we need two lines, there will be an Exterior-Facing-Line
-(relative to entire widget) and an Interior-facing line. Each ine will be of the same Width.
-
-Inner/Outer borders with potential standard "styles" have additional logic due to the
-possibility them being either a single-line or double-line border construct.
-Our predefined styles make the most sense with Widths of 1.0 or 2.0 stroke-width total,
-where double-line borders use 1.0 each for light/dark highlights to achieve effects.
-But, we allow user to choose wider effect if desired, and we halve the stroke-width
-of each line in a dual-line border style.
-
-Use mid-point (mid-width) of Stroke-Width for calculations
-═══════════════════════════════════════════════════════════════════════════════════════
-borderStyleSpecs:
-
-When drawing a "border" effect, there are two potential lines-per-border-side that
-comprise an effect; lets call the lines "exterior (e)" and "interior (i)", with exterior
-positioned closer to the outside (of object getting a border) than the interior line.
-Then, when coloring these lines, the coloration of the TOP & LEFT (TL) lines will be
-the same; and, the coloration for the BOTTOM & RIGHT (BR) lines will be the same.
-
-For each TL and BR line-pair (e/i), the tone difference (if any) between e/i make
-us perceive 3D effects like an apparent "grooved" or "ridged" line.  And, when
-we view an object with a difference between TL and BR line-styles (if any), we
-further perceive an entire object to be raised or lowered relative to its surroundings.
-
-To simplify coloring of borders to achieve desired visuals, an array of colors
-is provided here. Naming: TLe = TL(top & left)e(xterior), etc.
-
-Some effects use only 1-line per side to achieve their look,
-while others use two lines.  When only 1 line is used for effect, the "e" pair
-values are what matters.  The eBorderStyle determins how many lines,
-and thus line-pair values, will be used in drawing the border.
-
-NOTE: since our Primary/Secondary available SVG Line Elements are not the "exterior"
-and "interior" lines for the OUTER border like they are for the INNER border, we have
-additional logic to determine which SVG line is the "e" and "i".  See code for notes.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* There exists one instance of this Class for each Side (T/R/B/L) of a [WidgetBorder].
+*
+* References to the SVG line element(s) applicable to the border side (if any) are also
+* maintained within.
+*
+* ---
+* ## Effects discussion:
+* Certain [eBorderStyle] "effects" of raised, lowered, etc. can be applied to the inner/outer
+* borders.  The effects are achieved by using two side-by-side lines with varied colors.
+* In cases where we need two lines, there will be an Exterior-Facing-Line
+* (relative to entire widget) and an Interior-facing line. Each ine will be of the same Width.
+*
+* Inner/Outer borders with potential standard "styles" have additional logic due to the
+* possibility them being either a single-line or double-line border construct.
+* Our predefined styles make the most sense with Widths of 1.0 or 2.0 stroke-width total,
+* where double-line borders use 1.0 each for light/dark highlights to achieve effects.
+* But, we allow user to choose wider effect if desired, and we halve the stroke-width
+* of each line in a dual-line border style.
+*
+* Mid-point (mid-width) of Stroke-Width is used for calculations.
+*
+* ---
+* ## borderStyleSpecs discussion:
+* When drawing a "border" effect, there are two potential lines-per-border-side that
+* comprise an effect; lets call the lines "exterior (e)" and "interior (i)", with exterior
+* positioned closer to the outside (of object getting a border) than the interior line.
+* Then, when coloring these lines, the coloration of the *top & left8 (TL) lines will be
+* the same; and, the coloration for the *bottom & right* (BR) lines will be the same.
+*
+* For each TL and BR line-pair (e/i), the tone difference (if any) between e/i make
+* us perceive 3D effects like an apparent "grooved" or "ridged" line.  And, when
+* we view an object with a difference between TL and BR line-styles (if any), we
+* further perceive an entire object to be raised or lowered relative to its surroundings.
+*
+* To simplify coloring of borders to achieve desired visual effects,
+* the [borderStyleSpecs] array maintains color-offset values.
+* Naming: TLe = TL(top & left)e(xterior), etc.
+*
+* Some effects use only 1-line per side to achieve their look,
+* while others use two lines.  When only 1 line is used for effect, the "e" pair
+* values are what matters.  The [eBorderStyle] determines how many lines,
+* and thus line-pair values, will be used in drawing the border.
+*
+* NOTE: since our Primary/Secondary available SVG Line Elements are not the "exterior"
+* and "interior" lines for the OUTER border like they are for the INNER border, we have
+* additional logic to determine which SVG line is the "e" and "i".  See code for notes.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorderSide {
     int         borderType      = eWidgetPart.None;     //enumeration eWidgetPart (int); use as quick reference to what type of border this group of sides is for
     int         side            = eSides.None;          //enumeration eSides (int); quick ref so we know which side of border this side is on
@@ -740,22 +742,26 @@ class WidgetBorderSide {
     Line        line2;
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    The only styles available to Frame are none/solid; and, the solid color here is just
-    a placeholder, as it does not alter the color a user specifies for a solid border.
-    See class comments for  details about how the other specs here work to create effects.
-
-    Our specs are a "shift-from-black" matrix; works for our non-black color-shifting also.
-    When starting with black, this yields standard Windows(Delphi)-like styling of each
-    border style.
-
-    Value notes (amount shifted from zero/black):
-        105 = 'dimgray'
-        128 = 'gray'
-        255 = 'white'
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Our specs are a "shift-from-black" matrix (see source-code for full details);
+    * works for our non-black color-shifting also.
+    * When starting with black, this yields standard Windows(Delphi)-like styling of each
+    * border style.
+    *
+    * The only styles available to Frame are none/solid; and, the solid color here is just
+    * a placeholder, as it does not alter the color a user specifies for a solid border.
+    * See class comments for  details about how the other specs here work to create effects.
+    *
+    * ### Shift-Value notes:
+    * The amount shifted from zero/black were based on these color's relative values, and
+    * we apply the relative differences to each color-channel (R/G/B) when creating effect:
+    *
+    *   * 105 = 'dimgray'
+    *   * 128 = 'gray'
+    *   * 255 = 'white'
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     static final Map<String, Map<String, int>> borderStyleSpecs =
         const   {
             'none'      : const {'TLe':0,   'BRe':0,    'TLi':0,    'BRi':0     },
@@ -923,18 +929,22 @@ class WidgetBorderSide {
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     CONSTRUCTORS
-
-    Parameters:
-        BorderType  - denormalized information for convenience; enumeration eWidgetPart (int)
-        Side        - store the eSide (int) enum indicating T/R/B/L
-
-        **.spacing() makes no use of the following parms, for obvious reasons:
-
-        LineElement1- the SVG element this side renders into
-        LineElement2- SVG element available to dual-line borders (inner/outer); optional
-            parm on .line() constructor since frame only uses single line.
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Constructs a WidgetBorderSide object with appropriate SVG line element(s) required
+    * by a border.
+    *
+    * ### Parameters
+    *   * [eWidgetPart] borderType: denormalized information for convenience; enumeration value as [:int:].
+    *   * [eSides] side: denormalized info; enumeration value as [:int:] indicating T/R/B/L.
+    *   * [SVGElement] lineElement1: the SVG line element this side renders into.
+    *   * (optional) [SVGElement] lineElement2: the SVG line element available to dual-line borders (inner/outer);
+    *   optional parm on .line() constructor since frame only ever uses single line.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     WidgetBorderSide.line(this.borderType, this.side, this.lineElement1, [this.lineElement2] ) :
         line1 = new Line.zeros(),
         line2 = new Line.zeros()
@@ -942,11 +952,17 @@ class WidgetBorderSide {
         isSpacingOnly   = false;
     }
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Constructs a WidgetBorderSide object for "spacing" type borders (i.e., margin / padding).
+    * See .line constructor for parameter information.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     WidgetBorderSide.spacing(this.borderType, this.side) {
         isSpacingOnly   = true;
     }
 
-}
+} //class WidgetBorderSide
 
 
 
@@ -1253,15 +1269,26 @@ class WidgetBorder {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetBorders: all border types, each with four sides.
-
-Note: Margin/Padding are "virtual" borders -- just spacing regions (no drawing).
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Class that encapsulates all the multiple border [WidgetBorder] parts that can be
+* rendered for a [Widget]. Each WidgetBorder has four [WidgetBorderSide] objects within.
+*
+* ## Notes
+* Margin/Padding are "virtual" borders — just spacing regions (no drawing).
+*
+* ---
+* ## See Also
+* * [eWidgetPart]: for detailed discussion of the various border types.
+* * [WidgetBorderSide]: for discussion of how positioning of border-lines is performed, etc.
+*
+* ---
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorders {
-    SVGElement      allBordersSVGGroupElement   = null; //the SVG Group hierarchically above the groups of border-subtypes
+    ///Reference to the SVG Group hierarchically above the groups holding each border-subtype.
+    SVGElement      allBordersSVGGroupElement   = null;
+
     WidgetBorder    Margin      = null;
     WidgetBorder    Outer       = null;
     WidgetBorder    Frame       = null;
@@ -1340,8 +1367,8 @@ PROPERTIES
 
 - targetObject..... the logical visual subcomponent of the Widget that we are styling (e.g., its Frame)
 
-- targetProperty... within a TargetObject, various TargetProperties can be affected by CSS values.
-Within a TargetObject, e.g., the border-style, border-width, and stroke-color properties many be
+- targetProperty... within a targetObject, various TargetProperties can be affected by CSS values.
+Within a targetObject, e.g., the border-style, border-width, and stroke-color properties many be
 available for styling with CSS.
 
     NOTE: even thouch SVG-SPECIFIC PropertyNames show in Chrome's object-inspector (debugger)
@@ -2785,7 +2812,7 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Call the method that will peform an off-screen computation by applying any CSS-class-selectors
+    Call the method that will perform an off-screen computation by applying any CSS-class-selectors
     as they apply to our standard Widget base/border elements.
 
     See: _loadStylablePropertiesList (for more related comments)
