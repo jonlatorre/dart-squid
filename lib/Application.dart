@@ -70,7 +70,7 @@ class Application {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    These two variables are used only during initial "launch" of the applicatin.
+    These two variables are used only during initial "launch" of the application.
     This was implemented as a workaround to how the Dart future(s), as of 4/15/2012,  were
     being processed within the _UpdateCanvasBounds method.  Our application object is
     instantiated from  main() (i.e., initiation via outer main thread), and for whatever
@@ -266,12 +266,12 @@ class Application {
     This method should be called by any method that traps changes in Canvas size (e.g., Resize).
 
     ═══════════════════════════════════════════════════════════════════════════════════════
-    NOTES (from JS verson of Widgets):
+    NOTES (from JS version of Widgets):
     The Chrome browser (using JS) gets every single permutation of size-calculations
     (calculate the viewport bounds) correct, but FireFox sucks totally!
     Though, Dart is not exposing viewportElement correctly and other issues too.
 
-    With Chrome, (using JavaSript) any of these permutations worked:
+    With Chrome, (using JavaScript) any of these permutations worked:
         _canvasBounds.R    = (_canvasBounds.L + mCanvas.viewportElement.clientWidth);
         _canvasBounds.R    = document.documentElement.clientWidth;
         _canvasBounds.R    = window.innerWidth - 17; (where the 17 is adjusting for width of scrollbar)
@@ -808,7 +808,7 @@ class Application {
         ═══════════════════════════════════════════════════════════════════════════════════════
         Essentially, an "_addCanvasResizeWatcher()" bit of functionality.
 
-        In order to align to the right and/or bottom of browswer's current (visible region)
+        In order to align to the right and/or bottom of browser's current (visible region)
         window bounds, we need to be able to detect Canvas resize events and handle appropriately.
         So, we specify a callback to our _resize() method that will update this bounds
         information when the window.on.resize event is triggered by user resizing
