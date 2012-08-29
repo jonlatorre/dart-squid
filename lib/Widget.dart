@@ -444,46 +444,51 @@ class WidgetMetrics {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-AlignSpec
-
-Each dimension of a Widget has an associated Alignment Specification.
-
-Alignment takes on one of two distinct variations (for any given side/dimension being aligned):
-1)  by default, if objToAlignTo IS NOT specified (null), we wish to align a Widget's
-    dimension to its parent Widget's specified ClientBounds:
-    i.e.,  this.Metrics.Margin(aka, WidgetBounds) or the bounds of the entire
-    (viewable portion) of our application "canvas" (part showing in browser window).
-2)  if objToAlignTo IS specified, we sish to align to a Sibling's Bounds as any of
-    Sibling.Metrics.[eWidgetParts][AlignToPoint; i.e., LTRBCxCy]
-
-e.g., Align (to our container's bounds; aka parent-clientwidget-bounds)...
-    here we align Top of this Widget to Top (per WidgetBounds) of its container:
-        Align.T = {Dimension:eSides.T}
-
-e.g., Align (to Sibling value(s))...
-    here we align Right side  of this Widget to Left (per Frame bounds) of Sibling:
-        Align.R = {objToAlignTo:SiblingWidget1, Part:eWidgetPart.Frame, Dimension:eSides.L}
-
-Crucial Note: referenced sibling(s) to align to must be earlier in object-creation order
-(and thus, earlier in SVG nodelist)!!
-
-NOTE: **DEFAULT VALUES**: objToAlignTo of null uses container for alignment.
-    Default widgetpart is Margin(aka, Widgetbounds). dimension is none.
-
-NOTE: DimensionValue is INTERNAL TO OBJECT only. This is a storage variable for holding
-    calculated value, once obtained after computations, per Alignment specs.
-
-When values are set, we fire an optional callback method, so that we can setup
-things like mouse handlers, cursor changes, and such that reference objects not
-available to use from within this class (e.g., SVG elements)
-
-IDEAS:
-If use-cases justify, callbacks could be included for more complex alignment scenarios,
-much like PosRules.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Each dimension of a [Widget] has an associated Alignment Specification.
+*
+* Alignment takes on one of two distinct variations (for any given side/dimension being aligned):
+*
+* 1) by default, if [objToAlignTo] *is not* specified (null), we wish to align a Widget's
+* dimension to its parent Widget's specified ClientBounds (see: [Widget.getClientBounds] method).
+* i.e.,  Widget.metrics.Margin (aka, WidgetBounds) or the bounds of the entire
+* (viewable portion) of our application "canvas" (part showing in browser window).
+*
+*   e.g., Align (to our container's bounds; aka parent-clientwidget-bounds)...
+*   here we align Top of this Widget to Top (per WidgetBounds) of its container:
+*       Align.T = {Dimension:eSides.T}
+*
+* 2) if [objToAlignTo] *is* specified, we wish to align to a Sibling's Bounds as any of
+* Sibling.Metrics.[eWidgetParts][AlignToPoint; i.e., LTRBCxCy]
+*
+*   e.g., Align (to Sibling value(s))...
+*   here we align Right side  of this Widget to Left (per Frame bounds) of Sibling:
+*       Align.R = {objToAlignTo:SiblingWidget1, Part:eWidgetPart.Frame, Dimension:eSides.L}
+*
+* ---
+* When values potentially affecting alignment are set, we fire an optional callback method,
+* so that we can setup things like mouse handlers, cursor changes, and such that
+* reference objects not available to use from within this class (e.g., SVG elements)
+*
+* ---
+* ## Notes:
+* ### Crucial Note 1:
+* Referenced sibling(s) to align to must be earlier in object-creation order
+* (and thus, earlier in SVG nodelist)!
+*
+* ### Note 2: Default Values Discussion
+* * objToAlignTo: null, which indicates use of a Widget's container for alignment.
+* * widgetpart: Margin (aka, Widgetbounds).
+* * dimension: none, which indicates no specific alignment to perform.
+*
+* ### Note 3:
+* DimensionValue is *internal to object* only. This is a storage variable for holding
+* calculated value, once obtained after computations, per Alignment specs.
+*
+* ---
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class AlignSpec {
     Widget          _objToAlignTo   = null;
     int             _part           = eWidgetPart.Margin;    //enumeration eWidgetPart (int); by default, Widget-boundary is the part being aligned to something
@@ -540,13 +545,12 @@ class AlignSpec {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetAlignment
-
-This simply wraps up one alignment-spec object per align-able Dimension
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* This class simply wraps up one [AlignSpec] object per align-able Dimension available
+* to each [Widget].
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetAlignment {
     List<AlignSpec> alignSpecs;
     AlignSpec T     = null;
@@ -640,24 +644,25 @@ These various border classes combine to make these features possible.
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-eBorderStyle:
-Based on: http://www.w3.org/TR/CSS2/box.html#border-style-properties for the most part,
-with the last two being a Windows/Delphi type style.
-
-Notice that None and Solid are the only applicable types for the Frame widget-part/border,
-as that is a single-line-per-side border part and is intended to be a solid-fill
-(when used).  The other styles apply to the Inner and Outer borders/widget-parts, since
-those implement a (potential) two-line-per-side ability (depending on style) in addition
-to the fact that is where these styles make the most visual sense.
-The EffectsLineCount array indicates how many strokes(lines) are used to create effect.
-
-CRITICAL NOTE: borderStyleSpecs (const map in WidgetBorderSide) must be kept in-sync
-with this enumeration, such that indexing into borderStyleSpecs array for a given
-BorderStyle returns desired information.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* The available border styles are base on the [W3C border styles](http://www.w3.org/TR/CSS2/box.html#border-style-properties)
+* for the most part, with the addition of Raised / Lowered (being a Windows/Delphi type style).
+*
+* Notice that None and Solid are the only applicable types for the Frame widget-part/border,
+* as that is a single-line-per-side border part and is intended to be a solid-fill
+* (when used).  The other styles apply to the Inner and Outer borders/widget-parts, since
+* those implement a (potential) two-line-per-side ability (depending on style) in addition
+* to the fact that is where these styles make the most visual sense.
+*
+* The EffectsLineCount array indicates how many strokes(lines) are used to create effect.
+*
+* ## CRITICAL NOTE:
+* [WidgetBorderSide.borderStyleSpecs], a const map in [WidgetBorderSide] class, must be kept
+* in-sync with this enumeration, such that indexing into borderStyleSpecs array for a given
+* BorderStyle returns desired information.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eBorderStyle {
     static final int None     = 0;
     static final int Solid    = 1;
