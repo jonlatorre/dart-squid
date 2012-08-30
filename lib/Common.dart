@@ -38,30 +38,62 @@ BEGIN: GLOBAL HELPER methods...
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-FUNCTION: set(HTML or SVG)Attributes
-A handy extension to SVGElement and HtmlElement that allow us to
-set an arbitrary number of attributes on an Element in given namespace.
-
-NOTES: assigning values to element attributes using "element.attributes = {}"
-is *destructive* for any already-set attribute values (i.e., you are replacing the
-entire map); likewise, keep in mind that in order to remove a single attribute value,
-you have to delete it using the map.remove() method.
-In speed-critical regions (especially loops, mouse-move events), when setting just
-one or two attributes, consider using the [] operator to set each (i.e.,
-element.attributes['key'] = 'value' vs using these methods (may be marginally faster)
-
-@param {map} attributesPairs:    Names and values of the attributes.
-
-@example
-var element = setSVGAttributes(mySVGElement, {'x':'0', 'y':'0', 'fill':'red' });
+NOTES:
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
+
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Method that allows setting an arbitrary number of attributes on the [SVGElement]
+* specified in [svgEl]. The [attributesPairs] parameter is a reference to a [Map] (array)
+* of element attributes and their desired values, to be applied to [svgEl].
+*
+* E.g., the calling code could look like this:
+*
+*     setSVGAttributes(_someSVGElement, {
+*         'display'       : 'inherit',
+*         'visibility'    : 'visible'
+*     });
+*
+* ## See Also
+* [setElementAttributes] exists for setting arbitrary number of attributes on HTML elements.
+*
+* ## Notes
+* This helper method is especially useful when *updating* more than one attribute at a time.
+* Remember that assigning values to Element attributes using "(SVG)Element.attributes = {map-data-here}"
+* is *destructive* for any already-set attribute values (i.e., you are replacing the
+* entire attributes map); likewise, keep in mind that in order to *remove* a single attribute value,
+* you have to delete it using the [Map.remove] method.
+*
+* In speed-critical regions (especially loops, mouse-move events), when setting just
+* one or two attributes, consider using the native Element '[]' operator to set each (i.e.,
+* Element.attributes['key'] = 'value' vs. using this custom method, as it may be marginally faster).
+**/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 void setSVGAttributes(SVGElement svgEl, var attributesPairs) {
     attributesPairs.forEach((attr, value) {
         svgEl.attributes[attr] = value;
     });
 }
 
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Method that allows setting an arbitrary number of attributes on the (HTML) [Element]
+* specified in [element]. The [attributesPairs] parameter is a reference to a [Map] (array)
+* of element attributes and their desired values, to be applied to [element].
+*
+* E.g., the calling code could look like this:
+*
+*     setElementAttributes(_someHtmlElement, {
+*         'x'             : '100.0',
+*         'y'             : '50.0'
+*     });
+*
+* ## See Also
+* [setSVGAttributes] exists for setting arbitrary number of attributes on SVG elements.
+* In addition, the *"Notes"* section there applies equally here.
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 void setElementAttributes(Element element, var attributesPairs) {
     attributesPairs.forEach((attr, value) {
         element.attributes[attr] = value;
@@ -69,19 +101,19 @@ void setElementAttributes(Element element, var attributesPairs) {
  }
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-FUNCTION: isInstanceNameUnique
-If the Dart List-class was easy to simply subclass, this function would have been
-attached to such a derivation.  But, alas, I find their factory/implementation mess
-just too difficult to work with.  It is not Delphi!  So, just pass in the list of
-widgets and an instance-name to test for (i.e., see if it has been used), and
-get back true/false as to whether it is unique.
-
-indexOfInstanceName is very similar in function, and useful when we need list index
-if a matching name is found.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Method to test for the existence of a particular [Widget] instance reference within
+* the list specified in the [widgetListRef] parameter.
+* The list is searched for a Widget with [Widget.instanceName] = [instanceNameToTest].
+*
+* If a match is located, return [true], otherwise return [false].
+*
+* ## See Also
+* [indexOfInstanceName] is very similar in function, and useful when we need list index
+* if a matching instanceName is found.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 bool isInstanceNameUnique(List<Widget> widgetListRef, String instanceNameToTest) {
     for (Widget widget in widgetListRef) {
         if (widget.instanceName == instanceNameToTest) {
@@ -91,6 +123,20 @@ bool isInstanceNameUnique(List<Widget> widgetListRef, String instanceNameToTest)
     return true;
 }
 
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Method to locate a particular [Widget] instance reference within the list specified
+* in the [widgetListRef] parameter.
+* The list is searched for a Widget with [Widget.instanceName] = [instanceNameToTest].
+*
+* If a match is located, return the list index at which it resides, otherwise return
+* the value -1 (negative one) to indicate no match has been found.
+*
+* ## See Also
+* [isInstanceNameUnique] is very similar in function, and useful when we need to
+* simply know (true/false) whether a matching instanceName is found.
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 int indexOfInstanceName(List<Widget> widgetListRef, String instanceNameToTest) {
     for (int i = 0; i < widgetListRef.length; i++) {
         if (widgetListRef[i].instanceName == instanceNameToTest) return i;
@@ -99,6 +145,7 @@ int indexOfInstanceName(List<Widget> widgetListRef, String instanceNameToTest) {
 }
 
 //TODO: Either make Tag truly unique, return a list of matches, or allow starting-index(search) to be passed in
+///Not used quite yet.
 int indexOfTag(List<Widget> widgetListRef, String tagValueToTest) {
     for (int i = 0; i < widgetListRef.length; i++) {
         if (widgetListRef[i].tag == tagValueToTest) return i;
@@ -107,13 +154,16 @@ int indexOfTag(List<Widget> widgetListRef, String tagValueToTest) {
 }
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-FUNCTION: getIndexOfBorderTypeAndProp
-Another helper...
-pass reference to our list of stylable properties, and locate a particular instance.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Method to locate a particular [StyleTarget] instance reference within the list specified
+* in the [stylablePropsList] parameter.
+* The list is searched for a [StyleTarget] with [StyleTarget.targetObject] = [objName] and
+* [StyleTarget.targetProperty] = [propName].
+*
+* If a match is located in list, return the reference to it, otherwise return [:null:].
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 StyleTarget getStyleTargetFromListByObjAndProperty(List<StyleTarget> stylablePropsList, String objName, String propName) {
     for (StyleTarget target in stylablePropsList) {
         if ( (target.targetObject == objName) && (target.targetProperty == propName) ) {
@@ -124,13 +174,13 @@ StyleTarget getStyleTargetFromListByObjAndProperty(List<StyleTarget> stylablePro
 }
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-FUNCTION: ensureStandardNoneColor
-Considers transparent/empty all to be the same value of 'none', otherwise retain
-the color value passed in.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Considers color values of 'transparent', empty (i.e., ''), and 'none' to all be
+* equivalent and coerces them to a standard value of 'none'; for all other color strings
+* passed into this method, the original value is retained as the return value.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 String ensureStandardNoneColor(String colorToStandarize) {
     colorToStandarize = colorToStandarize.trim().toLowerCase();
     if ((colorToStandarize == '') || (colorToStandarize == 'transparent')) {
@@ -141,13 +191,13 @@ String ensureStandardNoneColor(String colorToStandarize) {
 }
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-CLASS: Line
-Simplifiy and standardize storage of line information Line begin/end (X,Y) pairs
-(i.e., start/end points)
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Simplify and standardize storage of line information Line begin/end (X,Y) pairs
+* (i.e., start/end points). Essentially just a struct at this time, but that could
+* change in the future.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class Line {
     num x1  = 0.0;
     num y1  = 0.0;
@@ -159,13 +209,12 @@ class Line {
 }
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-CLASS: Color
-Simplifiy and standardize storage of RGB Color information.
-Skipped setters (and valid range testing) to lighten up the objects slightly.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Simplify and standardize storage of RGB Color information used throughout framework.
+* Chose to omit "setters" (and valid range testing) to lighten up the objects slightly.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class Color {
     int R   = 0;
     int G   = 0;
@@ -174,23 +223,26 @@ class Color {
     static final int minValue = 0;
     static final int maxValue = 255;
 
+    ///Returns [true] if all color channel values (R/G/B) are zero valued, else [false].
     bool isBlack() {
         return (((R == minValue) && (G == minValue) && (B == minValue)) ? true : false);
     }
 
+    ///Returns [true] if all color channel values (R/G/B) are "max" valued (i.e., int 255), else [false].
     bool isWhite() {
         return ((R == maxValue) && (G == maxValue) && (B == maxValue));
     }
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    FUNCTION: shiftColor
-    The amount of "shifting" (per color channel) defaults to a reasonable visual diff.
-    Pass a negative value to make a color "darker" and a positive one for "lighter"
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Adjust the [R],[G],[B] color stored herein by the amount of "shifting" (per color channel) as
+    * specified in [shiftColorByInt] parameter, which defaults to a reasonable visual diff.
+    *
+    * Pass a negative value to make a color "darker" and a positive one for "lighter"
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void shiftColor([int shiftColorByInt=24]) {
         if (shiftColorByInt > 0) {lightenColor(shiftColorByInt);} else {darkenColor(-shiftColorByInt);}
     }
@@ -217,14 +269,13 @@ class Color {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    FUNCTION: loadFromRGBString
-    Our off-page CSS style calculations will return colors (in Chrome/Dartium) in the
-    form: "rgb(255, 255, 255)"
-    Parse that String and load our Color object R,G,B values from it.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Our off-page CSS style calculations will return colors (in Chrome/Dartium) in the
+    * form: "rgb(255, 255, 255)".
+    * Parse that String and load our Color object [R],[G],[B] values from it.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void loadFromRGBString(String RGBString) {
         if (!(RGBString.startsWith('rgb(')) ) return;
 
