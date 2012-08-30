@@ -991,11 +991,12 @@ class WidgetBorderSide {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetBorder: all four Side of a border (T/R/B/L)
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Encapsulates all four [WidgetBorderSide] objects (T/R/B/L) needed to fully define a single
+* [borderType] within [WidgetBorders].
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorder {
     int                 borderType  = eWidgetPart.None;     //enumeration eWidgetPart (int); quick reference to what type of border this group of sides is for
     SVGElement          borderGroupElementRef   = null;     //the SVG Group hierarchically above the group of lines comprising all side(s) of a border
@@ -1023,24 +1024,23 @@ class WidgetBorder {
     }
 
 
-
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Get various stroke midpoints for T/L/B/R Line(s).
-    Assume each line is "W" wide. For single-line border-style border-line(s),
-    set mid-thickness-point of each line to W/2 inset from bounding rect.
-    For borders comprised of potentially two lines (inner/outer borders) and with a
-    two-line border-style (effect), each line will be W/2 thick, but the mid-thickness-point
-    of each line will be inset either W/4 or 3W/4 (i.e., parallel to each other, and taking
-    up W total width between them).
-
-    TODO: assert() if bounding-rect is too small to hold defined border(s) of chosen width/style?
-    or, does it make sense to just not draw the portion that extends "off" the bounding-rect?
-
-    NOTE: it is realized that the if/then logic considerations for EffectsLineCount=0
-    should be separate (to avoid unnecessary calcs), but it made if structure overly complex.
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Get various stroke midpoints for T/L/B/R Line(s) per specified [bounds].
+    * Assume each line is "W" wide. For single-line border-style border-line(s),
+    * set mid-thickness-point of each line to W/2 inset from bounding rect.
+    * For borders comprised of potentially two lines (inner/outer borders) and with a
+    * two-line border-style (effect), each line will be W/2 thick, but the mid-thickness-point
+    * of each line will be inset either W/4 or 3W/4 (i.e., parallel to each other, and taking
+    * up W total width between them).
     */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    //TODO: assert() if bounding-rect is too small to hold defined border(s) of chosen width/style?
+    //or, does it make sense to just not draw the portion that extends "off" the bounding-rect?
+    //
+    //NOTE: it is realized that the if/then logic considerations for EffectsLineCount = 0
+    //should be separate (to avoid unnecessary calcs), but it made if structure overly complex.
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void updateBorderSideStrokeCoordinatesFromBounds(ObjectBounds bounds) {
         //get out of here if border has no lines
         if (eWidgetPart.LineCount[borderType] == 0) return;
@@ -1201,7 +1201,7 @@ class WidgetBorder {
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     CONSTRUCTOR 2
-    Very similar to contstuctor 1, expect that we are creating TWO lines per side.
+    Very similar to constuctor 1, expect that we are creating TWO lines per side.
     This is done for inner/outer borders that depend on (potentially) using two parallel
     lines per side to create standard effects (BorderStyles).
 
@@ -1408,92 +1408,103 @@ BEGIN: WIDGET-STYLING CLASSES
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-StyleTarget
-A Widget maintains a list of these stylable targets in its _StylablePropertiesList
-A Widget can have aspects of its visual presentation styled by CSS, including
-its background, frame, and inner & outer borders, via these targets.
-
-A Widget's CSSTargetsMap (exposed as classesCSS property) map-KEYS correspond to
-StyleTarget.TargetObject values; this allows us to determine which selector "class-names"
-(from Widget's classesCSS map-VALUES) will be applied to a TargetObject in order to compute
-resulting, post-styled, CalcValue for each TargetProperty.
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-PROPERTIES
-
-- targetObject..... the logical visual subcomponent of the Widget that we are styling (e.g., its Frame)
-
-- targetProperty... within a targetObject, various TargetProperties can be affected by CSS values.
-Within a targetObject, e.g., the border-style, border-width, and stroke-color properties many be
-available for styling with CSS.
-
-    NOTE: even thouch SVG-SPECIFIC PropertyNames show in Chrome's object-inspector (debugger)
-as non-hyphenated camelCase, our list and lookups must use hyphenated lower-case form
-(at least for Chrome v18, 19, 20) to get values.
-
-- defaultValue..... in the absence of externally-provided (or determinable) value, this is what
-the CalcValue will apply to the TargetProperty; i.e., these are logical defaults for a Widget's styling.
-
-- calcValue........ the targetProperty value as determined by applying CSS class-selector(s),
-from matches in CSSTargetsMap, to a Widget's TargetObject/TargetProperty.
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* A [Widget] maintains a list of these style-able targets ('StyleTarget') in
+* its _StylablePropertiesList.
+* A Widget can have aspects of its visual presentation styled by CSS, including
+* its background, frame, and inner & outer borders, via these targets.
+*
+* A Widget's [CSSTargetsMap] (exposed as [Widget.classesCSS] property) map *keys* correspond to
+* [StyleTarget.targetObject] values; this allows us to determine which selector "class-names"
+* (from Widget's classesCSS map-VALUES) will be applied to a targetObject in order to compute
+* resulting, post-styled, calcValue for each TargetProperty.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class StyleTarget {
+
+    /**
+    * The logical visual sub-component of the Widget that we are styling (e.g., its Frame).
+    */
     String  targetObject    = '';
+
+    /**
+    * Within a [targetObject], various TargetProperties can be affected by CSS values.
+    * Within a targetObject, e.g., the border-style, border-width, and stroke-color properties may be
+    * available for styling with CSS.
+    *
+    * **NOTE:** even though *SVG-specific* PropertyNames show in Chrome's object-inspector (debugger)
+    * as non-hyphenated camelCase, our list and lookups must use hyphenated lower-case form
+    * (at least for Chrome v18-23+) to get values.
+    */
     String  targetProperty  = '';
+
+    /**
+    * In the absence of externally-provided (or determinable) value, this is what
+    * the [calcValue] will apply to the [targetProperty]; i.e., these are logical
+    * defaults for a Widget's styling.
+    */
     String  defaultValue    = '';
+
+    /**
+    * The value to be assigned to the [targetProperty] as determined by applying
+    * CSS class-selector(s), from matches in CSSTargetsMap, to a Widget's
+    * [targetObject] / [targetProperty].
+    */
     String  calcValue       = null;     //Calculated
 
     StyleTarget (this.targetObject, this.targetProperty, this.defaultValue);
-}
+
+} //class StyleTarget
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-CSSTargetsMap (also see notes from: StyleTarget class)
 
-A map of TargetObject names (KEY) and associated comma-delim list of CSS Class Names selectors (VALUE)
-pairs that indicate what CSS classes are to be applied to a Widget's StyleTarget.TargetObject in order
-to affect the Calculated values for StyleTarget.TargetProperty(ies) when we apply CSS rules to
-compute a "Styled" widget's values.
-
-
-NOTE: We must use the NON-COMMA-DELIM equivalent Value (in Application.GetCSSPropertyValuesForClassNames)
-because of how the off-screen class-resolution expects it. We use [] operator to access this
-space-delim version of value.
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-PROPERTIES
-
-- changeHandler...... [optional] a callback method available to perform functionality when
-CSS styling changes occur.  Useful for triggering Widget metrics recalcs / rendering updates.
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-METHODS
-
-Embedded Map object is exposed only via specialized methods for proper encapsualtion and
-to prevent user from bypassing change-detection logic. Operations like adding to
-or removing from the comma-delim values string are done through methods that detect change while
-also ensuring proper formatting of this string.
-
-See brief comments appearing above each method.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* A map of TargetObject names (KEY) and associated comma-delimited list of CSS Class Names selectors (VALUE)
+* pairs that indicate what CSS classes are to be applied to a Widget's StyleTarget.TargetObject in order
+* to affect the Calculated values for [StyleTarget.targetProperty] when we apply CSS rules to
+* compute a "Styled" widget's values.
+*
+* The embedded [Map] object is exposed only via specialized methods for proper encapsulation and
+* to prevent user from bypassing change-detection logic. Operations like adding to
+* or removing from the comma-delim values string are done through methods that detect change
+* while also ensuring proper formatting of this string.
+*
+* ## NOTE
+* We must use the *non-comma-delimited equivalent* value (in [Application.getCSSPropertyValuesForClassNames])
+* because of how the off-screen class-resolution expects it to be formatted.
+* We use the [] operator to access this space-delimited version of value.
+*
+* ## See Also
+* The notes accompanying the [StyleTarget] class help to better understand how this class
+* fits into things.
+*
+* ---
+*
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class CSSTargetsMap {
-    //the "key" for this Map is TargetObject names (aligned with values in our StylablePropertiesList -- a list of StyleTargets)
-    //the "value" portion of this Map holds our "AppliedSelectors" (comma-delim class-selectors) to apply to target
+
+    /**
+    * The "key" for this Map is TargetObject names (aligned with values in our StylablePropertiesList —
+    * a list of [StyleTarget] objects).
+    * The "value" portion of this Map holds our "AppliedSelectors" (comma-delim class-selectors)
+    * to apply to target.
+    */
     Map<String, String> _targetObjectsAndSelectors = null;
 
+    /**
+    * (optional) a callback method available to perform functionality when
+    * CSS styling changes occur.  Useful for triggering Widget metrics recalcs / rendering updates.
+    */
     ChangeHandler  changeHandler;
 
     //Constructor
     CSSTargetsMap();
 
 
-    //easy way to start with fresh map without change-triggering
+    ///Easy way to start with fresh map without change-triggering.
     void initialize(Map fromMap) {
         _targetObjectsAndSelectors = new Map.from(fromMap);
 
@@ -1504,11 +1515,11 @@ class CSSTargetsMap {
     }
 
 
-    //useful for debugging
+    ///Useful for debugging purposes.
     String getMapAsString() => _targetObjectsAndSelectors.toString();
 
 
-    //clear the map
+    ///Clears the Map.
     void clear() {
         _targetObjectsAndSelectors.clear();
         if (changeHandler != null) {changeHandler();}
@@ -1516,8 +1527,11 @@ class CSSTargetsMap {
 
 
 
-    //return the value portion of map that contains any Class selector(s), but as SPACE-DELIM version
-    //which is critically important in off-screen CSS calcs in Appication object.
+    /**
+    * Returns the value portion of map that contains any Class selector(s),
+    * but as *space-delim* version which is critically important in off-screen
+    * CSS calcs performed in [Application] object.
+    */
     String operator [] (String key) => _getFormattedMapValue(key);
 
     String _getFormattedMapValue(String key) {
@@ -1527,7 +1541,7 @@ class CSSTargetsMap {
 
 
 
-    //Set the ENTIRE appliedSelectors value for a Stylable Target if the key exists; otherwise, ignore
+    ///Set the *entire* appliedSelectors value for a Stylable Target if the key exists; otherwise, ignore.
     void setClassSelectorsForTargetObjectName(String targetName, String appliedSelectors) {
         //remove any extraneous spaces
         appliedSelectors = appliedSelectors.replaceAll(' ', '');
@@ -1540,14 +1554,16 @@ class CSSTargetsMap {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Add selector(s) to an existing key's list of class-selectors (comma-delim).
-    If the key does not exists, ignore the request, as it would be meaningless for styling.
-    The added value(s) must remain unique in the appliedSelectors string.
-    If a change to value portion results from this request, fire the handler.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Add selector(s) in [newSelectors] to an existing Map entry's (with key = [targetName])
+    * list of class-selectors (comma-delim).
+    *
+    * If the key does not exists, ignore the request, as it would be meaningless for styling.
+    * The added value(s) must remain unique in the appliedSelectors string.
+    * If a change to value portion results from this request, fire the [changeHandler].
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void addClassSelectorsForTargetObjectName(String targetName, String newSelectors) {
         if (!_targetObjectsAndSelectors.containsKey(targetName)) return;
 
@@ -1589,13 +1605,14 @@ class CSSTargetsMap {
     } //AddClassSelectorForTargetObjectName
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Remove selector(s) from an existing key's list of class-selectors (comma-delim).
-    If the key does not exists, ignore the request, as it would be meaningless for styling.
-    If a change to value portion results from this request, fire the handler.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Remove selector(s) in [delSelectors] from an existing Map entry's (with key = [targetName])
+    * list of class-selectors (comma-delim).
+    * If the key does not exists, ignore the request, as it would be meaningless for styling.
+    * If a change to value portion results from this request, fire the [changeHandler].
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void removeClassSelectorsForTargetObjectName(String targetName, String delSelectors) {
         if (!_targetObjectsAndSelectors.containsKey(targetName)) return;
 
