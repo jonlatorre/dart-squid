@@ -14,29 +14,31 @@ BEGIN: Various enumerations
 
 DESCRIPTION
 These enumeration sets/objects should be named such that their intent/usage is rather obvious.
-They are here for convenience, coding simplicity (and readability), and centralization of
-common constants and their associated "names".
+They are here for convenience, consistency, coding simplicity (and readability), and
+centralization of common constants and their associated "names".
 
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-eWidgetState:
-Notice that these are ADDITIVE powers-of-two such that we can do bitwise operations
-to have multiple "states" simultaneously and test for each state independently.
-E.g., a widget can be both showing and updating at once.
-
-Widgets begin their existence in "loading" state, and remain there until first shown
-(via show() method), at which point it will transition to "normal" AND "showing".
-If the widget is later hidden/shown, the "Showing" bit will flip off/on accordingly.
-During moving/sizing attempts, those bits will be "flipped" as needed also.
-
-Updating is a special state that can be set via BeginUpdate/EndUpdate to flag bulk-changes
-to widget properties, and we can bypass expensive recomputations til "endupdate".
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Notice that these enumerated "state" values are *additive* powers-of-two (0, 1, 2, 4, 8, ...)
+* such that we can do bitwise operations and allow a [Widget] to be in multiple "states"
+* simultaneously and test for each state independently.
+*
+* E.g., a widget can be both [Showing] and [Updating] at once.
+*
+* Widgets begin their existence in [Loading] state, and remain there until first shown
+* (via [Widget.show] method), at which point state will transition to [Normal] *and* [Showing].
+* If the widget is later hidden/shown, the [Showing] bit will flip off/on accordingly.
+* During moving/sizing attempts, those corresponding bits will be "flipped" as needed also.
+*
+* [Updating] is a special state that can be set via [Widget.beginUpdate] and
+* [Widget.endUpdate] to flag intentions for bulk-changes to Widget properties,
+* and we can bypass expensive recomputations til "endUpdate" is executed.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eWidgetState {
     static final int Unknown  = 0;
     static final int Normal   = 1;
@@ -49,18 +51,32 @@ class eWidgetState {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-eSides:
-TODO: (also discussed as eDimension for alignment); perhaps rename, since eSide not best for "CX", etc?
-
-Represent TRBL (Top/Right/Bottom/Left) "sides" of boxes, etc as powers of 2 (0, 1, 2, 4, 8)
-Additive, such that if all sides are specified, the value is "All" (all sides aligned to Client-Rect)
-Center(X/Y) is a "pseudo-side" (really a point representation - midpoint of LR or TB lines)
-This will be used when drawing borders, aligning panels, and more.
-Include shorthand aliases for each value too!
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Enumeration of various Sides of a [Widget]. These enumerated values will be used
+* when drawing borders, aligning widgets, and more. Shorthand aliases exist for each
+* value too.
+*
+* Represent TRBL (Top/Right/Bottom/Left) "sides" of boxes, etc as powers of 2 (0, 1, 2, 4, 8).
+* These values are *additive*, such that if all sides are specified, the value is "All"
+* (all sides aligned to Client-Rect).
+*
+* Center(X/Y) is a "pseudo-side" (really a point representation — midpoint of LR or TB lines
+* that form a side).
+*
+* ---
+* ## Notational Caveats (currently):
+* **TODO**: eSides are also discussed as eDimension for alignment; perhaps rename,
+* since eSide not best for "CX", etc?
+*
+* Futhermore, at this time, the [Names] map does not include the verbose form of each enum.
+* The jury is still out on whether to include them in the map and/or remove the individual
+* variables to resolve this.  User-preferences for side-naming??  Input welcome.
+*
+* ---
+*
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eSides {
     static final int None     = 0;
     static final int Top      = 1;
@@ -92,43 +108,50 @@ class eSides {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-eWidgetPart:
-
-Variation in implementation and  meaning-nuances come into play depending if a
-WidgetPart is being used in the context of:
-    1) Metrics
-    2) Borders
-
-E.g., note how the "WidgetBounds" (outer boundaries of a widget) and the widget's Margin
-are VERY similar concepts, and our implementation and usage reflects this.
-"WidgetBounds" linguistically makes more sense when describing the use of this
-enum in certain situations, where Margin is a more common term for the use in other areas.
-
-When talking about the "boundaries(bounds)" of a Widget or component of a Widget (Metrics),
-it is true that WidgetBounds coordinates would match the outermost portion of the
-Margin-region; thus, they are "equal" in that regard.
-But, conceptually, the term Margin refers to the entire (potentially, depending on margin-widths)
-region running from the outer boundaries of the Widget to the outer-edge of our outer-border.
-
-In the context of Borders, only a few of these widget parts has any associated
-rendered visuals; i.e., Line(s) that make up the borders. See the LineCount list herein
-and notice that only Outer, Frame, and Inner WidgetParts(Borders) have any SVG Line(s)
-per side.  The other parts are "virtual" (e.g., margin/padding are just optional spacing
-per side).
-
-We will use the combination of eWidgetPart plus eSides (T, R, B, L) to when working with
-objects and operations requiring such per-side granularity, e.g., Margin.Right, etc
-═══════════════════════════════════════════════════════════════════════════════════════
-ALIGNMENT-related usage notes:
-Alignment will be immediately to the *outside* of specified Part.Side; i.e., if the left side
-of a Widget's ClientBounds rect is at position 100 and we align another widget's right side
-to that part, the right (x2) coordinate of the aligned widget's WidgetBounds is to be 99.
-
-pseudo-code example usage: Widget.Right(side).AlignTo(WidgetInstanceRef.WidgetPart.Side)
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Enumeration of various "parts" of a [Widget].
+*
+* Variation in implementation and meaning-nuances come into play depending if a
+* WidgetPart is being used in the context of:
+*
+*    1. [WidgetMetrics] — **Note:** see WidgetMetrics class documentation for info on how parts are arranged in Widget.
+*    2. [WidgetBorders]
+*
+* E.g., note how the "WidgetBounds" (outer boundaries of a widget) and the widget's Margin
+* are *very* similar concepts, and our implementation and usage reflects this.
+* "WidgetBounds" linguistically makes more sense when describing the use of this
+* enum in certain situations, where Margin is a more common term for the use in other areas.
+*
+* When talking about the "boundaries (bounds)" of a Widget or component of a Widget (*Metrics*),
+* it is true that WidgetBounds coordinates would match the outermost portion of the
+* Margin-region; thus, they are "equal" in that regard.
+* But, conceptually, the term Margin refers to the entire (potentially, depending on margin-widths)
+* region running from the outer boundaries of the Widget to the outer-edge of our outer-border.
+*
+* In the context of *Borders*, only a few of these widget parts has any associated
+* rendered visuals; i.e., Line(s) that make up the borders. See the [LineCount] list
+* (refer to source code for values)
+* and notice that only Outer, Frame, and Inner WidgetParts (Borders) have any SVG Line(s)
+* per side.  The other parts are "virtual" (e.g., margin/padding are just optional spacing
+* per side).
+*
+* We will use the combination of eWidgetPart plus [eSides] (T, R, B, L) when working with
+* objects and operations requiring such per-side granularity, e.g., Margin.Right, etc
+*
+* ---
+* ## Alignment-related usage notes:
+*
+* Alignment will be immediately to the *outside* of specified Part.Side; i.e., if the left side
+* of a Widget's ClientBounds rect is at position 100 and we align another widget's right side
+* to that part, the right (aka, 'x2') coordinate of the aligned widget's WidgetBounds is to be 99.
+*
+*      pseudo-code example usage: Widget.Right(side).AlignTo(WidgetInstanceRef.WidgetPart.Side)
+*
+* ---
+*
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eWidgetPart {
     static final int None           = 0;
     static final int Margin         = 1;  //i.e., WidgetBounds from the perspective of Metrics
@@ -163,18 +186,25 @@ next few classes.
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetDynamics
 
-Standard way to store and retrieve rules affecting Widget dynamics, like sizing
-and moving along given axis.  In addition, do we want to "capture" events?
-
-When values are set, we fire an optional callback method, so that we can setup
-things like mouse handlers, cursor changes, and such that reference objects not
-available to use from within this class (e.g., SVG elements)
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Standard way to store and retrieve rules affecting [Widget] dynamics, like sizing
+* and moving along given axis.  In addition, do we want to "capture" events?
+*
+* The [Widget] class uses this construct for its [Widget.isSizable] and
+* [Widget.isMovable] properties, and the [widget.handleIsMovableIsSizableChanges] handler
+* is "wired in" during the Widget's constructor initialization for both of these properties.
+*
+* When [x] or [y] values are set, we fire our [changeHandler] callback method, so that
+* we can setup things like mouse handlers, cursor changes, and such that reference objects
+* not otherwise available to use from within this class (e.g., SVG elements)
+*
+* A [Widget] instance will test these WidgetDynamics x/y properties (flags) during
+* the [Widget.mouseDown] and [Widget.move] methods to make sure only those move/size
+* attempts per [Widget.isSizable] and [Widget.isMovable] x/y rules are permitted.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetDynamics {
     bool _x         = false;
     bool _y         = false;
@@ -197,31 +227,35 @@ class WidgetDynamics {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetSizeRules
-
-Standard way to store and retrieve sizing rules associated with Widgets.
-Our changeHandler (callback) can act on any updates to these rules.
-
-Upon setting, mins must be <= to maxs, and maxs must be >= mins
-
-"SizeRules" are used when we wish to constrain Widget dimensions during resize and/or
-alignment attempts.  This is a somewhat simple form of Constraint; simply provide the
-ability to specify min/max width/height for a widget.
-
-IDEAS:
-If use-cases justify, provide a callback for more "complex" sizing-rules and let the
-implementor provide for dynamic determination of min/max width/height.  This would
-work similar to PosRules, but with the additional logic of using the numberic values
-for minWidth/etc when no callback is provided.  Such an approach would allow for
-things like changing the size rules relative to other object dimensions or other
-objects' dimensions.
-    e.g., max-width = container's width - width of another object; though, this may be
-handled already by a combination of Alignment and/or Position Constraints.
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Sizing Rules ("SizeRules") — with regards to allowable min/max width and/or height of a
+* a [Widget] — are used when we wish to constrain Widget size during resize and/or resize
+* attempts (as a result of the effect of [Widget.anchors].
+*
+* This class provides a standard way to store and retrieve sizing rules associated with Widgets.
+* The [changeHandler] is a callback that is used by [Widget.handleSizeRuleChanges] in
+* order to enforce these rules during any attempt to change [Widget.width] or [Widget.height].
+* The callback is "wired in" to the Widget as part of the Widget's constructor / initialization
+* process.
+*
+* Upon setting, axis-specific min-values must be <= to the corresponding max-values
+* for that axis and are coerced into being so; likewise, maximums must be >= minimums.
+*
+* ## Possible Functionality Enhancement (if demand merits)
+* Similar to how the functionality the [WidgetPosRules] currently provide,
+* if use-cases justify, provide a callback for more "complex" sizing-rules and let the
+* implementor provide for dynamic determination of min/max width/height.
+* Compared to PosRules, this would additional logic of using the numeric values
+* for minWidth/etc when no callback is provided.  Such an approach would allow for
+* things like changing the size rules relative to other object dimensions or other
+* objects' dimensions.
+*
+*     e.g., max-width = container's width - width of another object; though, this may be
+*     handled already by a combination of Alignment and/or Position Constraints.
+*
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetSizeRules {
     num _minWidth       = 10.0;     //TODO: THESE MINIMUMS really need to be such that bgRect/borders/etc "fit" with inner rect of zero width?
     num _minHeight      = 10.0;
@@ -277,35 +311,41 @@ class WidgetSizeRules {
 
 
 
-/*
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-"Position Rules (PosRules)" - T/R/B/L : Used when we wish to constrain Widget positioning
-during movement, resize, and/or alignment attempts.
-
-The only parts that made sense for constraining (other than perhaps fringe-cases for
-centerpoint constraints) were the 4 sides;
-i.e., the top/left and bottom/right of a widget's bounds can be subject to constraint.
-This can be further boiled down to constraining the widget's min/max X & Y (top-left corner)
-position, and user can calc the rest.
-
-Due to the wide variety of possible positioning-constraints that could exist, we
-implement such rules via implementer-defined callbacks per object-instance.
-Any provided callback must return a value (Min/Max X/Y depending on property) that a
-Widget will use (during Move method) to test positioning requests against.
-
-With callbacks, we can handle all sorts of positioning-rule forms, like:
-1) simply limiting the Top/Left (X/Y) position within a specific fixed numeric range
-    (relative to its parent)
-2) constrain position based on a referenced-object's part/dimension value.
-3) more complex situations like setting a position relative to another object plus/minus
-some constant, etc.
-
-We pass MouseEvent data through to the callback also, so implementor can have access
-to mouse position information if they care to.
-Note: this could easily be extended to pass other potentially useful data through
-in a custom event object.
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* "Position Rules (PosRules)" — with regards to allowable min/max coordinates of the
+* T/R/B/L sides of a [Widget] — are used when we wish to constrain Widget positioning
+* during movement, resize, and/or alignment attempts.
+*
+* The only parts that made sense for constraining (other than perhaps fringe-cases for
+* center-point constraints) were the 4 sides;
+* i.e., the top/left and bottom/right of a widget's bounds can be subject to constraint.
+* This can be further boiled down to constraining the widget's min/max X & Y
+* (top-left corner) position, and user can calc the rest.
+*
+* Due to the wide variety of possible positioning-constraints that could exist, we
+* implement such rules via implementer-defined *callbacks per object-instance* of
+* type [MouseConstraintEvent].
+* Any provided callback must return a value (Min/Max X/Y depending on property) that a
+* Widget will use (during Move method) to test positioning requests against.
+*
+* With callbacks, we can handle all sorts of positioning-rule forms, like:
+*
+*  1) simply limiting the Top/Left (X/Y) position within a specific fixed numeric range
+*  (relative to its parent)
+*
+*  2) constrain position based on a referenced-object's part/dimension value.
+*
+*  3) more complex situations like setting a position relative to another object plus/minus
+* some constant, etc.
+*
+* We pass [MouseEvent] data through to the callback method also, so implementor
+* can have access to mouse position information if they care to. *Note:* this could
+* easily be extended to pass other potentially useful data through
+* in a custom event object.
+*
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetPosRules {
     //list of PosRule objects.
     MouseConstraintEvent _minX;
@@ -315,7 +355,7 @@ class WidgetPosRules {
 
     void set minX(MouseConstraintEvent callbackMethod) {_minX = callbackMethod;}
     num  getMinX(MouseNotifyEventObject objInitiator) => ((_minX != null) ? _minX(objInitiator) : null);
-    
+
     void set maxX(MouseConstraintEvent callbackMethod) {_maxX = callbackMethod;}
     num  getMaxX(MouseNotifyEventObject objInitiator) => ((_maxX != null) ? _maxX(objInitiator) : null);
 
@@ -337,25 +377,30 @@ BEGIN: BOUNDS AND WIDGET-METRICS CLASSES
 */
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-ObjectBounds
-
-Standard way to store and retrieve bounding-information associated with Widgets, Canvas,
-etc.:
-
-Left, Top, Right, Bottom (L,T,R,B or, a.k.a. x1,y1,x2,y2) and aliases for
-CenterX, CenterY (i.e., side-midpoints of CX,CY), and Width and Height.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Encapsulates standard storage and retrieval of bounding-information
+* associated with Widgets, Canvas, etc.
+*
+* i.e., Left, Top, Right, Bottom (L,T,R,B or, a.k.a. x1,y1,x2,y2) and aliases for
+* obtaining CenterX, CenterY (i.e., side-midpoints of CX,CY), and Width and Height
+* from the provided LTRB information.
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class ObjectBounds {
     num T = 0.0;
     num R = 0.0;
     num B = 0.0;
     num L = 0.0;
+
     num get Width   => R - L;
+
     num get Height  => B - T;
+
+    ///Center-point along X-axis.
     num get CX      => ((R - L) / 2) + L;
+
+    ///Center-point along Y-axis.
     num get CY      => ((B - T) / 2) + T;
 
     num operator [] (String part) => _getPart(part);
@@ -378,26 +423,25 @@ class ObjectBounds {
 
 
 
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-WidgetMetrics
-
-Keep track of all the ObjectBounds (bounding-rects) for each sub-component of a Widget
-(WidgetPart) that form a distinct boundary we may need to reference, with each
-bounding box being the *outside* of the respective rectangle as defined by each
-ObjectBounds Left, Top, Right, and Bottom coordinates (i.e., x1,y1, x2,y2)
-
-The various bounds that describe a Widget; start with outside of the Margin(WidgetBounds)
-and move inward...
-
-    Margin/WidgetBounds:Widget's outer rect/bounding-box within which all subcomponents of widget are rendered
-    OuterBorder:        subtract Margin (width per side) from WidgetBounds to get bounds of OuterBorder
-    Frame:              subtract Margin and OuterBorder from WidgetBounds to get bounds of Frame
-    etc...
-    until reaching...
-    ClientBounds:       the Container region for a Widget's Child-Widget(s)
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Keeps track of all the [ObjectBounds] — i.e., the bounding-rects — for each
+* [eWidgetPart] sub-component of a [Widget] that forms a distinct boundary we may
+* need to reference, with each bounding box being the *outside* of the
+* respective rectangle as defined by each
+* ObjectBounds Left, Top, Right, and Bottom coordinates (i.e., coordinates: x1,y1, x2,y2)
+*
+* The various bounds that describe a Widget are as follow, and we start with outside of
+* the Margin (aka, WidgetBounds) and move inward:
+*
+*  * Margin/WidgetBounds:Widget's outer rect/bounding-box within which all sub-components of widget are rendered
+*  * OuterBorder:        subtract Margin (width per side) from WidgetBounds to get bounds of OuterBorder
+*  * Frame:              subtract Margin and OuterBorder from WidgetBounds to get bounds of Frame
+*  * Inner:              ...
+*  * Padding:            ... until finally reaching...
+*  * ClientBounds:       the Container region for a Widget's Child-Widget(s)
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetMetrics {
     ObjectBounds Margin         = null;
     ObjectBounds Outer          = null;
@@ -615,32 +659,7 @@ class WidgetAlignment {
 ███████████████████████████████████████████████████████████████████████████████████████████
 BEGIN: BORDER-RELATED CLASSES and ENUMERATIONS
 
-Border-build classes
-
-1)  WidgetBorderSide: define aspects of each SIDE of each border
-2)  WidgetBorder: class comprised of four border-sides
-3)  WidgetBorders: class that includes all border types (widget-parts) available to a Widget.
-    Margin is outermost "border"... padding is innermost (see: eWidgetPart)
-
-═══════════════════════════════════════════════════════════════════════════════════════════
-Border encapsulation (in Widgets, via _Borders property) discussion...
-
-Borders are a very substantial piece of functionality related to Visual-effects for all Widgets.
-
-What defines a Widget's look/feel and its resulting ClientRect (usable area inside
-those borders)? The interior-region is simple: it is just a (shaded) rectangular region.
-But, borders are complex if various types of look/feel are to be supported.
-
-E.g., appearances including
-    Visual Perceptions: Raised, Lowered, Grooved, Ridged;
-    Rounded (corners);
-    Optional Side(s) and Thickness varying per side;
-    Inner and Outer Borders comprised of the above list of options/considerations;
-    A "frame" between inner and outer borders;
-    Various effects applied to Border or its parts:
-        e.g., 3D look, transparency, gradients, shadow, glow, etc.
-
-These various border classes combine to make these features possible.
+See comments on WidgetBorders class for how these classes fit together.
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
@@ -1279,6 +1298,40 @@ class WidgetBorder {
 * Class that encapsulates all the multiple border [WidgetBorder] parts that can be
 * rendered for a [Widget]. Each WidgetBorder has four [WidgetBorderSide] objects within.
 *
+* ---
+* # Preface
+* Borders are a very substantial piece of functionality related to Visual-effects for all Widgets.
+*
+* What defines a Widget's look/feel and its resulting ClientRect (usable area inside
+* those borders)? The interior-region is simple: it is just a (shaded) rectangular region.
+* But, borders are complex if various types of look/feel are to be supported.
+*
+* E.g., appearances including:
+*
+*    * Visual Perceptions: Raised, Lowered, Grooved, Ridged per [eBorderStyle];
+*    * Rounded (corners);
+*    * Optional Side(s) and Thickness varying per side;
+*    * Inner and Outer Borders comprised of the above list of options/considerations;
+*    * A "frame" between inner and outer borders;
+*    * Various effects applied to Border or its parts: (**TODO**) e.g., 3D look, transparency, gradients, shadow, glow, etc.;
+*
+* ---
+* ## Border encapsulation
+* Borders are encapsulated in a [Widget], via _Borders member of type [WidgetBorders].
+* Here are the Border-buildup classes and how they all fit together to make
+* Widget Borders possible:
+*
+*    1. [WidgetBorderSide]: define aspects of each [eSides] of each border, including
+*    the encapsulation of SVG Line element(s) needed to draw any visible borders.
+*    2. [WidgetBorder]: class comprised of four [WidgetBorderSide] objects.
+*    3. [WidgetBorders]: this class that includes all border types (widget-parts)
+*    available to a Widget.
+*    Margin is outermost "border"... Padding is innermost; see: [eWidgetPart]
+*    and/or [WidgetMetrics] for further details.
+*
+* These various border classes combine to make the features discussed (above: Preface) possible.
+*
+* ---
 * ## Notes
 * Margin/Padding are "virtual" borders — just spacing regions (no drawing).
 *
@@ -3358,7 +3411,7 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    HandleIsMovableIsSizableChanges (callback fired from _IsMovable/_IsSizable changehandler)
+    handleIsMovableIsSizableChanges (callback fired from _IsMovable/_IsSizable changehandler)
 
     If a widget is neither movable nor sizable along either axis, remove the event listener
     (mousedown) that would allow either dynamic.
