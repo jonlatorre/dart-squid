@@ -2327,24 +2327,25 @@ class Widget {
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    _WidgetsList
-
     List of Widget references (i.e., object pointers) to any Widgets owned by this Widget.
     Any child Widget that has a Parent will call a method on this Widget to add/remove
-    itself from this list during Widget Creation/Destruction.
-    Note: destroying a parent Widget destroys all Child-Widget references herein (i.e., this
-    list will be cleared).
+    itself from this list during Widget Construction/Destruction.
+    Note: destroying a Widget destroys all Child-Widget references herein; references held
+    by this list will be cleared in the process.
 
-    This Widgetslist shall be inaccessible (directly) to the public. Use the following methods
-    to interact with this from derived objects:
-        - Widget.AddWidget
-        - Widget.RemoveWidget
+    This _widgetsList shall be inaccessible (directly) to the public.
+    [Widget.addWidget] is used to interact with this list.
+    There is no need for a *public* 'Widget.removeWidget' method, since the Widget
+    destructor [destroy] will handle any required cleanup in parentWidget (if exists),
+    plus the destructor method calls the [Application.removeWidget] recursively to delete any "owned" Widgets.
 
-    Each object inserted into this list must have these properties:
-    InstanceName... the value to assign to 'id' attribute of an SVG element; i.e., the instance name of a Widget
+    Because each object inserted into this list has (obviously) passed validation in the
+    Widget constructor, we can count on the uniqueness of each [Widget.instanceName] in this
+    list.
 
     NOTE: each widget has to exist in Application-level WidgetsList, but for speed concerns,
-    we do not test this condition herein.
+    we do not test this condition herein; again, if a widget constructor finished, this
+    condition has to have been met already.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
     List<Widget>        _widgetsList    = null;
@@ -3883,38 +3884,74 @@ class Widget {
         return _widgetsList.indexOf(widgetToLocateInList);
     }
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Unlike AddWidget method on our Application object, this add method does not need
-    to test for unique InstanceName and such, since each Widget's constructor has done this
-    via the App-level AddWidget already.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Adds [Widget] instance reference specified in the [widgetToAdd] parameter
+    * to our private _widgetsList.
+    *
+    * Unlike [Application.addWidget] method, this addWidget method does not need to test the
+    * added Widget instanceName for uniqueness and type-checking. Each Widget has *already*
+    * passed such tests (during construction) and has completed the [Application.addWidget]
+    * processing.
     */
-    void addWidget(widgetToAdd) {
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void addWidget(Widget widgetToAdd) {
         _widgetsList.add(widgetToAdd);
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Other convenience methods...
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * If a given [instanceNameToRemove] exists in our object's private _widgetsList,
+    * remove it.
+    *
+    * This method is called from [Widget.destroy] — i.e., our destructor — **by the
+    * hierarchically "owned" Widget being destroyed (i.e., a child of this widget)**.
+    * This list is intentionally *private*, as there could be substantial negative
+    * consequences for calling this from outside Widgets themselves.
+    *
+    * Basically, this provides a way for a to-be-deleted "owned"/child widget to remove
+    * itself from its parent Widget's _widgetsList when it is destroyed.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void _removeWidget(String childInstanceNameToRemove) {
+        int indexToRemove = indexOfInstanceName(_widgetsList, childInstanceNameToRemove);
+
+        if (indexToRemove > -1) {
+            _widgetsList.removeRange(indexToRemove, 1);
+        }
+    }
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Convenience method that returns reference to [Widget.metrics.ClientBounds] object.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     ObjectBounds getClientBounds() {
         return _widgetMetrics.ClientBounds;
     }
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    This method is executed when:
-        1) first showing widget content - during obj creation; State = eWidgetState.Loading
-        2) when a widget is shown after previously being hidden with Hide()
-
-    Render visual components (border/background); set state to Normal.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Make the Widget visible to user.
+    *
+    * Sets attributes on the Widget's [entireGroupSVGElement] — i.e., the outermost visual
+    * SVG container object within which all renderable visual objects for the Widget are
+    * hierarchically contained — such that the Widget is "Showing". The [widgetState] is
+    * updated to include [eWidgetState.Showing].
+    *
+    * Event hooks exist herein for [Widget.on.beforeShow] and [Widget.on.show].
+    *
+    * When method *first* shows Widget content, the [widgetState] is transitioned
+    * out of [eWidgetState.Loading] and into [eWidgetState.Normal].
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void show() {
         //call any user-provided method that fires before our standard show
         _on.beforeShow(new NotifyEventObject(this));
@@ -3929,7 +3966,7 @@ class Widget {
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         During initial loading, make sure the Repaint does full CSS-recalcs and such.
-        Otherwise, property-change rountines or EndUpdate should have handled this if needed.
+        Otherwise, property-change routines or EndUpdate should have handled this if needed.
         Also, if initial show, transition our state from loading to normal.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
@@ -3949,11 +3986,15 @@ class Widget {
     } //...Show()
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Rather obvious; opposite of show.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Essentially the opposite of [show]. Likewise, the [widgetState] is
+    * updated to omit [eWidgetState.Showing].
+    *
+    * Event hooks exist herein for [Widget.on.hide].
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void hide() {
         _entireGroupSVGElement.attributes['display'] = 'none';
 
@@ -4068,29 +4109,48 @@ class Widget {
     } //...Create()
 
 
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    DESTRUCTOR
-    To fully remove a widget, the implementor must:
-        1) call Destroy
-        2) set the Widget reference to null
-
-    Although the Browser and Dart VM will have to perform proper Garbage Collection (GC)
-    to truly "Free" memory, this Destroy method should take care of cleaning up the
-    SVG DOM element(s) that have been created by the widget to enable DOM GC.
-    In addition, we null our owned-widget references so (theoretically) the Dart VM can
-    perform GC on those objects and all the objects they created.
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    /**
+    * DESTRUCTOR
+    *
+    * To fully remove a [Widget] from an [Application], the implementor must:
+    *
+    *    1. call [destroy]
+    *    2. set the destroyed-Widget reference to [null]
+    *
+    * This destructor also recursively removes any "owned" widgets as part of this process.
+    * References to this Widget and its hierarchically-owned Widgets are removed
+    * from the [Application.widgetList].
+    *
+    * In addition, we null our owned-widget references so (theoretically) the Dart VM can
+    * perform GC on those objects and all the objects they created.
+    * Finally, we also remove this Widget from this widget's [parentWidget]'s private
+    * owned-widgets-list (_widgetsList).
+    *
+    * Note: although the Browser and Dart VM will have to perform proper Garbage Collection (GC)
+    * to truly "free" memory, this destroy method should take care of cleaning up the
+    * SVG DOM element(s), and any other references that have been created by the widget,
+    * to so enable effective GC.
     */
-    void destroy() {
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    void destroy([int currentDepth = 0]) {
         //This will cause a recursive call to Destroy on any owned widgets as needed.
         _widgetsList.forEach( (widget) {
-            widget.destroy();
+            widget.destroy(currentDepth + 1);
             widget = null;
         });
 
         //removing our SVG G (group) should blast all child SVG objects.
+        //TODO: is this truly good enough for browser to effectively GC?
         _entireGroupSVGElement.remove();
+
+        //clear reference to *this* Widget in our parentWidget's list of "owned" widgets.
+        //Only needed on first level (not in recursion-descended destructors)
+        if (currentDepth == 0)  {
+            if (_parentWidget != null) {
+                _parentWidget._removeWidget(_instanceName);
+            }
+        }
 
         //clear references to this widget at app-level
         _applicationObject.removeWidget(_instanceName);
@@ -4098,21 +4158,23 @@ class Widget {
 
 
 
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    CONSTRUCTOR
-
-    Parameters:
-
-    instanceName: arbitrary name assigned by user to this Widget instance. E.g., "myWidget"
-
-    appInstance: reference to required Application instance
-
-    parentInstance: the Widget which hierarchically owns this one.
-       A null value will create a Widget without a parent (i.e. a Widget that
-       resides directly on our "canvas" at the highest level).
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    /**
+    * Constructs an Widget object after performing required validations.
+    * Creates various owned-objects, initializes various properties, adds itself to
+    * the [Application.widgetsList], creates the initial SVG structures used by the Widget,
+    * and wires-up some standard event-handlers in preparation for use.
+    *
+    * ### Parameters
+    *    * [String] instanceName: arbitrary name assigned by user to this Widget instance (e.g., "myWidget").
+    *    * [Application] appInstance: reference to required Application instance.
+    *    * [Widget] parentInstance: (optional) the Widget which hierarchically owns this one.
+    * A null value will create a Widget without a parent (i.e. a Widget that
+    * resides directly on our "canvas" at the highest level).
+    *    * [String] typeName: used for various identification purposes (in SVG constructs, etc.)
+    *
     */
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     Widget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Widget']) :
         //CREATE THE PLETHORA OF EMBEDDED CLASSES A WIDGET USES...
         _isMovable      = new WidgetDynamics(),
@@ -4151,7 +4213,7 @@ class Widget {
         /*
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         InstanceName uniqueness is enforced at the Application level.
-        Add our Instance to appliction object; test for any violation of unique name constraint.
+        Add our Instance to application object; test for any violation of unique name constraint.
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         */
         try {
