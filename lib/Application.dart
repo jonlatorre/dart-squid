@@ -610,7 +610,6 @@ class Application {
     void removeWidget(String instanceNameToRemove) {
         int indexToRemove = indexOfInstanceName(_widgetsList, instanceNameToRemove);
 
-        //make sure InstanceName (of object being added to list) is Unique
         if (indexToRemove > -1) {
             clearWidgetSelection();
             _widgetsList.removeRange(indexToRemove, 1);
