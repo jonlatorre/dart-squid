@@ -11,6 +11,140 @@
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
+BEGIN: iFrameFO Class
+███████████████████████████████████████████████████████████████████████████████████████████
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* An [iFrameFO] encapsulates an iFrame inside a SVG foreignObject and allows
+* interaction with that iFrame by setting the URL (via [setURL] method) that will
+* be used to retrieve content from and populate the iFrame within.
+*
+* Unlike the somewhat similar [HtmlFO] class, this class implements no specific provisions
+* for setting scroll-overflows since the iFrame handles this automatically.
+*
+*
+* ## See Also
+*    * [iFrameWidget] is the specialized [Widget] subclass that embeds the [iFrameFO] within it.
+*    * [HtmlFO] is similar, but allows direct manipulation of embedded HTML content.
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class iFrameFO {
+    //These variables obtain their value during createFOStructure
+    Widget              _ptrWidget              = null;
+    SVGElement          _ptrSVGElementForFO     = null;
+    String              _idOfSVGElementForFO    = '';
+
+    //these hold refs to our created elements, and inner content
+    SVGForeignObjectElement _foElementRef       = null;
+    Element             _iFrameObj              = null;
+
+    //accessors
+    SVGElement      get svgFO                   => _foElementRef;
+    Element         get iFrame                  => _iFrameObj;
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Creates the following FO / HTML structure within the [Widget] specified by [widget] parameter,
+    * within the Widget's client-region (i.e., [Widget.clientSVGElement]).
+    *
+    *     <foreignObject x="10" y="10" width="100" height="150">  //NOTE: Metrics filled in later
+    *         <iframe>
+    *             ...any HTML content appearing here is loaded in from a URL via [setURL] method.
+    *         </iframe>
+    *     </foreignObject>
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void createFOStructure(Widget widget) {
+        _ptrWidget              = widget;
+        _ptrSVGElementForFO     = widget.clientSVGElement;
+        _idOfSVGElementForFO    = _ptrSVGElementForFO.attributes['id'];
+
+        _foElementRef.attributes = {
+            'display'       : 'inherit',
+            'id'            : "${_idOfSVGElementForFO}_ContainerFO"
+        };
+
+        _iFrameObj.attributes = {
+            'id'            : "${_idOfSVGElementForFO}_ContainerFOiFrame",
+            'marginwidth'   : "0",
+            'marginheight'  : "0",
+            'scrolling'     : "auto"
+        };
+
+        _foElementRef.nodes.add(_iFrameObj);
+        _ptrSVGElementForFO.nodes.add(_foElementRef);
+    }
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Update position and sizing information...
+    * See [HtmlFO.updateFOMetrics] for important algorithmic notes regarding
+    * why we compute the FO position the way we do.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void updateFOMetrics() {
+        //trap for strange-order of calls that could try to execute this prior to avail.
+        if (_ptrWidget == null) return;
+
+        num    widgetTranslateX = _ptrWidget.translateX;
+        num    widgetTranslateY = _ptrWidget.translateY;
+
+        String L       = _ptrWidget.getClientBounds().L.toString();
+        String T       = _ptrWidget.getClientBounds().T.toString();
+
+        String adjL    = (_ptrWidget.getClientBounds().L + widgetTranslateX).toString();
+        String adjT    = (_ptrWidget.getClientBounds().T + widgetTranslateY).toString();
+        String Width   = _ptrWidget.getClientBounds().Width.toString();
+        String Height  = _ptrWidget.getClientBounds().Height.toString();
+
+        setSVGAttributes(_foElementRef, {
+            'x'             : adjL,
+            'y'             : adjT,
+            'width'         : Width,
+            'height'        : Height,
+            'transform' : 'translate(${(-widgetTranslateX)},${(-widgetTranslateY)})'
+        });
+
+
+        setElementAttributes(_iFrameObj, {
+            'x'             : L,
+            'y'             : T,
+            'width'         : Width,
+            'height'        : Height
+        });
+
+    }  //updateFOMetrics
+
+
+
+    void setURL(String urlToLoad) {
+        setElementAttributes(_iFrameObj, {
+            'src'           : "${urlToLoad}"
+        });
+    }
+
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * **Note:** after construction, [createFOStructure] will need called, and the
+    * [updateFOMetrics] will need to be called during [Widget] alignment.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    iFrameFO() :
+        _foElementRef   = new SVGElement.tag('foreignObject'),
+        _iFrameObj      = new IFrameElement();
+
+} //iFrameFO
+
+
+
+
+/*
+███████████████████████████████████████████████████████████████████████████████████████████
 BEGIN: iFrameWidget Class
 ███████████████████████████████████████████████████████████████████████████████████████████
 */

@@ -1839,18 +1839,39 @@ class EventsProcessor {
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: HtmlFO (SVG ForeignObject containing HTML Body/Div)
-
-SVG TEXT-HANDLING (as of SVG V1.x) IS JUST TOO DARN TOUGH, since we would have to perform
-manual FONT-METRICS CALCs (width of each char), then CALC LINE-WIDTHS, and
-MANUALLY SPLIT MULTI-LINE TEXT, ETC. ETC.
-
-IF AND WHEN SVG Version 2.0 comes along with simpler text-handling, we can consider native
-SVG implementation instead of the embedded (HTML) foreign-object approach for text.
-
-IF demand merits, we can do the calcs for text internally and replace the FO approach.
+BEGIN: HtmlFO Class
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* An [HtmlFO] encapsulates an HTML Body/Div structure inside an SVG foreignObject and
+* allows interaction with Div Element's contents ("innerHTML") via our exposed
+* [innerHTML] property.
+*
+* This class implements provisions for setting [scrollOverflow] preferences to either
+* display scrollbars (to allow access to overflow) or simply hide any overflow.
+*
+* **Critical Note:** See [dart issue 2977: must "wrap" SVG doc in HTML doc to work!](http://code.google.com/p/dart/issues/detail?id=2977)
+* I.e., for now, this bug is a blocking bug preventing standalong SVG docs using this
+* Class (and classes that implement it, like the TextWidget) from working.
+*
+* ## Discussion and Reason for this Class
+* Put bluntly, *SVG text-handling (as of SVG v1.x) is just too darn tough*, since we
+* would have to perform *manual* font-metrics calcs (width of each char), then
+* calc line-widths, and manually split multi-line text, etc. etc.
+*
+* *If and when* SVG Version 2.0 comes along with simpler text-handling, we can consider native
+* SVG implementation instead of this embedded (HTML) foreign-object approach for text.
+*
+* If demand merits, we can do the calcs for text internally and replace the FO approach.
+*
+* ## See Also
+*    * [TextWidget] is the specialized [Widget] subclass that embeds the [HtmlFO] within it.
+*    * [iFrameFO] is similar, but allows loading HTML content from a URL.
+*
+* ---
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class HtmlFO {
     //These variables obtain their value during createFOStructure
     Widget              _ptrWidget              = null;
@@ -1880,26 +1901,24 @@ class HtmlFO {
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
     String          get innerHTML               =>  _innerHTMLMarkup;
-
     void            set innerHTML(String newHTML) {
         _innerHTMLMarkup        = newHTML;
         _htmlDivObj.innerHTML   = _innerHTMLMarkup;      //TODO: FLAKY YET: SEE DART ISSUE 2977 -- must "wrap" SVG doc in HTML doc to work!
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    CREATE THE FOLLOWING HTML STRUCTURE WITHIN THE Widget PROVIDED.
-    We create a the HTML within an SVG FOREIGN OBJECT that we place in the Widget's
-    client-region (ClientSVGElement)
-
-    <foreignObject x="10" y="10" width="100" height="150">              //NOTE: Metrics filled in later
-        <body>
-            <div>SET-THE-innerHTML-PROPERTY-OF-THIS-DIV</div>
-        </body>
-    </foreignObject>
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Creates the following FO / HTML structure within the [Widget] specified by [widget] parameter,
+    * within the Widget's client-region (i.e., [Widget.clientSVGElement]).
+    *
+    *     <foreignObject x="10" y="10" width="100" height="150">  //NOTE: Metrics filled in later
+    *         <body>
+    *             <div>Contents of this DIV are set via the [innerHTML] property</div>
+    *         </body>
+    *     </foreignObject>
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void createFOStructure(Widget widget, String innerHTMLMarkup) {
         _ptrWidget              = widget;
         _ptrSVGElementForFO     = widget.clientSVGElement;
@@ -1931,11 +1950,13 @@ class HtmlFO {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Update position...
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Update position and sizing information...
+    * See the source-code for important algorithmic notes regarding
+    * why we compute the FO position the way we do.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void updateFOMetrics() {
         //trap for strange-order of calls that could try to execute this prior to avail.
         if (_ptrWidget == null) return;
@@ -1962,7 +1983,7 @@ class HtmlFO {
                 This was performed above when initializing the L/T values.
 
         This essentially, in a hacked way, establishes a new clipping-region for the FO --
-        somthing that should have been automatically handled by Webkit I believe.
+        something that should have been automatically handled by Webkit I believe.
 
         TODO: Still need to see if *scale* is affected similarly.
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -1982,150 +2003,18 @@ class HtmlFO {
     }  //UpdateFOMetrics
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Constructor(s)
-
-    Note: after construction, createFOStructure will need called, and the UpdateFOMetrics
-    will need to be called on Widget alignment.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * **Note:** after construction, [createFOStructure] will need called, and the
+    * [updateFOMetrics] will need to be called during [Widget] alignment.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     HtmlFO() :
         _foElementRef   = new SVGElement.tag('foreignObject'),
         _htmlBodyObj    = new BodyElement(),
         _htmlDivObj     = new DivElement();
 
 } //HtmlFO
-
-
-
-/*
-███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: iFrameFO (SVG ForeignObject using an iFrame to load content)
-
-This is quite similar to the HtmlFO class, but with altered DOM structure that relies
-on an iFrame that we will set a URL from which to load content.
-
-No provisions for setting scroll-overflows were implemented (as in htmlFO), since
-the iFrome is going to do this automatically anyhow.
-███████████████████████████████████████████████████████████████████████████████████████████
-*/
-class iFrameFO {
-    //These variables obtain their value during createFOStructure
-    Widget              _ptrWidget              = null;
-    SVGElement          _ptrSVGElementForFO     = null;
-    String              _idOfSVGElementForFO    = '';
-
-    //these hold refs to our created elements, and inner content
-    SVGForeignObjectElement _foElementRef       = null;
-    Element             _iFrameObj              = null;
-
-    //accessors
-    SVGElement      get svgFO                   => _foElementRef;
-    Element         get iFrame                  => _iFrameObj;
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    CREATE THE FOLLOWING HTML STRUCTURE WITHIN THE Widget PROVIDED.
-    We create a the HTML within an SVG FOREIGN OBJECT that we place in the Widget's
-    client-region (ClientSVGElement)
-
-    <foreignObject x="10" y="10" width="100" height="150">              //NOTE: Metrics filled in later
-        <iframe>
-
-         ...load html in from a location (URL).
-            <body>
-                <div>SET-THE-innerHTML-PROPERTY-OF-THIS-DIV</div>
-            </body>
-
-        </iframe>
-    </foreignObject>
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    void createFOStructure(Widget widget) {
-        _ptrWidget              = widget;
-        _ptrSVGElementForFO     = widget.clientSVGElement;
-        _idOfSVGElementForFO    = _ptrSVGElementForFO.attributes['id'];
-
-        _foElementRef.attributes = {
-            'display'       : 'inherit',
-            'id'            : "${_idOfSVGElementForFO}_ContainerFO"
-        };
-
-        _iFrameObj.attributes = {
-            'id'            : "${_idOfSVGElementForFO}_ContainerFOiFrame",
-            'marginwidth'   : "0",
-            'marginheight'  : "0",
-            'scrolling'     : "auto"
-        };
-
-        _foElementRef.nodes.add(_iFrameObj);
-        _ptrSVGElementForFO.nodes.add(_foElementRef);
-    }
-
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Update position...
-    See HtmlFO class updateFOMetrics for important algorithmic notes regarding
-    why we compute the FO position the way we do.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    void updateFOMetrics() {
-        //trap for strange-order of calls that could try to execute this prior to avail.
-        if (_ptrWidget == null) return;
-
-        num    widgetTranslateX = _ptrWidget.translateX;
-        num    widgetTranslateY = _ptrWidget.translateY;
-
-        String L       = _ptrWidget.getClientBounds().L.toString();
-        String T       = _ptrWidget.getClientBounds().T.toString();
-
-        String adjL    = (_ptrWidget.getClientBounds().L + widgetTranslateX).toString();
-        String adjT    = (_ptrWidget.getClientBounds().T + widgetTranslateY).toString();
-        String Width   = _ptrWidget.getClientBounds().Width.toString();
-        String Height  = _ptrWidget.getClientBounds().Height.toString();
-
-        setSVGAttributes(_foElementRef, {
-            'x'             : adjL,
-            'y'             : adjT,
-            'width'         : Width,
-            'height'        : Height,
-            'transform' : 'translate(${(-widgetTranslateX)},${(-widgetTranslateY)})'
-        });
-
-
-        setElementAttributes(_iFrameObj, {
-            'x'             : L,
-            'y'             : T,
-            'width'         : Width,
-            'height'        : Height
-        });
-
-    }  //UpdateFOMetrics
-
-
-    void setURL(String urlToLoad) {
-        setElementAttributes(_iFrameObj, {
-            'src'           : "${urlToLoad}"
-        });
-    }
-
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Constructor(s)
-
-    Note: after construction, createFOStructure will need called, and the UpdateFOMetrics
-    will need to be called on Widget alignment.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    iFrameFO() :
-        _foElementRef   = new SVGElement.tag('foreignObject'),
-        _iFrameObj      = new IFrameElement();
-
-} //iFrameFO
-
 
 
 
