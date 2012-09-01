@@ -69,7 +69,7 @@ class eWidgetState {
 * **TODO**: eSides are also discussed as eDimension for alignment; perhaps rename,
 * since eSide not best for "CX", etc?
 *
-* Futhermore, at this time, the [Names] map does not include the verbose form of each enum.
+* Furthermore, at this time, the [Names] map does not include the verbose form of each enum.
 * The jury is still out on whether to include them in the map and/or remove the individual
 * variables to resolve this.  User-preferences for side-naming??  Input welcome.
 *
@@ -907,9 +907,10 @@ class WidgetBorderSide {
         //    The following works for FireFox... and, no need for <use xlink:href="../resources/standard-filters.svg#Effect_3D"/> in SVG appcontainer doc. odd.
         //    line.attributes['filter'] = 'url(../resources/standard-filters.svg#Effect_3D)';
         //
-        //    But, for Chrome browser - must define filter INSIDE our Appcontainter.svg file, and then reference as follows:
+        //    But, for Chrome browser, must define filter INSIDE our Application' container SVG Element
+        //    (see: [Application.canvas] property and [Application] class dartdoc details), and then reference as follows:
         //    line.attributes['filter'] = 'url(#Effect_3D)';
-        //    http://code.google.com/p/chromium/issues/detail?id=109212 -- BUG REPORT 2-23-2012 (I COMMENTED ON IT)
+        //    http://code.google.com/p/chromium/issues/detail?id=109212 -- BUG REPORT 2-23-2012 (I COMMENTED ON IT); Please "star" this in hopes it then gets fixed.
 
         if (eBorderStyle.EffectsLineCount[_style] < 2 ) {
             //We take time to set the display attribute only because there is a slight chance a style-change has occured where we went from line2 showing to not.
@@ -2128,159 +2129,97 @@ class iFrameFO {
 
 
 
-
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
 BEGIN: Widget Class
-
-DESCRIPTION
-This establishes the base class from which all other Widgets will be derived -- it is a
-visual SVG/Dart-based "component" with all sorts of functionality.
-
-Although objects can be instantiated directly from this Class, more specialized derived
-components will exist.  The Widget class is the basic building block for other components.
-E.g., a "slider" control is nothing more than a buildup of widgets; buttons are specialized
-widgets, etc.
-
-═══════════════════════════════════════════════════════════════════════════════════════════
-How our Widget is "Expressed" (in SVG)...
-
-Here is an outline of resulting SVG structure (see textual discussion that follows), and
-keep in mind the Z-order will first-subitem-per-level is "back-most" in that level:
-
-<g> _EntireGroupSVGElement
-    <rect> _BgRectSVGElement
-    <g> _Borders.AllBordersSVGGroupElement
-        <g> _Borders.Outer
-            <line> T1,T2 - i.e., top side primary line and secondary line
-            <line> R1,R2 - i.e., right side ...
-            <line> B1,B2 - i.e., bottom side ...
-            <line> L1,L2 - i.e., left side ...
-        <g> _Borders.Frame
-            <line> T (note: only one line per side possible for "frame" border)
-            <line> R
-            <line> B
-            <line> L
-        <g> _Borders.Inner
-            <line> T1,T2 - i.e., top side primary line and secondary line
-            <line> R1,R2 - i.e., right side ...
-            <line> B1,B2 - i.e., bottom side ...
-            <line> L1,L2 - i.e., left side ...
-    <svg> _ClientSVGElement
-        (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget1
-        (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget2
-        (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget3
-        ...
-    <rect> _SelectionRect
-
-All SVG related to a Widget is contained within a single SVG Group ("g") element
-(_EntireGroupSVGElement).
-
-SVG <g> elements have the advantage of *transform* operations on their entire contents,
-which we will use for moving (via translate transform) and potentially for zooming and
-rotating (via transform scale (x,y) and rotate(deg,cx,cy)).  Groups may also provide
-ideal targets for events.
-
-A widget is initially positioned with the X/Y values on the <g> tag, and any movement
-of the widget is reflected in the translate(x,y) value applied to that <g> tag; such
-translation can be positive or negative along either axis.
-
-Translated widget positions are cumulative/additive down through any hierarchy of widgets.
-I.e., a child-widget's position and/or translation is relative to its parent's X/Y position.
-
-Within this entire group container, we create a background rect. It will be furthest
-back in the Z-order.
-
-Next, our border group holds all sub-borders (WidgetParts of Outer, Frame, Inner) as well as the
-lines that are used to draw each individual border part.
-
-Next, we ALWAYS append an "empty" <svg> element (_ClientSVGElement) at the penultimate
-position within group for holding any (future) child Widget(s); this is done for
-consistency sake and simplicity -- such that any attempt to add child Widgets
-(or Widget subclasses) has a predictable target element available.
-
-The ClientBounds <svg> (_ClientSVGElement) will be sized and positioned within the widget
-after calculating insets from its parent <svg> bounds.  I.e., inset distance from outside
-must include (height/width adjustments) for any of border's:
-    margin, outer border, frame, inner border, padding.
-
-Any child widgets simply repeat the entire structure outlined above (i.e., this becomes
-a repetitive/recursive pattern within our SVG document).
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-PROPERTIES (introduced in this Class):
-═══════════════════════════════════════════════════════════════════════════════════════════
-General Properties
-
-- InstanceName........ (String) Rather self-descriptive.  Each object instance must carry
-with it an identifying "name" that will be UNIQUE to our entire Application.
-This name will be used, in conjunction with out Component TypeName to form unique
-SVG-element identifiers (i.e., "id" attribute values).
-
-- TypeName............ (String) As a constant value of "Widget".
-
-Many of the property-groups discussed next have inter-relationships;
-e.g., border-specifications affect the metrics (bounding-box) info, as does alignment, etc.
-
-═══════════════════════════════════════════════════════════════════════════════════════════
-Metrics-Related Properties
-
-A substantial piece of functionality related to the positioning/sizing for all Widgets
-is implmented in this base class.
-
-Coordinate system is relative to the origin of the SVG <svg> element in which
-a Widget is rendered (i.e., within the Parent's ClientBounds, or Canvas-bounds for top-level).
-
---------------------------------------------------------------------------------
-CORE PROPERTIES
-- x .................. X coordinate-part for upper-left bounds of Widget
-- y .................. Y coordinate-part for upper-left bounds of Widget
-- width .............. obv.
-- height ............. obv.
-
-Note that alignment properties can affect (override) these position/sizing values.
-
---------------------------------------------------------------------------------
-ALIGNMENT, SIZING-RULES, POSITIONING-RULES PROPERTIES
-
-Positioning and sizing a bounding box relative to container (parent) is affected
-by alignment options on controls, as alignment will "auto-move/stretch"
-Widgets as needed to honor alignment directives.
-
-- align............... Widget Alignment capabilities are rather substantial and are set via this property.
-  NOTE: See class definition notes for AlignSpec!!  Much more documentation there worth reading!
-
-- anchor
-
-- TODO: OTHERS
-
-
-═══════════════════════════════════════════════════════════════════════════════════════════
-STYLING PROPERTY
-- classesCSS.......... The Tsvg Widget uses familiar CSS-based styling.
-Instead of implementing a host of exposed properties and methods for setting various visual-aspects
-of our SVG objects, we rely on external CSS stylesheet styles to obtain values used for
-styling elements of our widgets; e.g., filling the background, setting side color(s) and width(s).
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-
-METHODS (introduced in this Class)
--
-
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-EVENTS (introduced in this Class)
-
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-EXAMPLES:
-var myWidget = new Widget('myWidgetName');
-
-
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
-
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* This establishes the base class from which all other Widgets will be derived — it is a
+* visual SVG/Dart-based "component". A substantial piece of functionality related
+* to the positioning/sizing for all Widgets is implemented in this base class, as are
+* rather robust borders, plus movement/sizing abilities as well as visual constraints
+* and event-handling abilities.
+*
+* Although objects can be instantiated directly from this Class, more specialized derived
+* components will exist.  The Widget class is the basic building block for other components.
+* E.g., a "slider" control is nothing more than a buildup of widgets; buttons are specialized
+* widgets, etc.
+*
+* ---
+* ## How our Widget is "Expressed" (in SVG)
+* ### In Outline-Form
+* Here is an outline of the resulting SVG structure (see textual discussion that follows), and
+* keep in mind the apparent *Z-order* will be: first-subitem-per-level is the
+* "back-most" (deepest) in that level:
+*
+*     <g> _EntireGroupSVGElement
+*         <rect> _BgRectSVGElement
+*         <g> _Borders.AllBordersSVGGroupElement
+*             <g> _Borders.Outer
+*                 <line> T1,T2 - i.e., top side primary line and secondary line
+*              <line> R1,R2 - i.e., right side ...
+*                 <line> B1,B2 - i.e., bottom side ...
+*                 <line> L1,L2 - i.e., left side ...
+*             <g> _Borders.Frame
+*                 <line> T (note: only one line per side possible for "frame" border)
+*                 <line> R
+*                 <line> B
+*                 <line> L
+*             <g> _Borders.Inner
+*                 <line> T1,T2 - i.e., top side primary line and secondary line
+*                 <line> R1,R2 - i.e., right side ...
+*                 <line> B1,B2 - i.e., bottom side ...
+*                 <line> L1,L2 - i.e., left side ...
+*         <svg> _ClientSVGElement
+*             (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget1
+*             (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget2
+*             (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget3
+*             ...
+*         <rect> _SelectionRect
+*
+* ### Textual discussion
+*
+* All SVG related to a Widget is contained within a single SVG Group ("g") element
+* (_EntireGroupSVGElement).
+*
+* SVG <g> elements have the advantage of *transform* operations on their entire contents,
+* which we will use for moving (via translate transform) and potentially for zooming and
+* rotating (via transform scale (x,y) and rotate(deg,cx,cy)).  Groups may also provide
+* ideal targets for events.
+*
+* A widget is initially positioned with the X/Y values on the <g> tag, and any movement
+* of the widget is reflected in the translate(x,y) value applied to that <g> tag; such
+* translation can be positive or negative along either axis.
+*
+* Translated widget positions are cumulative/additive down through any hierarchy of widgets.
+* I.e., a child-widget's position and/or translation is relative to its parent's X/Y position.
+*
+* Within this entire group container, we create a background rect. It will be furthest
+* back in the Z-order.
+*
+* Next, our border group holds all sub-borders (WidgetParts of Outer, Frame, Inner) as well as the
+* lines that are used to draw each individual border part.
+*
+* Next, we ALWAYS append an "empty" <svg> element (_ClientSVGElement) at the penultimate
+* position within group for holding any (future) child Widget(s); this is done for
+* consistency sake and simplicity -- such that any attempt to add child Widgets
+* (or Widget subclasses) has a predictable target element available.
+*
+* The ClientBounds <svg> (_ClientSVGElement) will be sized and positioned within the widget
+* after calculating insets from its parent <svg> bounds.  I.e., inset distance from outside
+* must include (height/width adjustments) for any of border's:
+*     margin, outer border, frame, inner border, padding.
+*
+* Any child widgets simply repeat the entire structure outlined above (i.e., this becomes
+* a repetitive/recursive pattern within our SVG document).
+*
+* ---
+*
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class Widget {
 
     /*
@@ -2354,7 +2293,7 @@ class Widget {
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
     This group of variables gets their values from CSS Styling applied to the Widget.
-    These are essentailly just quick-accessors
+    These are essentially just quick-accessors.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
     String              _fillColor              = 'none';   //'none', 'transparent', '' each indicate no-fill
@@ -2362,8 +2301,8 @@ class Widget {
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    If CSS styles (classesCSS) have been modified since a RePaint occured,
-    (e.g., after a beginupdate" and prior to endupdate), store that knowledge here.
+    If CSS styles (classesCSS) have been modified since a RePaint occurred,
+    (e.g., after a [beginUpdate] and prior to [endUpdate]), store that knowledge here.
     Use this info to optimize repaints by avoiding unnecessary CSS related recalcs.
     The RePaint method resets this to false at completion.
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -2528,6 +2467,10 @@ class Widget {
 
     //Closely related to _StylablePropertiesList in that this Map's VALUES contain CSS Class-Selector(s) to apply to
     //the list's TargetObject(s) with same value as this Map's KEYS. Interact with the Map via the CSSTargetsMap class methods.
+    //Widget uses familiar CSS-based styling.
+    //Instead of implementing a host of exposed properties and methods for setting various visual-aspects
+    //of our SVG objects, we rely on external CSS stylesheet styles to obtain values used for
+    //styling elements of our widgets; e.g., filling the background, setting side color(s) and width(s).
     CSSTargetsMap    classesCSS         = null;
 
     /*
@@ -2561,8 +2504,29 @@ class Widget {
     READ ONLY values will ONLY have "getters" without corresponding "setters"
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
+
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Each Widget instance must have an identifying "name" that is **unique** to the
+    * entire [Application]. This value is set in the constructor.
+    * This [instanceName] will be used, in conjunction with [typeName] to form unique
+    * SVG-element identifiers (i.e., "id" attribute values).
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     String      get instanceName            => _instanceName;
+
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Each Widget must have an appropriate (component) [typeName].
+    * This value is set in the constructor.
+    * Along with [instanceName], this value is used to form unique
+    * SVG-element identifiers (i.e., "id" attribute values).
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     String      get typeName                => _typeName;
+
     String      get hierarchyPath           => _hierarchyPath;
     bool        get hasParent               => _hasParent;
     String      get caption                 => _caption  ;
@@ -2639,7 +2603,6 @@ class Widget {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     bool        get visible                 => _visible;
-
     void        set visible(bool isVisible) {
         if (_visible == isVisible) {
             return;  //no need to do anything further if no change
@@ -2690,8 +2653,21 @@ class Widget {
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
 
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * X coordinate value in the Cartesian plane and the left-most bounds of Widget.
+    *
+    * Coordinate system is relative to the origin of the SVG <svg> element
+    * into which a Widget is rendered — i.e., within the [clientSVGElement] of the [parentWidget],
+    * or within [Application.canvas] bounds for top-level widgets residing directly on that canvas.
+    *
+    * Note that alignment ([align]) properties, [anchors] values, and [sizeRules], etc can
+    * affect (override) position / sizing values.
+    *
+    * See related properties: [y], [width], and [height].
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     num     get x       => _widgetMetrics.Margin.L;
-
     void    set x(num newX) {
         if (_x != newX) {
             _x = newX;
@@ -2703,8 +2679,14 @@ class Widget {
 
 
 
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Y coordinate value in the Cartesian plane and the Top-most bounds of Widget.
+    *
+    * *See: [x] for further discussion.*
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     num     get y       => _widgetMetrics.Margin.T;
-
     void    set y(num newY) {
         if (_y != newY) {
             _y = newY;
@@ -2716,15 +2698,14 @@ class Widget {
 
 
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Widget's Width/Height within the coordinate space defined by the widget's container
-
-    For "get" operations, return due to effect of align/anchors/sizerules/etc.
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Width of Widget.
+    *
+    * *See: [x] for further discussion.*
     */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     num     get width   => _widgetMetrics.Margin.Width;
-
     void    set width(num newWidth) {
         //Ensure our new value remains within any Sizing contraints.
         newWidth    = _sizeRules.getConstrainedWidth(newWidth);
@@ -2739,8 +2720,14 @@ class Widget {
 
 
 
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Height of Widget.
+    *
+    * *See: [x] for further discussion.*
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     num     get height  => _widgetMetrics.Margin.Height;
-
     void    set height(num newHeight) {
         //Ensure our new value remains within any Sizing contraints.
         newHeight = _sizeRules.getConstrainedHeight(newHeight);
@@ -2754,18 +2741,21 @@ class Widget {
     }
 
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Convenience method for setting all bounds at once (X,Y,Width,Height).
-    Set each metric via its "setter" to enforce any logic therein.
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Convenience method for setting all bounds-specifiers at once ([x],[y],[width],[height]).
+    * Each metric is set via its "setter" to enforce any logic therein.
+    *
+    * *See: [x] for further discussion.*
     */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     void setBounds(num newX, num newY, num newWidth, num newHeight) {
         x = newX;
         y = newY;
         width = newWidth;
         height = newHeight;
     }
+
 
     //Provide easy access to a "clientX/Y" version of a Widget's X/Y coordinates.  The window.pageX/YOffset values compensate for scroll-positin (browser scrollbar pos).
     num get xAsClientX  =>  (_hasParent ? (_parentWidget.getClientBounds().L) + _parentWidget.translateX  : 0.0)
@@ -2821,10 +2811,11 @@ class Widget {
     } //...RePaint
 
 
+    //Currently not used internally anywhere. Needed elsewhere?
     void rePaintFull() {
         _cssChangedSinceRepaint = true;
         rePaint();
-        //TODO : Remove updating from state if it exists?
+        //TODO : Remove Updating from _widgetState if it exists?
     }
 
     /*
@@ -3772,34 +3763,42 @@ class Widget {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    As compared to reAlign, moving does not incur issues of internal realignment;
-    i.e., any owned child-widgets are moved in conjunction with this widget since they belong 
-    to SVG child node(s) whose coordinate systems are *relative* to this widget's coordinate system, 
-    and during a Move operation, this widget's coordinate system remains static since we are 
-    simply using an SVG transform=translate to accomplish a visual "shift" of position 
-    of the entire Widget.
-
-    Since Move is just doing a translation of position for the entire widget and its contents, 
-    this does mean that alignment bounds will be changing for any *siblings* that align to 
-    this widget; as such, ReAlignSinglings will be necessary after a move 
-    (if any siblings exist and are aligned to one or more bounds of this Widget).
-    
-    When testing whether a the cursor is "over" our widget (in range), if event is null, 
-    we're performing a programatic move, so cursor-pos is irrelevant.  Next, we only test
-    "over" on a per-axis basis, so as to mimim most windows applications that allow moving
-    things like a scrollbar even if you slip off the trackbar a bit or whatever.
-    
-    NOTES:
-    The logic for acceptProposedX/Y checks to see if the proposed new position is within
-    bounds returned by min/max callbacks; BUT NOTICE that it also includes an examination 
-    of the shiftX/Y values.  This is done to accommodate the condition where a Widget is
-    already positioned in a location that is not within the specified min/max values, and
-    if is out of range, we allow it to move only *toward* a location that would be within
-    our constrained location.  
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Move Widget a specified distance along the X and/or Y axes according to the
+    * values in [shiftX] and [shiftY] respectively *if* allowed per any constraints imposed
+    * on this widget (see: [isMovable]).  Negative values for X/Y shift values move
+    * Widget Left and Up respectively, while positive values move Right and Down respectively.
+    * [MouseEvent] information is optionally passed in via [event] parameter.
+    *
+    * As compared to [reAlign], moving does not incur issues of *internal* realignment;
+    * i.e., any owned child-widgets are moved in conjunction with this widget since they belong
+    * to SVG child node(s) whose coordinate systems are *relative* to this widget's coordinate system,
+    * and during a [move] operation, this widget's coordinate system remains internally static
+    * since we are simply using an SVG 'transform=translate' to accomplish a visual "shift"
+    * of position of the entire Widget relative to *its* parent-SVG-container.
+    *
+    * Since [move] is just doing a *translation of position* for the entire widget and its contents,
+    * this does mean that alignment bounds will be changing for any *siblings* that align to
+    * this widget; as such, executing [reAlignSiblings] will be necessary after a move
+    * (if any siblings exist and are aligned to one or more bounds of *this* Widget). If the
+    * [move] method was called internally via [mouseMove], the call to [reAlignSiblings] has
+    * been handled already in that method.
+    *
+    * When testing whether a the cursor is "over" our widget (in range) during movement, if [event] is null,
+    * we're performing a programmatic move, so cursor-pos is irrelevant.  Next, we only test
+    * "over" on a per-axis basis, so as to mimic most Windows(tm) applications that allow moving
+    * things like a scrollbar even if you slip off the trackbar a bit or whatever.
+    *
+    * ## NOTES:
+    * The logic (in this method), for acceptProposedX/Y, checks to see if the proposed new position is within
+    * bounds returned by [posRules] min/max callbacks; notice that it *also* includes an examination
+    * of the [shiftX] and [shiftY] values.  This is done to accommodate the condition where a Widget is
+    * already positioned in a location that is not within the specified min/max values, and
+    * *if* is out of range, we allow it to move only *toward* a location that would be within
+    * our constrained location.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void move(num shiftX, num shiftY, [MouseEvent event]) {
         final num closeEnough = 50.0; //a little "slack" for a bit stickier edge during moves in case mouse gets out infront of event processor a bit
         num proposedTranslateX  = _translateX + shiftX;
@@ -3841,23 +3840,42 @@ class Widget {
     } //... move()
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    beginUpdate/endUpdate
 
-    Prevent superflous, and potentially "expensive" realignments and such during bulk
-    property-changes. User can call BeginUpdate prior to mass changes and EndUpdate after.
-
-    EndUpdate will fire recalc/repaint sequence, and can take optional parm to trigger a
-    "full" (CSS recomputations included) repaint.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Call beginUpdate prior to initiating mass property changes.
+    *
+    * beginUpdate/endUpdate exist to prevent superfluous, and potentially "expensive",
+    * realignments and visual updates such during bulk property-changes.
+    *
+    * ## See Also
+    *    * [endUpdate] — the other half of the beginUpdate/endUpdate sequence.
+    *    * [eWidgetState] — offers further insight into various states.
+    *
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void beginUpdate() {
         if ( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) return;       //already in Updating state
 
         _widgetState = _widgetState + eWidgetState.Updating;
     }
 
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Call endUpdate to signal the end of mass property changes;
+    * endUpdate will then start the visual recalc / repaint sequence and apply outstanding
+    * changes.
+    *
+    * beginUpdate/endUpdate exist to prevent superfluous, and potentially "expensive",
+    * realignments and visual updates such during bulk property-changes.
+    *
+    * ## See Also
+    *    * [beginUpdate] — the other half of the beginUpdate/endUpdate sequence.
+    *    * [eWidgetState] — offers further insight into various states.
+    *
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void endUpdate() {
         if ( !( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) ) return;  //already not in Updating state
 
@@ -3869,17 +3887,28 @@ class Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Keep track of owned/child widgets (child widget calls this method on parent, passing self)
+    The following are various helper-functions for accessing Widget-List information that
+    would otherwise be private.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+
+    /**
+    * Quick access to the value of private _widgetsList.length;
     */
     int getWidgetCount() {
         return _widgetsList.length;
     }
 
+    /**
+    * Return the [Widget] reference stored in private _widgetsList at [indexOfObjectToGet].
+    */
     Widget getWidgetByIndex(int indexOfObjectToGet) {
         return _widgetsList[indexOfObjectToGet];
     }
 
+    /**
+    * Return the index of the [widgetToLocateInList] stored in private _widgetsList.
+    */
     int indexOfWidget(Widget widgetToLocateInList) {
         return _widgetsList.indexOf(widgetToLocateInList);
     }
@@ -4220,7 +4249,7 @@ class Widget {
             //set member property before AddWidget, or InstanceName will be non-existence during add!
             _applicationObject.addWidget(this);
         }
-        catch (var e) {
+        catch (e) {
             if (e is UniqueConstraintException) {
                 throw new Exception("${e} \n Attempt to create new Widget instance (of Type: ${_typeName} with duplicate InstanceName: ${_instanceName})");
             }
@@ -4300,4 +4329,14 @@ class Widget {
         default:
             mGroupElementRef.attributes['cursor'] = 'default';
     }
+
+NOTES to incorp into docs...
+Positioning and sizing a bounding box relative to container (parent) is affected
+by alignment options on controls, as alignment will "auto-move/stretch"
+Widgets as needed to honor alignment directives.
+
+- align: Widget Alignment capabilities are rather substantial and are set via this property.
+
+
 */
+
