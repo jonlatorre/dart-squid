@@ -9,7 +9,7 @@ SVG (Scalable Vector Graphics) is used for the UI rendering. CSS is (indirectly)
 The longer-term objectives are to develop both a RAD component set and an IDE that will make creating web-applications very similar to writing Delphi desktop applications.  In fact, if you are familiar with Delphi (VCL), the component structure, hierarch, and implementation paradigm should be somewhat familiar and the Dart language provides very similar programming capabilities.
 
 ## Status: Alpha ##
-Project is currently in the **alpha** stage of development, but quite functional.
+Project is currently in the **alpha** stage of development, but quite functional and rather well documented.
 Currently, these widgets only work well within Dartium (DART) or Chrome (JS via dart2js) browsers. Other browsers are not a current priority, and may never be.
 
 These components currently serve as a proof-of-concept that explores the viability of relying on SVG for a visual widget set.  Due to outstanding issues with browser bugs (like proper SVG region-repaints in Webkit), there are limitations with what is possible.
@@ -19,7 +19,7 @@ These components currently serve as a proof-of-concept that explores the viabili
 [Online dart-squid Samples](http://mv4t.com/dart-squid/samples/samples-index.html) : I will try to keep this sample up-to-date as any substantial changes to the features/functionality change.
 
 ### Features and Functionality ###
-IN PROGRESS - SEE Documentation, single-file PDF for more
+For now, see Documentation links below, (single-file PDF with more feature discussion coming soon).
 
 Quick Overview:
 * **Nesting of widgets** (visual and true object-hierarchical); rather like Delphi panels and controls.
@@ -34,8 +34,8 @@ Effects via SVG-Filters are possible.)
 
 ## Documentation ##
 * Source Code is commented in some detail
-* Should be here soon: [Single-File PDF Intro, Discussion, etc.](https://raw.github.com/IntersoftDev/dart-squid/master/docs/dart-squid-discussion.pdf)
-* API Reference -- IN PROGRESS - Need to create dartdocs
+* Should be here soon: [Single-File PDF Intro, Discussion, etc.](.)
+* [API Reference (aka dartdocs)] (http://mv4t.com/dart-squid/docs/dart_squid.html)
 * [Wiki Documentation](https://github.com/IntersoftDev/dart-squid/wiki/_pages)
 
 
