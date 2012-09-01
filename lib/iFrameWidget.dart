@@ -167,17 +167,18 @@ class iFrameWidget extends Widget {
     iFrameFO    get embeddedFO  => _embeddedFO;     //TODO: Expose all, or just part?
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TODO: These were needed by TextWidget; not sure if truly needed in iFrameWidget yet.
-    Override parent hide() method.
-    Due to an apparent flaw in Webkit-based browsers, an "Aw, Snap!" error occurs if we
-    do not *first* set the embedded FO to display:none (prior to setting the outer
-    SVG G element that contains the FO to display:none).  Clearly the browser should
-    automatically do this if it were handling hierarchically-contained DOM-object property-
-    setting and painting correctly.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Override [super]'s [hide] method.
+    * Due to an apparent flaw in Webkit-based browsers, an "Aw, Snap!" error occurs if we
+    * do not *first* set the embedded FO to display:none (prior to setting the outer
+    * SVG G element that contains the FO to display:none).  Clearly the browser should
+    * automatically do this if it were handling hierarchically-contained DOM-object property-
+    * setting and painting correctly.
+    *
+    * TODO: needed by TextWidget; not sure if truly needed in iFrameWidget yet. Confirm.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void hide() {
         _embeddedFO.svgFO.attributes['display'] = 'none';
 
@@ -186,13 +187,15 @@ class iFrameWidget extends Widget {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Override parent show() method.
-    See comment for hide() above; same issue being addressed here, but only from standpoint
-    of re-displaying the embedded FO that we have otherwise set "off" during hide.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Override [super]'s [show] method.
+    * See comment for [hide]; same issue being addressed here, but only from standpoint
+    * of re-displaying the embedded FO that we have otherwise set "off" during hide.
+    *
+    * TODO: needed by TextWidget; not sure if truly needed in iFrameWidget yet. Confirm.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void show() {
         _embeddedFO.svgFO.attributes['display'] = 'inherit';
 
@@ -200,29 +203,33 @@ class iFrameWidget extends Widget {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Override parent method.
-    When parent Widget is realigned, we need to update position of our FO
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Override [super]'s (placeholder) [extendedRealign] method.
+    * When parent Widget is realigned, we need to update position of our FO.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void extendedRealign() {
         _embeddedFO.updateFOMetrics();
     }
 
 
+    ///Set the URL used as source-HTML for to populate embedded [iFrameFO] contents.
     void setURL(String url) {
         _embeddedFO.setURL(url);
     }
+
+
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     CONSTRUCTOR
 
-    Parameters: see Widget's (base class) constructor
+    Parameters: see [Widget] (base class) constructor
 
-    Consider whether we need to extend Super's Destroy() ... cleanup any DOM references, etc.
+    Consider whether we need to extend Super's [destroy] ... cleanup any DOM references, etc.
     Currently, nothing created here that is not removed by base Widget.
+    TODO: DOCUMENT
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     iFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'iFrame', String initialURL='']) :

@@ -36,6 +36,7 @@ class TextWidget extends Widget {
     HtmlFO  _embeddedFO                 = null;
     HtmlFO  get embeddedFO              => _embeddedFO;
 
+    ///HTML that will appear within the embedded [HtmlFO.htmlDiv] to form our "text".
     String  get caption                 => _caption;
     void    set caption(String newCaption) {
         if (_caption == newCaption ) return;
@@ -52,16 +53,16 @@ class TextWidget extends Widget {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Override parent hide() method.
-    Due to an apparent flaw in Webkit-based browsers, an "Aw, Snap!" error occurs if we
-    do not *first* set the embedded FO to display:none (prior to setting the outer
-    SVG G element that contains the FO to display:none).  Clearly the browser should
-    automatically do this if it were handling hierarchically-contained DOM-object property-
-    setting and painting correctly.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Override [super]'s [hide] method.
+    * Due to an apparent flaw in Webkit-based browsers, an "Aw, Snap!" error occurs if we
+    * do not *first* set the embedded FO to display:none (prior to setting the outer
+    * SVG G element that contains the FO to display:none).  Clearly the browser should
+    * automatically do this if it were handling hierarchically-contained DOM-object property-
+    * setting and painting correctly.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void hide() {
         _embeddedFO.svgFO.attributes['display'] = 'none';
 
@@ -70,13 +71,13 @@ class TextWidget extends Widget {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Override parent show() method.
-    See comment for hide() above; same issue being addressed here, but only from standpoint
-    of re-displaying the embedded FO that we have otherwise set "off" during hide.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Override [super]'s [show] method.
+    * See comment for [hide]; same issue being addressed here, but only from standpoint
+    * of re-displaying the embedded FO that we have otherwise set "off" during hide.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void show() {
         _embeddedFO.svgFO.attributes['display'] = 'inherit';
 
@@ -90,12 +91,12 @@ class TextWidget extends Widget {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Override parent method.
-    When parent Widget is realigned, we need to update position of our FO
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Override [super]'s (placeholder) [extendedRealign] method.
+    * When parent Widget is realigned, we need to update position of our FO.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void extendedRealign() {
         _embeddedFO.updateFOMetrics();
         //print('extendedRealign fired; instance: ${instanceName}');
@@ -107,10 +108,11 @@ class TextWidget extends Widget {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     CONSTRUCTOR
 
-    Parameters: see Widget's (base class) constructor
+    Parameters: see [Widget] (base class) constructor
 
-    Consider whether we need to extend Super's Destroy() ... cleanup any DOM references, etc.
+    Consider whether we need to extend Super's [destroy] ... cleanup any DOM references, etc.
     Currently, nothing created here that is not removed by base Widget.
+    TODO: DOCUMENT
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     TextWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Text', String initialCaption='']) :

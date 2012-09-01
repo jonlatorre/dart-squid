@@ -66,7 +66,7 @@ class eWidgetState {
 *
 * ---
 * ## Notational Caveats (currently):
-* **TODO**: eSides are also discussed as eDimension for alignment; perhaps rename,
+* **TODO**: a Sides may also be discussed as Dimension for alignment; perhaps rename,
 * since eSide not best for "CX", etc?
 *
 * Furthermore, at this time, the [Names] map does not include the verbose form of each enum.
@@ -83,7 +83,7 @@ class eSides {
     static final int Right    = 2;
     static final int Bottom   = 4;
     static final int Left     = 8;
-    static final int All      = 15;  //not valid for eDimension usage (i.e., alignTo dimension)
+    static final int All      = 15;  //not valid for Dimension usage (i.e., alignTo dimension)
     static final int CenterX  = 16;
     static final int CenterY  = 32;
     static final int T        = 1;
@@ -536,7 +536,7 @@ class WidgetMetrics {
 class AlignSpec {
     Widget          _objToAlignTo   = null;
     int             _part           = eWidgetPart.Margin;    //enumeration eWidgetPart (int); by default, Widget-boundary is the part being aligned to something
-    int             _dimension      = eSides.None;           //enumeration eSides (int); the Side(of objToAlignTo if not null, or container side otherwise) to which we are aligning was eDimension.
+    int             _dimension      = eSides.None;           //enumeration eSides (int); the Side(of objToAlignTo if not null, or container side otherwise) to which we are aligning was Dimension.
     num             dimensionValue  = 0.0;
     ChangeHandler   changeHandler;
 
@@ -592,7 +592,8 @@ class AlignSpec {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
 * This class simply wraps up one [AlignSpec] object per align-able Dimension available
-* to each [Widget].
+* to each [Widget].  The [Widget] exposes this as [Widget.align].  There should not be
+* any need to instantiate this class outside of the Widget.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetAlignment {
@@ -2049,7 +2050,7 @@ BEGIN: Widget Class
 *         <g> _Borders.AllBordersSVGGroupElement
 *             <g> _Borders.Outer
 *                 <line> T1,T2 - i.e., top side primary line and secondary line
-*              <line> R1,R2 - i.e., right side ...
+*                 <line> R1,R2 - i.e., right side ...
 *                 <line> B1,B2 - i.e., bottom side ...
 *                 <line> L1,L2 - i.e., left side ...
 *             <g> _Borders.Frame
@@ -2416,8 +2417,20 @@ class Widget {
     //═══════════════════════════════════════════════════════════════════════════════════════
     String      get typeName                => _typeName;
 
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * [hierarchyPath] of the [parentWidget] + '_' + this widget's [instanceName].
+    *
+    * So, as widget-nesting-depth grows, this string grows to include all instanceNames
+    * appearing (hierarchically) "above" it.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     String      get hierarchyPath           => _hierarchyPath;
+
+    ///When [false] this Widget instance resides directly on our [Application.canvas], otherwise it is a child of [parentWidget]
     bool        get hasParent               => _hasParent;
+
     String      get caption                 => _caption  ;
     bool        get enabled                 => _enabled  ;
     bool        get showHint                => _showHint ;
@@ -2485,12 +2498,11 @@ class Widget {
     }
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    "visible" propety is essentially an alias for testing the state of, or executing,
-    show()/hide().
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Essentially an alias for testing the state of, or executing, [show] / [hide].
     */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     bool        get visible                 => _visible;
     void        set visible(bool isVisible) {
         if (_visible == isVisible) {
@@ -2502,7 +2514,11 @@ class Widget {
         if (_visible) {show();} else {hide();}
     }
 
-    //Convenience Method with obvious intent
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Convenience Method with obvious intent.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     void toggleVisibility() {
         if (_visible) {hide();} else {show();}
     }
@@ -2515,19 +2531,34 @@ class Widget {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Return a reference to Widget's Alignment directives.
-    Much widget functionality relies on these values to determine relative positioning
-    of widgets to other widgets and/or the window-bounds, etc.
-    Setting of Align values is done via dot sub-properties (align-parts: sides/centers)
-
-    NOTE: Call BeginUpdate/EndUpdate before changing multiple alignment properties! (to prevent
-    excessive thrashing of recalcs/paints/etc).
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Return a reference to Widget's Alignment directives.
+    * Much widget functionality relies on these values to determine relative positioning
+    * of widgets to other widgets and/or the window-bounds, etc.
+    *
+    * Setting of values is done via [align] sub-properties, each of which is of type
+    * [AlignSpec].  E.g., `myWidget.align.T.dimension = eSides.T;` to indicate that the top
+    * of a Widget is to be aligned to the top of its [parentWidget] during the [reAlign]
+    * procedure.
+    *
+    * **Recommendation:** Implement a [beginUpdate] ... [endUpdate] block around code that
+    * performs changes of multiple alignment properties
+    * (to prevent excessive recalculations, repaints, etc).
     */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     WidgetAlignment     get align           => _align;
 
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Return a reference to Widget's Metrics information. This accessor exists primarily
+    * for obtaining positioning/bounds information about this Widget, via the various
+    * [ObjectBounds] objects contained within [WidgetMetrics], by other widgets or external
+    * code that require such information perform alignment tasks or such.
+    * E.g., `myWidget.metrics.Margin.L` will return the widget's left margin position.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     WidgetMetrics       get metrics         => _widgetMetrics;
 
 
@@ -2646,9 +2677,21 @@ class Widget {
     }
 
 
-    //Provide easy access to a "clientX/Y" version of a Widget's X/Y coordinates.  The window.pageX/YOffset values compensate for scroll-positin (browser scrollbar pos).
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Provide easy access to a "clientX" version of a Widget's [x] coordinates.
+    * The window.pageXOffset values compensate for scroll-position (browser horizontal scrollbar pos).
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     num get xAsClientX  =>  (_hasParent ? (_parentWidget.getClientBounds().L) + _parentWidget.translateX  : 0.0)
                             + _x + _translateX + _applicationObject.marginLeft    - window.pageXOffset;
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Provide easy access to a "clientY" version of a Widget's [y] coordinates.
+    * The window.pageYOffset values compensate for scroll-position (browser vertical scrollbar pos).
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     num get yAsClientY  =>  (_hasParent ? (_parentWidget.getClientBounds().T) + _parentWidget.translateY  : 0.0)
                             + _y + _translateY + _applicationObject.marginTop     - window.pageYOffset;
 
@@ -2679,13 +2722,17 @@ class Widget {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Centralize the "repaint" of the Widget.
-    We always need to perform re-alignment, but we may not always need to do the
-    FULL re-acquire of CSS values and style-application first.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Centralizes the "repainting" of the Widget.  Includes logic to bypass repaints while
+    * inside a [beginUpdate] ... [endUpdate] block.  Also only re-calculates any CSS-sourced
+    * visual properties if a CSS change has been detected since last [rePaint] operation.
+    *
+    * ### See Also
+    *   * [rePaintFull]
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void rePaint() {
         if ( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) return;  //bypass during mass-updates
 
@@ -2700,7 +2747,15 @@ class Widget {
     } //...RePaint
 
 
-    //Currently not used internally anywhere. Needed elsewhere?
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Force the re-calculation of any CSS-sourced visual properties, followed by a
+    * "repainting" of the Widget. Currently not used internally anywhere.
+    *
+    * ### See Also
+    *   * [rePaint]
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void rePaintFull() {
         _cssChangedSinceRepaint = true;
         rePaint();
@@ -3241,15 +3296,21 @@ class Widget {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    If a widget's position has changed by way of movement, and thus altered the position of
-    the bounds of the Widget, any sibling widgets may have their bounds and/or position
-    affected IF they aligned to this widget's bounds.
-
-    This method finds any affected siblings and triggers realignment for them as needed.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * If a widget's position has changed by way of movement, and thus altered the position of
+    * the bounds of the Widget, any sibling widgets may have their bounds and/or position
+    * affected *if* they aligned to this widget's bounds.
+    *
+    * This method finds any affected siblings and triggers realignment for them as needed.
+    *
+    * TODO: optimization required
+    *
+    * ### See Also
+    *   * [align]
+    *   * [reAlign]
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void reAlignSiblings() {
         //print('${instanceName} reAlignSiblings');  //TODO: TRACING
 
@@ -3285,16 +3346,21 @@ class Widget {
 
 
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    If a widget's metrics are changing by way of setting a property that could alter the bounds
-    of the Widget, any owned child widgets may have their bounds and/or position affected.
-    (e.g., X, Y, Width, Height, Align, Anchors)
-
-    Any realignment can trigger child-realignment herein; we call this same method on
-    owned-widgets accordingly.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * If a widget's [metrics] are changing by way of setting a property that could alter any
+    * [ObjectBounds] values, any "owned" (child widgets) may have their bounds and/or
+    * position affected. E.g., changes to [x], [y], [width], [height], [align], and [anchors]
+    * can all have an effect on alignment and positioning.
+    *
+    * This method is recursive such that it traverses the owned-widgets hierarchy in order
+    * to properly realign them all.
+    *
+    * ### See Also
+    *   * [align]
+    *   * [reAlignSiblings]
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void reAlign([int currentDepth = 0]) {
 
         //prevent superfluous recalculations if we are in a bulk-update state
