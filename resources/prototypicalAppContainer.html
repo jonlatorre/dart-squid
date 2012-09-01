@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+
+    <?xml-stylesheet name="CSSLINK" type="text/css" href="dart-squid-defaults.css" ?>
+    <link type="text/css" rel="stylesheet" media="all" href="dart-squid-defaults.css">
+
+</head>
+<body style="margin:10px;">
+    <div id="headline">PROTOTYPICAL dart-squid APPLICATION CONTAINER HTML</div>
+    <!--
+    ===========================================================================================
+    SEE APPLICATION OBJECT (dartdoc) DOCUMENTATION FOR DISCUSSION ABOUT SVG PROPERTIES
+    ===========================================================================================
+     -->
+    <svg    xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            id="prototypical_AppContainer"
+            width="3000"
+            height="2000"
+            xml:space="preserve"
+            >
+
+        <defs id="dartsquid-StandardDefs">
+            <!-- TODO: in Widget Border/bgRect drawing (prop-setting) methods, we want to reference the appropriate filter (in external file), but this does not work in Chrome.  -->
+            <!-- As of Chrome v18+, no way to bring these definitions in from external file by url(file#def-name) reference -->
+
+            <!--TODO: The following can be used to implement a gradient; need to create a gradient-overlay-rect on each Widget and apply this (or variation of); decide which portion(s) of widget would get gradient-->
+            <!-- 'fill' : 'url(#Effect_Gradient1)',-->
+            <linearGradient id="Effect_Gradient1" gradientUnits="objectBoundingBox" x2="0" y2="1">
+                <stop stop-color="white" offset="0"/>
+                <stop stop-color="white" stop-opacity="0" offset="1"/>
+            </linearGradient>
+
+            <!--Our default "3D" look that places shadows around objects and makes surfaces appear more "rounded.
+                Note that applying this to an element with a "Fill" will lighten that fill-color; also, this will
+                propagate down through hierarchy of owned-elements. -->
+            <filter id="Effect_3D">
+                <!--stdDeviation of 1 yields just outer dark shadow effect; 2 - medium shadow; ...4 = close to Win7/Aero shadows-->
+                <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+                <feOffset in="blur" dx="4" dy="4" result="offsetBlur"/>
+                <!--increasing the lighting-color brightness will makes surfaces more reflective/lighter, and
+                    increasing the specularConstant makes for a more reflectively-rounded surface (more gradation in colors) -->
+                <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".25"
+                                    specularExponent="60" lighting-color="#cccccc"
+                                    result="specOut">
+                    <fePointLight x="-5000" y="-10000" z="20000"/>
+                </feSpecularLighting>
+                <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut"/>
+                <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic"
+                             k1="0" k2="1" k3="1" k4="0" result="litPaint"/>
+                <feMerge>
+                    <feMergeNode in="offsetBlur"/>
+                    <feMergeNode in="litPaint"/>
+                </feMerge>
+            </filter>
+        </defs>
+
+        <!-- PLACEHOLDER FOR OUR APPLICATION CANVAS; the ID of this SVG object is required by Application (class) constructor -->
+        <svg id="dartsquidAppCanvas" width="100%" height="100%">
+        </svg>
+    </svg>
+    <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+    <script type="application/dart" src="prototypicalApp.dart"/>
+</body>
+</html>
