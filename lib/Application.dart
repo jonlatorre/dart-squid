@@ -11,11 +11,92 @@
 
 //███████████████████████████████████████████████████████████████████████████████████████
 /**
-* This is the global application-wide class that should be instantiated once per each
-* SVG applications using our Widgets and components.
+* This is the global application-wide class that must be instantiated once per each
+* application using our [Widget] components.
+* This class will maintain important references to our "Canvas" as well as maintain a
+* list of widgets, "selected" widgets, standard fonts, settings, and more.
 *
-* This class will maintain important references to our "Canvas" as well as lists of widgets
-* in use, standard fonts, settings, and more.
+* Although browser-based applications built using this framework can have as their
+* *outermost container* either an HTML page or an SVG document, any HTML version
+* is simply a "wrapped" version of the SVG doc variety.
+*
+* The outermost SVG document (wrapped or not), will contain within it another (nested)
+* SVG document that is used as our Application [canvas]. Though all Widgets will
+* be created within the [canvas] SVG, the outermost SVG will specify the overall
+* dimension-constraints placed upon our canvas.
+*
+* **Note:** some prototypical examples of valid SVG and HTML container documents
+* exist in the dart-squid project source-code 'resources' directory. The following
+* sections provide some insight into what properties are used and what values you
+* may wish to use within your application's SVG container.
+*
+* # (outermost) SVG Container Notes
+* ## Overview
+* The outermost SVG element defines the default coordinate system used within and
+* establishes, by default, a 1:1 relation with pixels; i.e., an SVG dimensional-unit
+* of "1" = "1px" at this point in time.
+* An initial viewport coordinate system and an initial user coordinate system exist such
+* that the two coordinates systems are identical. The origin in this coordinate system
+* places 0,0 at the upper-left corner and all (visible / on-screen) content is rendered
+* to the right and below that origin.
+*
+* Had a 'viewBox' attribute been specified on the SVG element this 1:1
+* relation would not necessarily be the in effect. E.g., including the following directive
+* could affect that relation: `viewBox="0 0 800 600"`.
+* If a viewBox is specified, it could lead to clipping the visible region of the
+* SVG document while also forcing all content to scale into this viewBox as
+* browser-window size is changed (try it; you'll see what is meant here).
+*
+* ## SVG Element Dimensions Notes:
+*
+* dart-squid Applications can be enabled within SVG documents that implement *fixed-size
+* width/height* specifications or *variable/proportional-sized* width/height specs
+* (e.g., "100%" for width/height values).
+*
+* *See note below about browser issues with variable sized SVG docs.*
+*
+* ### Fixed-Value Dimensions
+* Values are specified (in number of pixels) within the opening `<svg` tag
+* and look like this, e.g.:
+*
+*     width="3000"
+*     height="2000"
+*
+* Use this approach when you want your application "canvas" size to remain constant
+* and/or include space that would otherwise be larger than the maximum
+* (visible on screen at one time) browser-window-size.  This allows the canvas to extend
+* (right and down) and form canvas region that is accessible by scrolling side-to-side and
+* up/down.  Think of it as having a sheet of paper larger than you can work with at once
+* on your desktop, and you can shift that paper around as needed to view it in its entirety.
+*
+* TODO: an enhancement may be introduced to allow programmatic changes of these values at create/run time.
+*
+* ### Variable/Proportional-Value Dimensions
+* (Note: SVG docs using this approach are presenting rendering challenges currently)
+* Values are specified (in percentages; percent of viewable screen area) within the opening `<svg` tag
+* and look like this, e.g.:
+*
+*     width="100%"
+*     height="100%"
+*
+* Use this approach when you want your application "canvas" to automatically
+* stretch and shrink when the visible browser-window space is increased or decreased as
+* a result of the user resizing the browser application.  Keep in mind that if this
+* approach is used, it is possible to have Widgets that are no longer (visually)
+* accessible if they were created at a location that, after shrinking the visible
+* window region, is no longer visible (at least, that is, until window is again
+* resized to include that formerly-visible area).
+*
+*
+* ### Browser Issue with Percent-Based Sizing (in non-HTML-wrapped-SVG's)
+* (research needed) For some reason, SVG Width/Height 100%-values are *not re-adjusting down-through
+* svg tree* (SVG element hierarchy) during `canvas.reSize()` event and subsequent painting of widgets,
+* but only when the SVG document is a standalone-SVG (not "wrapped" by and HTML file).
+* This effects repaint of any widgets that were aligned to Right and/or Bottom of Canvas
+* and then Moved (with mouse)... perhaps others too; when canvas is resized
+* by reducing width/height of Browser's window,
+* the new canvas bounds (smaller) would chop off parts of embedded child widgets
+* (contained in their own SVG) in the formerly aligned-to-canvas-bounds parent widgets.
 *
 * ---
 * ## See Also
@@ -23,7 +104,6 @@
 * [isInstanceNameUnique], [indexOfInstanceName], and [indexOfTag].
 *  ---
 */
-
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 //TODO: POTENTIAL DESIGN THOUGHTS / IDEAS / CONSIDERATIONS
 //
@@ -129,11 +209,18 @@ class Application {
     final int   hintPause       = 1000;
 
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * The SVG object (of element type 'svg') that will act as an application's "canvas"
     * onto which all widgets will be placed directly or indirectly via hierarchical
     * nesting within other widgets residing directly on this "canvas" element.
+    *
+    * ## SVG Notes
+    * See the [Application] object top-level documentation for a discussion of SVG document
+    * construction to properly implement this canvas item placeholder in your application's
+    * container HTML or SVG doc.
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     SVGSVGElement get canvas    => _canvas;
 
 
@@ -618,13 +705,13 @@ class Application {
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    //The following are various helper-functions for accessing Widget-List information that
-    //would otherwise be private.
+    // The following are various helper-functions for accessing Widget-List information that
+    // would otherwise be private; remember that directly accessing that list is discouraged
+    // as it may be made completely private in the future. (i.e., public "getter" may go away)
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 
     /**
-    * Quick access to the value of [widgetsList.length]; remember that directly accessing
-    * that list is discouraged as it may be made private in the future.
+    * Quick access to the value of [widgetsList.length]
     */
     int getWidgetCount() {
         return _widgetsList.length;
