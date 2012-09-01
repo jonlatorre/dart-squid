@@ -11,50 +11,17 @@
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: TextWidget Class
-
-DESCRIPTION
-Start with a Widget, embed an HtmlFO object, interact with that FO like it is a Text
-element.
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-PROPERTIES
-(inherited)
-- see Widget
-
-(introduced/overridden in this Class)
-
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-METHODS
-(inherited)
-- N/A :
-
-(introduced/overridden in this Class)
--
-
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-EVENTS
-(inherited)
-- see Widget
-
-(introduced/overridden in this Class)
--
-
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-EXAMPLES:
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-DESIGN CONSIDERATIONS AND NOTES FOLLOW...
-These are just some things being considered yet as functionality is implemented.
-
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
-
+BEGIN: iFrameWidget Class
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* An [iFrameWidget] is just a [Widget] that contains an embedded [iFrameFO] object
+* (which is a construct using an iFrame inside a SVG foreignObject). This class allows
+* interaction with that iFrameFO by setting the URL (via [setURL] method) that will
+* be used to retrieve content from and populate the iFrame within.
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class iFrameWidget extends Widget {
 
     /*
@@ -73,7 +40,7 @@ class iFrameWidget extends Widget {
     Due to an apparent flaw in Webkit-based browsers, an "Aw, Snap!" error occurs if we
     do not *first* set the embedded FO to display:none (prior to setting the outer
     SVG G element that contains the FO to display:none).  Clearly the browser should
-    automatcially do this if it were handling hierarchically-contained DOM-object property-
+    automatically do this if it were handling hierarchically-contained DOM-object property-
     setting and painting correctly.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
