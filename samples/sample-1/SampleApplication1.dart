@@ -13,7 +13,7 @@
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 NOTE: For our own libraries, must specify .dart extension.
-Furthermore, we prefix all our library references within this test applicatin to avoid
+Furthermore, we prefix all our library references within this test application to avoid
 any potential namespace collisions.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
@@ -70,7 +70,7 @@ main() {
     Misc required constants, objects and such...
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    final String applicationCanvasElementID = '#TsvgAppCanvas';
+    final String applicationCanvasElementID = '#dartsquidAppCanvas';
     final String applicationName            = 'mySampleApplication';
 
     //Use this to initialize our "menu buttons" at top of page
@@ -386,7 +386,9 @@ main() {
         testWidget.align.B.dimension = Tsvg.eSides.B;
 
         //testWidget.onAlign = btnMenuOnAlign;
-        testWidget.on.show = testWidgetOnShowEventCallback(testWidget); //TODO: Works as desired, but DART EDITOR (0.1.0.201207231114, Build 9822) throws warning: "expression does not yield a value"
+
+        //TODO: Next line works as desired, but DART EDITOR (through build 11397 so far) throws warning: "expression does not yield a value"
+        testWidget.on.show = testWidgetOnShowEventCallback(testWidget);
         testWidget.show();
 
         //test incorrect callback signature traps...
@@ -448,14 +450,13 @@ main() {
         testWidget3.setBounds(100,100,100,100);
         testWidget3.show();
 
-        //test "costly change"...
+        //test "costly change" inside begin/endUpdate block...
         testWidget3.beginUpdate();
         testWidget3.setBounds(120,120,110,150);
         testWidget3.align.CX.dimension = Tsvg.eSides.R;
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill');
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder');      //Test "outset" ==> "raised" (virtual border style)
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder');  //Test "outset" ==> "raised" (virtual border style)
-        //print('testWidget3.classesCSS[Widget_BorderOuter]' + testWidget3.classesCSS['Widget_BorderOuter']);
         testWidget3.isMovable.x = true;
         testWidget3.isMovable.y = true;
         testWidget3.isSizable.x = true;
@@ -471,8 +472,6 @@ main() {
 //        testWidget3.PosRules.MinX = (Tsvg.MouseNotifyEventObject objInitiator) {return textButton.x; };  //TODO: Test more substantial ideas..
         testWidget3.endUpdate();
 
-//        testWidget3.Anchors = Tsvg.eSides.R;
-//        testWidget3.Align.L.Dimension = Tsvg.eSides.L;
 
         Tsvg.logToConsole([
             'LINE1',
@@ -481,6 +480,16 @@ main() {
         ]);
     }
 
+
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    TODO: Additional Tests / Examples:
+        + more Anchor examples
+        + more alignment hooks - using callbacks
+        + further constraint examples
+        + Better visual info about what constraints are in effect for various Widgets
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
 
 
 
@@ -498,10 +507,10 @@ main() {
         menuButtonsContainer.sizeRules.minWidth = 500;
 
         //Style it
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base', 'MenuButtonsContainer');
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame', 'MenuButtonsContainerFrame');
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter', 'OutsetBorder');
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner', 'GrooveBorder');
+        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',         'MenuButtonsContainer');
+        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',        'MenuButtonsContainerFrame');
+        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter',  'OutsetBorder');
+        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner',  'GrooveBorder');
         menuButtonsContainer.show();
 
         Tsvg.logToConsole([
@@ -553,7 +562,7 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Textwidget being used as a "button" with a click event.
+    TextWidget being used as a "button" with a click event.
     This particular one tests truncation of overflow text and also uses callback that
     deletes another widget.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -581,7 +590,9 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Textwidget with foreign object...
+    TextWidget (which uses internal foreign object (FO) for text/HTML display).
+    This particular test is for loading the FO with content returned via XHR
+    if we are running this sample on local server.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createWebPageInWidget() {
@@ -623,6 +634,13 @@ main() {
     }
 
 
+
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    TextWidget (which uses internal foreign object (FO) for text/HTML display).
+    This example simply displays some static HTML content (notes about dart-squid).
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
     void createNotesWidget() {
         notesPage  = new Tsvg.TextWidget('WidgetNotesWebPage', globalApplicationObject);
         notesPage.setBounds(100,75,650,550);
@@ -683,6 +701,14 @@ main() {
 
 
 
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    TextWidget (which uses internal foreign object (FO) for text/HTML display).
+    This example exists to keep tabs on the outstanding issues with Chrome/Dartium/Webkit
+    SVG-rendering-issues (within FOs) when page-zoom is other than 100%.  HTML controls
+    and repaint-region (in general) is trashed on non-100%-zooms currently.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
     void createFoRepaintTestWidget() {
         foRepaintTests  = new Tsvg.TextWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'test');
         foRepaintTests.tag      = 'FOR1';
@@ -740,7 +766,9 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Textwidget with foreign object...
+    iFrameWidget example that loads its content from a URL; in this case, display
+    our company home-page to demonstrate the fully-functional and navigable web-page
+    embedded inside a sizable, movable widget.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createWebPageIFrameWidget() {
@@ -767,7 +795,7 @@ main() {
 
     /*
     ███████████████████████████████████████████████████████████████████████████████████████████
-    MAIN APPLICATION EXECUTION STARTS HERE...
+    APPLICATION EXECUTION STARTS HERE UPON APPLICATION-READY CALLBACK...
     (this apparent over-complexity only exists so we can have "align to window-edges"
     functionality available for our widgets)
 
@@ -775,14 +803,14 @@ main() {
         main() will create the Widget's Application-object instance.
         The application object constructor takes a callback to transfer execution when it is
         "ready" (due to Dart not completing pending Future(s) prior to main() finishing
-        otherwise).  The application object transfers back here to our RunApplication(),
+        otherwise).  The application object transfers back here to our runApplication(),
         where all the real work is done.
 
-    **the ONLY code that can run outside of RunApplication is stuff that is NOT DEPENDENT on
+    **the ONLY code that can run outside of runApplication is stuff that is NOT DEPENDENT on
     our Widgets/application objects.
 
     ***one potential (slim chance?) issue would be any application resize events that fire
-    during the processing of the method within RunApplication, since presumably the future(s)
+    during the processing of the method within runApplication, since presumably the future(s)
     in the applcation object would cause unpredictable widget-alignments to occur.
     ███████████████████████████████████████████████████████████████████████████████████████████
     */
@@ -836,11 +864,12 @@ main() {
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    Anything from here forward in main() must be safe to execute outside of RunApplication
+    MAIN() EXECUTION STARTS HERE
+    Anything from here forward in main() must be safe to execute outside of runApplication
 
     First, CREATE GLOBALLY-AVAILABLE INSTANCE OF OUR APPLICATION OBJECT
     Parameters are app-name and the SVG Element we will use for our "Canvas", and finally
-    the callback (to RunApplication) where our app really begins
+    the callback (to runApplication) where our app really begins
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     globalApplicationObject = new Tsvg.Application(applicationName, document.query(applicationCanvasElementID), runApplication );
