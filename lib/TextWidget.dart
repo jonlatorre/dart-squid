@@ -104,17 +104,20 @@ class TextWidget extends Widget {
 
 
 
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    CONSTRUCTOR
+    //TODO: Consider whether we need to extend Super's [destroy] ... cleanup any DOM references, etc.
+    //TODO: Currently, nothing created here that is not removed by base Widget.
 
-    Parameters: see [Widget] (base class) constructor
 
-    Consider whether we need to extend Super's [destroy] ... cleanup any DOM references, etc.
-    Currently, nothing created here that is not removed by base Widget.
-    TODO: DOCUMENT
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    /**
+    * Constructs an TextWidget object after performing, mainly via inheritance, the same
+    * type of activities that the [Widget] (base class) does during construction.
+    *
+    * ### Parameters
+    *    * see [Widget] (base class) constructor for all parameters aside from the following...
+    *    * [String] initialCaption: (optional) the HTML to initially load into our TextWidget.
     */
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     TextWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Text', String initialCaption='']) :
         //CREATE EMBEDDED CLASSES we use...
         _embeddedFO = new HtmlFO(),

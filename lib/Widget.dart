@@ -36,7 +36,7 @@ centralization of common constants and their associated "names".
 *
 * [Updating] is a special state that can be set via [Widget.beginUpdate] and
 * [Widget.endUpdate] to flag intentions for bulk-changes to Widget properties,
-* and we can bypass expensive recomputations til "endUpdate" is executed.
+* and we can bypass expensive computations til "endUpdate" is executed.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eWidgetState {
@@ -1162,7 +1162,7 @@ class WidgetBorder {
     Parameters:
 
     InstanceNameAndType = this determines the svg-element-id value for the *group* that will
-    hold all sides of the border; we append "_Borders" to this value followed by the
+    hold all sides of the border; we append "_Border" to this value followed by the
     border subtype (part), e.g., "_Frame".  Furthermore, each side within the border subtype
     will further append _T/R/B/L (for respective side) to its own svg-element-id.
 
@@ -1319,7 +1319,7 @@ class WidgetBorder {
 *
 * ---
 * ## Border encapsulation
-* Borders are encapsulated in a [Widget], via _Borders member of type [WidgetBorders].
+* Borders are encapsulated in a [Widget], via _borders member of type [WidgetBorders].
 * Here are the Border-buildup classes and how they all fit together to make
 * Widget Borders possible:
 *
@@ -2045,35 +2045,35 @@ BEGIN: Widget Class
 * keep in mind the apparent *Z-order* will be: first-subitem-per-level is the
 * "back-most" (deepest) in that level:
 *
-*     <g> _EntireGroupSVGElement
+*     <g> _entireGroupSVGElement
 *         <rect> _BgRectSVGElement
-*         <g> _Borders.AllBordersSVGGroupElement
-*             <g> _Borders.Outer
+*         <g> _borders.allBordersSVGGroupElement (aka, bordersSVGGroupElement)
+*             <g> _borders.Outer
 *                 <line> T1,T2 - i.e., top side primary line and secondary line
 *                 <line> R1,R2 - i.e., right side ...
 *                 <line> B1,B2 - i.e., bottom side ...
 *                 <line> L1,L2 - i.e., left side ...
-*             <g> _Borders.Frame
+*             <g> _borders.Frame
 *                 <line> T (note: only one line per side possible for "frame" border)
 *                 <line> R
 *                 <line> B
 *                 <line> L
-*             <g> _Borders.Inner
+*             <g> _borders.Inner
 *                 <line> T1,T2 - i.e., top side primary line and secondary line
 *                 <line> R1,R2 - i.e., right side ...
 *                 <line> B1,B2 - i.e., bottom side ...
 *                 <line> L1,L2 - i.e., left side ...
-*         <svg> _ClientSVGElement
-*             (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget1
-*             (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget2
-*             (optional) <g> _EntireGroupSVGElement for hierarchically-contained widget3
+*         <svg> _clientSVGElement
+*             (optional) <g> _entireGroupSVGElement for hierarchically-contained widget1
+*             (optional) <g> _entireGroupSVGElement for hierarchically-contained widget2
+*             (optional) <g> _entireGroupSVGElement for hierarchically-contained widget3
 *             ...
-*         <rect> _SelectionRect
+*         <rect> _selectionRect
 *
 * ### Textual discussion
 *
 * All SVG related to a Widget is contained within a single SVG Group ("g") element
-* (_EntireGroupSVGElement).
+* (_entireGroupSVGElement).
 *
 * SVG <g> elements have the advantage of *transform* operations on their entire contents,
 * which we will use for moving (via translate transform) and potentially for zooming and
@@ -2093,12 +2093,12 @@ BEGIN: Widget Class
 * Next, our border group holds all sub-borders (WidgetParts of Outer, Frame, Inner) as well as the
 * lines that are used to draw each individual border part.
 *
-* Next, we ALWAYS append an "empty" <svg> element (_ClientSVGElement) at the penultimate
+* Next, we ALWAYS append an "empty" <svg> element (_clientSVGElement) at the penultimate
 * position within group for holding any (future) child Widget(s); this is done for
 * consistency sake and simplicity -- such that any attempt to add child Widgets
 * (or Widget subclasses) has a predictable target element available.
 *
-* The ClientBounds <svg> (_ClientSVGElement) will be sized and positioned within the widget
+* The ClientBounds <svg> (_clientSVGElement) will be sized and positioned within the widget
 * after calculating insets from its parent <svg> bounds.  I.e., inset distance from outside
 * must include (height/width adjustments) for any of border's:
 *     margin, outer border, frame, inner border, padding.
@@ -2443,11 +2443,13 @@ class Widget {
     SVGGElement get entireGroupSVGElement   => _entireGroupSVGElement;
     SVGGElement get bordersSVGGroupElement  => _borders.allBordersSVGGroupElement;
     Widget      get parentWidget            => _parentWidget;
-    int         get widgetState             => _widgetState;        //enumeration eWidgetState (int);
+
+    ///See: [eWidgetState] for details.
+    int         get widgetState             => _widgetState;    //enumeration eWidgetState (int);
 
 
     //Setting ApplicationObject post-creation could have really bad implications. Prevented.
-    //Is there even a use-case that setting post-creation makes sense?
+    ///Reference to [Application] object specified during constructor.
     Application get applicationObject       => _applicationObject;
 
     /*
@@ -2533,9 +2535,13 @@ class Widget {
 
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
-    * Return a reference to Widget's Alignment directives.
-    * Much widget functionality relies on these values to determine relative positioning
-    * of widgets to other widgets and/or the window-bounds, etc.
+    * Alignment directives are a .
+    * Widget alignment (positional-constraint) capabilities are rather substantial,
+    * and much widget functionality relies on these values to determine positioning
+    * of widgets relative to other widgets and/or relative to the window-bounds, etc.
+    * Alignment options (and/or [anchors]) can be set in such a way that Widgets will
+    * "auto-move/stretch" as their container changes, as they are moved (with mouse),
+    * and as siblings they are aligned to move or change dimensions.
     *
     * Setting of values is done via [align] sub-properties, each of which is of type
     * [AlignSpec].  E.g., `myWidget.align.T.dimension = eSides.T;` to indicate that the top
@@ -2545,6 +2551,9 @@ class Widget {
     * **Recommendation:** Implement a [beginUpdate] ... [endUpdate] block around code that
     * performs changes of multiple alignment properties
     * (to prevent excessive recalculations, repaints, etc).
+    *
+    * ### See Also
+    *   * [anchors]
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
     WidgetAlignment     get align           => _align;
@@ -2696,15 +2705,30 @@ class Widget {
                             + _y + _translateY + _applicationObject.marginTop     - window.pageYOffset;
 
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Widget's Anchors (if any) within the coordinate space defined by the widget's container
-    These are of type enumeration eSides (int); values are additive (combined) for multi-side
-    anchoring abilities with one property.
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-    int get anchors     => _anchors;
 
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Anchors are a special type of constraint that is designed to fix Side(s) of a Widget
+    * in a particular location relative to the [parentWidget.clientSVGElement] bounds
+    * (i.e., our container's bounds) when a Widget is resized or otherwise aligned (per
+    * [align] specifications).
+    *
+    * These anchors will be honored during resizing of widgets. Note that anchors used in
+    * combination with [align] values only make sense when one side of a Widget is
+    * subject to an [align] directive and its *opposite* side is not (that opposite side
+    * could be anchored).
+    *
+    * Anchors rely on an enumerated type [eSides] whose integer values are additive
+    * in such a way that, within this single integer [anchors] property, it is possible to
+    * specify multiple anchor-sides.
+    * E.g., both the top *and* left side of the widget could be anchored.
+    *
+    * ### See Also
+    *   * [align] for more about alignment specifications.
+    *   * [eSides] for more information about the additive nature of this type's values.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    int get anchors     => _anchors;
     void    set anchors(newAnchors) {
         if (_anchors != newAnchors) {
             _anchors = newAnchors;
@@ -3223,7 +3247,7 @@ class Widget {
                     //Left align specified (right may be too...)
                     ptrWidgetBounds.L = _align.L.dimensionValue;
 
-                    //anchors only make sense when one sides is aligned and its opposite side is not... holds other side at specified position
+                    //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eSides.R) == eSides.R) {
                         ptrWidgetBounds.R = Math.max((ptrWidgetBounds.L + _width + 1), mTempR);  //prevent negative width
                     } else {
@@ -3238,7 +3262,7 @@ class Widget {
                     //some right alignment without any left alignment...
                     ptrWidgetBounds.R = _align.R.dimensionValue;
 
-                    //anchors only make sense when one sides is aligned and its opposite side is not... holds other side at specified position
+                    //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eSides.L) == eSides.L) {
                         ptrWidgetBounds.L = Math.min((ptrWidgetBounds.R - _width - 1), _x);  //prevent negative width
                     } else {
@@ -3265,7 +3289,7 @@ class Widget {
                     //Top align specified (bottom may be too...)
                     ptrWidgetBounds.T = _align.T.dimensionValue;
 
-                    //anchors only make sense when one sides is aligned and its opposite side is not... holds other side at specified position
+                    //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eSides.B) == eSides.B) {
                         ptrWidgetBounds.B = Math.max((ptrWidgetBounds.T + _height + 1), mTempB);  //prevent negative Height
                     } else {
@@ -3280,7 +3304,7 @@ class Widget {
                     //some Bottom alignment without any Top alignment...
                     ptrWidgetBounds.B = _align.B.dimensionValue;
 
-                    //anchors only make sense when one sides is aligned and its opposite side is not... holds other side at specified position
+                    //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eSides.T) == eSides.T) {
                         ptrWidgetBounds.T = Math.min((ptrWidgetBounds.B - _height - 1), _y);  //prevent negative Height
                     } else {
@@ -4274,7 +4298,7 @@ class Widget {
 
 /* HOLDING AREA FOR CODE THOUGHTS...
     //Cursor changes to reflect state centralized here.
-    switch (mWidgetState) {
+    switch (_WidgetState) {
         case eWidgetState.Moving:
             mGroupElementRef.attributes['cursor'] = 'move';
             break;
@@ -4284,14 +4308,5 @@ class Widget {
         default:
             mGroupElementRef.attributes['cursor'] = 'default';
     }
-
-NOTES to incorp into docs...
-Positioning and sizing a bounding box relative to container (parent) is affected
-by alignment options on controls, as alignment will "auto-move/stretch"
-Widgets as needed to honor alignment directives.
-
-- align: Widget Alignment capabilities are rather substantial and are set via this property.
-
-
 */
 

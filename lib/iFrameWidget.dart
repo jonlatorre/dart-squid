@@ -220,18 +220,20 @@ class iFrameWidget extends Widget {
     }
 
 
+    //TODO: Consider whether we need to extend Super's [destroy] ... cleanup any DOM references, etc.
+    //TODO: Currently, nothing created here that is not removed by base Widget.
 
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    CONSTRUCTOR
 
-    Parameters: see [Widget] (base class) constructor
-
-    Consider whether we need to extend Super's [destroy] ... cleanup any DOM references, etc.
-    Currently, nothing created here that is not removed by base Widget.
-    TODO: DOCUMENT
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    /**
+    * Constructs an iFrameWidget object after performing, mainly via inheritance, the same
+    * type of activities that the [Widget] (base class) does during construction.
+    *
+    * ### Parameters
+    *    * see [Widget] (base class) constructor for all parameters aside from the following...
+    *    * [String] initialURL: (optional) TODO - Set after construction outside this right now; implement here.
     */
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     iFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'iFrame', String initialURL='']) :
         //CREATE EMBEDDED CLASSES we need...
         _embeddedFO = new iFrameFO(),
