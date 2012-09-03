@@ -110,7 +110,7 @@ border          : FRAME width AND color (with frame side(s) being optional: just
     even if you provide non-zero width.  E.g., choose 'border: 1px solid black;'
 
 border-style    : FRAME stroke style.
-    The ONLY SUPPORED STYLE IS "solid" for FRAME, though our outer/inner borders support more styles.
+    The ONLY SUPPORTED STYLE IS "solid" for FRAME, though our outer/inner borders support more styles.
 
 We can access border side-specifics via:
     'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color' ('border-color')
@@ -584,6 +584,73 @@ div.Examples {
 .Examples strong {
     color: #DD7700;
 }
-/*color: #DD7700;*/
-/*color: #A95600;*/
-/*color: #3D85C6;*/
+
+
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+BEGIN: CSS USED BY SAMPLES APPLICATION 1
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+color options dropdown.
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+
+.RedColor {
+    border-color: red;
+}
+
+.MedOrangeColor {
+    border-color: #DD7700;
+}
+
+.DarkOrangeColor {
+    border-color: #A95600;
+}
+
+.MedBlueColor {
+    border-color: #3D85C6;
+}
+
+.MintGreenColor {
+    border-color: #6EE6AD;
+}
+
+.BrightPurpleColor {
+    border-color: #C30EDD;
+}
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+border frame options dropdown
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+
+.FrameOption1 {
+    border-width: 2px;
+}
+
+.FrameOption2 {
+    border-width: 4px;
+}
+
+.FrameOption3 {
+    border-width: 6px;
+}
+
+.FrameOption4 {
+    border-width: 8px;
+}
+
+.FrameOption5 {
+    border-width: 10px;
+}
+
+
+
+
+
+
+

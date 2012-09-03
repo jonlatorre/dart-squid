@@ -78,9 +78,9 @@ main() {
         const ButtonDef('Widget1',          'myWidget',             80  , true ),
         const ButtonDef('Widget2',          'myWidget2',            80  , true ),
         const ButtonDef('Widget3',          'myWidget3',            80  , true ),
-        const ButtonDef('Notes',            'WidgetNotesWebPage',   60  , true ),
+        const ButtonDef('Features & Notes', 'WidgetNotesWebPage',   140  , true ),
         const ButtonDef('README (via XHR)', 'EmbedWebPage',         160 , false),
-        const ButtonDef('FO Repaint Tests', 'FORepaintTestsPage',   140 , false),
+        const ButtonDef('FO Repaint Tests', 'FORepaintTestsPage',   140 , true ),
         const ButtonDef('iFrameWidget',     'EmbedWebPageInIFrame', 120 , false)
     ];
 
@@ -387,7 +387,7 @@ main() {
 
         //testWidget.onAlign = btnMenuOnAlign;
 
-        //TODO: Next line works as desired, but DART EDITOR (through build 11397 so far) throws warning: "expression does not yield a value"
+        //TODO: Next line works as desired, but DART EDITOR (through build 11702 so far) throws warning: "expression does not yield a value"
         testWidget.on.show = testWidgetOnShowEventCallback(testWidget);
         testWidget.show();
 
@@ -655,7 +655,7 @@ main() {
 
         notesPage.caption = '''
             <div class="FOBackground">
-            <span class="BoldRed " >SVG Components Features Notes</span><br /><br />
+            <span class="BoldRed " >SVG Components Features &amp; Notes</span><br /><br />
             <div class="SmallText">
             Pure-SVG Widget/Component-Set Highlights:<br />
             <ul>
@@ -700,6 +700,39 @@ main() {
     }
 
 
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    This method is called from event handler assigned to an HTML select-element embedded
+    within a foreignObject within the HTML assigned to TextWidget "foRepaintTests"
+    created in next method (createFoRepaintTestWidget).
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+    void foRepaint_HtmlContolsChangeHandler (event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+        SelectElement   colorSelectElement      = null;
+        SelectElement   frameWidthSelectElement = null;
+        String          selectedColorValue      = '';
+        String          selectFrameWidthValue   = '';
+
+        //findSelectBox = document.query("#comboColor");  //works
+        colorSelectElement      = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboColor");    //works - is this "faster" approach than using "query" (i.e., limits search to div)?
+        frameWidthSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboFrameWidth");
+
+        //Gets the "value" portion of first-selected option in select-element. (e.g., "RedColor")
+        selectedColorValue      = colorSelectElement.item(colorSelectElement.selectedIndex).value;
+        selectFrameWidthValue   = frameWidthSelectElement.item(frameWidthSelectElement.selectedIndex).value;
+
+        //tracing...
+        print('Wired FO-Contained-Object Color Value: ${selectedColorValue}');
+        print('Wired FO-Contained-Object FrameWidth Value: ${selectFrameWidthValue}');
+
+        //Change frame based on that selected value (it holds our CSS class to apply).
+        foRepaintTests.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame, ${selectedColorValue}, ${selectFrameWidthValue}');
+
+    } //selectColorChangeHandler
+
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -710,9 +743,9 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createFoRepaintTestWidget() {
-        foRepaintTests  = new Tsvg.TextWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'test');
+        foRepaintTests  = new Tsvg.TextWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
         foRepaintTests.tag      = 'FOR1';
-        foRepaintTests.setBounds(450,100,750,450);
+        foRepaintTests.setBounds(300,150,800,500);
         foRepaintTests.isMovable.x = true;
         foRepaintTests.isMovable.y = true;
         foRepaintTests.isSizable.x = true;
@@ -723,10 +756,32 @@ main() {
         foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','DarkBlueBorderComponent');
         foRepaintTests.embeddedFO.scrollOverflow = true;
         foRepaintTests.caption = '''
-            <div style="background-color: #add8e6;" >
+            <div id="backgroundColorTest" style="background-color: #add8e6;" >
             <span class="BoldRed" >SVG Components FO Repaint Tests</span>
             <p>This is a TextWidget that uses <b>SVG ForeignObject (FO)</b> to embed HTML content.</p>
-            <p>HTML Controls test (edit, select, radio) below.</p>
+            <p>HTML Controls test (edit, select, radio) appear below.  Some of these controls interact with Widget(s) in this Sample Application.</p>
+            <p>Set this Widget's Frame Color:
+                <select id="comboColor" name="color">
+                    <option value="RedColor">Red</option>
+                    <option value="MedOrangeColor">Med Orange</option>
+                    <option value="DarkOrangeColor">Dark Orange</option>
+                    <option value="MedBlueColor">Med Blue</option>
+                    <option value="BrightPurpleColor">Bright Purple</option>
+                    <option value="MintGreenColor">Mint Green</option>
+                </select>
+                Set this Widget's Frame Width:
+                <select id="comboFrameWidth" name="frameWidth">
+                    <option value="FrameOption1">2px</option>
+                    <option value="FrameOption2">4px</option>
+                    <option value="FrameOption3">6px</option>
+                    <option value="FrameOption4">8px</option>
+                    <option value="FrameOption5">10px</option>
+                </select>
+                <br />
+                Radio Control Test: <input id="inputRadio" type="radio" name="sex" value="Male"/> Male &nbsp;&nbsp;&nbsp;<input type="radio" name="sex" value="Female" /> Female<br />
+                Value Input Test: <input id="inputQty" type="value" name="qty" value="1" />
+                Submit Button Test (does nothing): <input id="inputSubmitButton" type="button" value="submittest1"  name="submit" alt="Submit Test (inactive)" />
+            </p>
             <p>A regression in Webkit/Chrome was introduced (it seems) as of Chrome v17 where control repaints and/or
             content repaints within a FO inside an SVG are very, very buggy if browser zoom-level is other than 100%
             (Chrome/Dartium v22,23 seem OK at 100% zoom).  But, for non-100%-page-zoom situations, both the Chrome(JS)
@@ -739,18 +794,6 @@ main() {
             The (webkit) issue has been reported AGES ago and remains outstanding.<br /><br />
             FO was used for Text because <span class="BoldRed" >Line-wraps</span> occur by default and wrap as desired and expected by any typical HTML output.
             </p>
-            <p>Choose your Ship-to-Country:
-            <select name="country" id="dropdownStates">
-                <option value="US">United States</option>
-                <option value="CA">Canada</option>
-                <option value="MX">Mexico</option>
-                <option value="GB">United Kingdom</option>
-                <option value="ZZ">Other</option>
-            </select><br />
-            <input type="radio" name="sex" value="Male"/> Male<br /><input type="radio" name="sex" value="Female" /> Female<br /> 
-            <input type="value" name="qty" value="1" /> 
-            <input type="button" value="test"  name="submit" alt="Review Selection and Proceed With Order" /> 
-            </p>
             </div>
         ''';
 
@@ -761,6 +804,24 @@ main() {
             'LINE1'
         ]);
 
+        foRepaintTests.show();
+
+        /*
+        ═══════════════════════════════════════════════════════════════════════════════════════
+        WIRE UP AN EVENT-HANDLER that will fire when our embedded HTML's color and frame-wdith
+        selection dropdown values change.
+        ═══════════════════════════════════════════════════════════════════════════════════════
+        */
+        SelectElement  colorSelectElement = null;
+        SelectElement  frameWidthSelectElement = null;
+
+        //findSelectBox = document.query("#comboColor");  //works
+        colorSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboColor");    //works - is this "faster" approach than using "query" (i.e., limits search to div)?
+        frameWidthSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboFrameWidth");
+
+        //assign event-handler to that select element
+        colorSelectElement.on.change.add( (event) => foRepaint_HtmlContolsChangeHandler(event) );
+        frameWidthSelectElement.on.change.add( (event) => foRepaint_HtmlContolsChangeHandler(event) );
     }
 
 
