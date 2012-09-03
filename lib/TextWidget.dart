@@ -30,9 +30,6 @@ class TextWidget extends Widget {
     Variables, setters/getters
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    bool    _areCaptionUpdatesPending   = true;
-    String  _pendingCaptionValue        = '';
-
     HtmlFO  _embeddedFO                 = null;
     HtmlFO  get embeddedFO              => _embeddedFO;
 
@@ -41,15 +38,7 @@ class TextWidget extends Widget {
     void    set caption(String newCaption) {
         if (_caption == newCaption ) return;
 
-        //workaround Webkit issue with updating innerHTML inside FO Div that is not visible
-        if (!visible) {
-            _pendingCaptionValue = newCaption;
-            _areCaptionUpdatesPending = true;
-            return;
-        }
-
         _embeddedFO.innerHTML = newCaption;
-        _areCaptionUpdatesPending = false;
     }
 
 
@@ -82,11 +71,6 @@ class TextWidget extends Widget {
         _embeddedFO.svgFO.attributes['display'] = 'inherit';
 
         super.show();
-
-        //Webkit issue workaround (see caption-setter); note: visible is now true here.  //TODO: Needed anymore???
-        if (_areCaptionUpdatesPending) {
-            caption = _pendingCaptionValue;
-        }
     }
 
 
