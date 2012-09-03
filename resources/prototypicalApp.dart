@@ -22,7 +22,7 @@ any potential namespace collisions.
 
 //place embedded app-specific class definitions here (if not in external file)
 class ButtonDef {
-    final String      caption;
+    final String      caption   = "test button";
     //...
 }
 
