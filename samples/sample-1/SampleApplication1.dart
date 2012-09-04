@@ -45,7 +45,7 @@ main() {
     */
     Tsvg.Application    globalApplicationObject = null;
 
-    Tsvg.Widget         testWidget      = null;
+    Tsvg.Widget         testWidget1      = null;
     Tsvg.Widget         testWidget2     = null;
     Tsvg.Widget         testWidget3     = null;
 
@@ -57,7 +57,7 @@ main() {
     Tsvg.iFrameWidget   webIFrame       = null;
     Tsvg.TextWidget     foRepaintTests  = null;
 
-    Tsvg.TextWidget     textButton      = null;
+    Tsvg.TextWidget     btnLog      = null;
 
     //This group is for when we are testing within HTML
     Element divInner    = null;
@@ -75,7 +75,7 @@ main() {
 
     //Use this to initialize our "menu buttons" at top of page
     final List<ButtonDef> ButtonDefs = const [
-        const ButtonDef('Widget1',          'myWidget',             80  , true ),
+        const ButtonDef('Widget1',          'myWidget1',            80  , true ),
         const ButtonDef('Widget2',          'myWidget2',            80  , true ),
         const ButtonDef('Widget3',          'myWidget3',            80  , true ),
         const ButtonDef('Features & Notes', 'WidgetNotesWebPage',   140  , true ),
@@ -259,14 +259,14 @@ main() {
         });
 
 
-        if (testWidget != null) {
+        if (testWidget1 != null) {
             Tsvg.logToConsole([
                 'LINE4',
-                '${testWidget.instanceName} Destroy() being executed; next btn-click should show list less this InstanceName'
+                '${testWidget1.instanceName} Destroy() being executed; next btn-click should show list less this InstanceName'
             ]);
 
-            testWidget.destroy();
-            testWidget = null;
+            testWidget1.destroy();
+            testWidget1 = null;
         }
 
         Tsvg.logToConsole([
@@ -275,23 +275,24 @@ main() {
     }
 
 
-    void btnMenuOnMouseDown(Tsvg.MouseNotifyEventObject eventObj) {
+    void btnTestOnMouseDown(Tsvg.MouseNotifyEventObject eventObj) {
         Tsvg.TextWidget widget = eventObj.sender;
 
         Tsvg.logToConsole([
             'LINE2',
-            "${widget.instanceName} btnMenuOnMouseDown EVENT fired at coordinates (${eventObj.eventInfo.clientX},${eventObj.eventInfo.clientY})",
-            'LINE3',
-            "Further info...:"
+            "${widget.instanceName} btnTestOnMouseDown EVENT fired at coordinates (${eventObj.eventInfo.clientX},${eventObj.eventInfo.clientY})"
         ]);
-    }
+
+    } //btnTestOnMouseDown
+
+
 
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    This method
-    TODO: DOCUMENT
-    TODO: EventsProcessor needs extended to do type checking yet.
+    This method is called by each of the "menu buttons" along the top of the sample page.
+    Show/Hide the Widget associated with each button, and toggle the button-colors
+    between red/green background respectively to visually reflect [Widget.visible] status.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void menuButtonsClickHandler(Tsvg.MouseNotifyEventObject eventObj) {
@@ -376,36 +377,36 @@ main() {
     */
     void createTestWidget1() {
         //create a widget on the canvas
-        testWidget  = new Tsvg.Widget('myWidget', globalApplicationObject);
+        testWidget1  = new Tsvg.Widget('myWidget1', globalApplicationObject);
         //set bounds via the "long way" (one at a time) vs. SetBounds()
-        testWidget.x        = 100.0;
-        testWidget.y        = 100;
-        testWidget.width    = 200;
-        testWidget.height   = 100;
-        testWidget.align.R.dimension = Tsvg.eSides.R;
-        testWidget.align.B.dimension = Tsvg.eSides.B;
+        testWidget1.x        = 100.0;
+        testWidget1.y        = 100;
+        testWidget1.width    = 200;
+        testWidget1.height   = 100;
+        testWidget1.align.R.dimension = Tsvg.eSides.R;
+        testWidget1.align.B.dimension = Tsvg.eSides.B;
 
         //testWidget.onAlign = btnMenuOnAlign;
 
         //TODO: Next line works as desired, but DART EDITOR (through build 11702 so far) throws warning: "expression does not yield a value"
-        testWidget.on.show = testWidgetOnShowEventCallback(testWidget);
-        testWidget.show();
+        testWidget1.on.show = testWidgetOnShowEventCallback(testWidget1);
+        testWidget1.show();
 
         //test incorrect callback signature traps...
         //testWidget.on.mouseDown = IncorrectMouseEventSignatureTest;
 
-        testWidget.on.mouseDown = btnMenuOnMouseDown;
+        testWidget1.on.mouseDown = btnTestOnMouseDown;
         //testWidget.on.mouseDown = null;
-        testWidget.isMovable.x = true;
-        testWidget.isMovable.y = true;
-        testWidget.isSizable.x = true;
-        testWidget.isSizable.y = true;
-        testWidget.anchors = Tsvg.eSides.R;
+        testWidget1.isMovable.x = true;
+        testWidget1.isMovable.y = true;
+        testWidget1.isSizable.x = true;
+        testWidget1.isSizable.y = true;
+        testWidget1.anchors = Tsvg.eSides.R;
 
         Tsvg.logToConsole([
             'LINE1',
-            'createTestWidget1 method finished; Widget created with instanceName: ${testWidget.instanceName}',
-            'LINE1'
+            'createTestWidget1 method finished; object created:',
+            testWidget1
         ]);
     }
 
@@ -420,14 +421,14 @@ main() {
         testWidget2 = new Tsvg.Widget('myWidget2', globalApplicationObject);
         testWidget2.setBounds(100,100,400,400);
         testWidget2.isMovable.x = true;
-        testWidget2.align.R.objToAlignTo = testWidget;
+        testWidget2.align.R.objToAlignTo = testWidget1;
         testWidget2.align.R.dimension = Tsvg.eSides.L;
         testWidget2.show();
 
         Tsvg.logToConsole([
             'LINE1',
-            'createTestWidget2 method finished; Widget created with instanceName: ${testWidget2.instanceName}',
-            'LINE1'
+            'createTestWidget2 method finished; object created:',
+            testWidget2
         ]);
     }
 
@@ -472,11 +473,10 @@ main() {
 //        testWidget3.PosRules.MinX = (Tsvg.MouseNotifyEventObject objInitiator) {return textButton.x; };  //TODO: Test more substantial ideas..
         testWidget3.endUpdate();
 
-
         Tsvg.logToConsole([
             'LINE1',
-            'createTestWidget3 method finished; Widget created with instanceName: ${testWidget3.instanceName}',
-            'LINE1'
+            'createTestWidget3 method finished; object created:',
+            testWidget3
         ]);
     }
 
@@ -515,10 +515,9 @@ main() {
 
         Tsvg.logToConsole([
             'LINE1',
-            'createMenuButtonsContainer method finished; Widget created with instanceName: ${menuButtonsContainer.instanceName}',
-            'LINE1'
+            'createMenuButtonsContainer method finished; object created:',
+            menuButtonsContainer
         ]);
-
     }
 
 
@@ -552,37 +551,87 @@ main() {
 
         Tsvg.logToConsole([
             'LINE1',
-            'createMenuButtons method has finished; all buttons have been created.',
-            'LINE1'
+            'createMenuButtons method has finished; all buttons have been created.'
         ]);
 
     }
 
 
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    This method is called our "Log to Console" button is clicked.
+    Provides a way to dump info about various Widgets in this sample for inspection and
+    debugging purposes.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+    void btnLogAppWidgetsDataToConsoleClick(Tsvg.MouseNotifyEventObject eventObj) {
+
+        //TODO: make generic -- loop through App-object instead.
+        Tsvg.logToConsole([
+            'LINE1',
+            'btnLogWidgetsDataToConsole (VIA CLICK EVENT) Executed',
+            'LINE2',
+            "ALL objects contained in Application's Widget's List (widgetsList) follow:"
+        ]);
+
+        globalApplicationObject.widgetsList.forEach( (widgetInList) {
+          Tsvg.logToConsole([
+              'LINE3',
+              widgetInList
+          ]);
+        }); //...forEach
+    }
+
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     TextWidget being used as a "button" with a click event.
+    This particular one is wired to a routine that logs Application's widget data to console.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+    void createLogAppWidgetsDataToConsoleButton() {
+        //create a "button" on the canvas; the click event is what makes it behave like a button.
+        btnLog  = new Tsvg.TextWidget('myTextButton', globalApplicationObject);
+        btnLog.setBounds(20,50,225,35);
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
+        btnLog.on.mouseClick = btnLogAppWidgetsDataToConsoleClick;
+        btnLog.caption = "Log App's Widget's Info Now";
+        btnLog.show();
+
+        Tsvg.logToConsole([
+            'LINE1',
+            'btnLogAppWidgetsDataToConsole method finished; object created:',
+            btnLog
+        ]);
+    }
+
+
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    TextWidget being used as a "delete button" with a click event.
     This particular one tests truncation of overflow text and also uses callback that
-    deletes another widget.
+    deletes another widget and logs some information.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createDeleteWidgetButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
-        textButton  = new Tsvg.TextWidget('myTextButton', globalApplicationObject);
-        textButton.setBounds(20,70,95,35);
-        textButton.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
-        textButton.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
-        textButton.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
-        textButton.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
-        textButton.on.mouseClick = btnDeleteWidgetMouseClick;
-        textButton.caption = 'DELETE-1-ABCDEF-GHI-JKL-MNO-PQR-STUVWXY-Z';  //here to test clipping of overflow
-        textButton.show();
+        btnLog  = new Tsvg.TextWidget('myTextButton', globalApplicationObject);
+        btnLog.setBounds(20,70,95,35);
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
+        btnLog.on.mouseClick = btnDeleteWidgetMouseClick;
+        btnLog.caption = 'DELETE-1-ABCDEF-GHI-JKL-MNO-PQR-STUVWXY-Z';  //here to test clipping of overflow
+        btnLog.show();
 
         Tsvg.logToConsole([
             'LINE1',
-            'createDeleteWidgetButton method finished; TextWidget created with instanceName: ${textButton.instanceName}',
-            'LINE1'
+            'createDeleteWidgetButton method finished; object created:',
+            btnLog
         ]);
     } //CreateTextButton1
 
@@ -608,7 +657,7 @@ main() {
         ''';
 
         //ONLY POSSIBLE WHEN ACCESSING VIA HTTP..., otherwise, we will get hit with:
-        //HttpRequest cannot load file:///drive:/pathtofile/readme.html. Cross origin requests are only supported for HTTP.
+        //HttpRequest cannot load file:///drive:/path_to_file/readme.html. Cross origin requests are only supported for HTTP.
         //Exception: Error: NETWORK_ERR: HttpRequest Exception 101
         if (globalApplicationObject.isRunningOnServer) {
             getWebPageContent(String url, onSuccess(HttpRequest req)) {
@@ -624,11 +673,10 @@ main() {
             getWebPageContent("README.html", onSuccess);    //TODO: Create example-file and push to samples dir.
         }
 
-
         Tsvg.logToConsole([
             'LINE1',
-            'createWebPageInWidget method finished; TextWidget created with instanceName: ${embeddedWebPage.instanceName}',
-            'LINE1'
+            'createWebPageInWidget method finished (isRunningOnServer=${globalApplicationObject.isRunningOnServer}); object created:',
+            embeddedWebPage
         ]);
 
     }
@@ -643,7 +691,7 @@ main() {
     */
     void createNotesWidget() {
         notesPage  = new Tsvg.TextWidget('WidgetNotesWebPage', globalApplicationObject);
-        notesPage.setBounds(100,75,650,550);
+        notesPage.setBounds(100,85,650,550);
         notesPage.isMovable.x = true;
         notesPage.isMovable.y = true;
         notesPage.isSizable.x = false;
@@ -690,11 +738,10 @@ main() {
         ''';
         notesPage.show();
 
-
         Tsvg.logToConsole([
             'LINE1',
-            'createNotesWidget method finished; TextWidget created with instanceName: ${notesPage.instanceName}',
-            'LINE1'
+            'createNotesWidget method finished; object created:',
+            notesPage
         ]);
 
     }
@@ -744,7 +791,7 @@ main() {
     */
     void createFoRepaintTestWidget() {
         foRepaintTests  = new Tsvg.TextWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
-        foRepaintTests.tag      = 'FOR1';
+        foRepaintTests.tag = 'FOR1';
         foRepaintTests.setBounds(300,150,800,500);
         foRepaintTests.isMovable.x = true;
         foRepaintTests.isMovable.y = true;
@@ -797,11 +844,10 @@ main() {
             </div>
         ''';
 
-
         Tsvg.logToConsole([
             'LINE1',
-            'createFoRepaintTestWidget method finished; TextWidget created with instanceName: ${foRepaintTests.instanceName}',
-            'LINE1'
+            'createFoRepaintTestWidget method finished; object created:',
+            foRepaintTests
         ]);
 
         foRepaintTests.show();
@@ -848,8 +894,8 @@ main() {
 
         Tsvg.logToConsole([
             'LINE1',
-            'createWebPageIFrameWidget method finished; iFrameWidget created with instanceName: ${webIFrame.instanceName}',
-            'LINE1'
+            'createWebPageIFrameWidget method finished; object created:',
+            webIFrame
         ]);
     }
 
@@ -910,6 +956,8 @@ main() {
         if (!globalApplicationObject.isStandaloneSVG) {
             //createDeleteWidgetButton();
 
+            createLogAppWidgetsDataToConsoleButton();
+
             createNotesWidget();
 
             createWebPageInWidget();
@@ -920,7 +968,8 @@ main() {
         //Note: these buttons refer to previously-created objects; be careful moving this
         createMenuButtonsContainer();
         createMenuButtons();
-    }
+
+    }  //runApplication
 
 
     /*

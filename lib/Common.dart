@@ -347,21 +347,36 @@ See SampleApplication for examples of usage.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
 void logToConsole(List<Dynamic> itemsToLog) {
+    final string spacesConst = "                                 ";
+    String  insetPretty = "";
+    bool    alignT = false;
+    bool    alignR = false;
+    bool    alignB = false;
+    bool    alignL = false;
+    bool    sizing = false;
 
-    itemsToLog.forEach( (itemToLog) {
-        if (itemToLog is String) {
-            switch(itemToLog) {
-                case 'LINE1': {itemToLog = SeparatorLine1; break;}
-                case 'LINE2': {itemToLog = SeparatorLine2; break;}
-                case 'LINE3': {itemToLog = SeparatorLine3; break;}
-                case 'LINE4': {itemToLog = SeparatorLine4; break;}
+    Dynamic naForNull(var value) {
+        return (value == null ? 'n/a' : value);
+    }
+
+    void writeLine(var valueToWrite) {
+        if (getBrowserType() == 'chrome') {
+            print(valueToWrite);
+        } else {
+            window.console.log(valueToWrite);
+        }
+    }
+
+    itemsToLog.forEach( (toLog) {
+        if (toLog is String) {
+            switch(toLog) {
+                case 'LINE1': {toLog = SeparatorLine1; break;}
+                case 'LINE2': {toLog = SeparatorLine2; break;}
+                case 'LINE3': {toLog = SeparatorLine3; break;}
+                case 'LINE4': {toLog = SeparatorLine4; break;}
             }
 
-            if (getBrowserType() == 'chrome') {
-                print(itemToLog);
-            } else {
-                window.console.log(itemToLog);
-            }
+            writeLine(toLog);
 
         } else {
             /*
@@ -369,22 +384,31 @@ void logToConsole(List<Dynamic> itemsToLog) {
             Any custom handling of Widgets and such here...
             ═══════════════════════════════════════════════════════════════════════════════════════
             */
-            if (itemToLog is Widget) {
-                print ("(${itemToLog.typeName}) instanceName=${itemToLog.instanceName}; HierarchyPath=${itemToLog.hierarchyPath}");
-//                print(' ParentWidget: ${itemToLog.ParentWidget}');
-//                print(' ParentSVGElement: ${itemToLog.ParentSVGElement}');
-//                print(' GroupSVGElement : ${itemToLog.GroupSVGElement}');
-//                print(' BorderGroupSVGElement : ${itemToLog.BorderGroupSVGElement}');
-//                print(' ClientSVGElement: ${itemToLog.ClientSVGElement}');
-//                print(' WidgetMetrics: ${itemToLog.WidgetMetrics}');
-//                print(' Border: ${itemToLog.Border}');
-//                print(' Align: ${itemToLog.Align}');
-//                print(' Anchors: ${itemToLog.Anchors}');
-//                print(' SizeRules: ${itemToLog.SizeRules}');
+            if (toLog is Widget) {
+                insetPretty = spacesConst.substring(1,toLog.typeName.length + 4); //smart indent
+
+                alignT = !((toLog.align.T.objToAlignTo == null) && (toLog.align.T.dimension == eSides.None));
+                alignR = !((toLog.align.R.objToAlignTo == null) && (toLog.align.R.dimension == eSides.None));
+                alignB = !((toLog.align.B.objToAlignTo == null) && (toLog.align.B.dimension == eSides.None));
+                alignL = !((toLog.align.L.objToAlignTo == null) && (toLog.align.L.dimension == eSides.None));
+                //sizing =
+
+                writeLine ("(${toLog.typeName}) >> Identifying Data: instanceName='${toLog.instanceName}';  HierarchyPath='${toLog.hierarchyPath}';  Tag='${toLog.tag}';");
+                writeLine ("${insetPretty}>> Current widgetState: ${eWidgetState.getCommaDelimNamesInVal(toLog.widgetState)};");
+                writeLine ("${insetPretty}>> Geometry Data: (x, y)=(${toLog.x}, ${toLog.y});  (translateX, translateY)=(${toLog.translateX}, ${toLog.translateY});  (width, height)=(${toLog.width}, ${toLog.height});  (xAsClientX, yAsClientY)=(${toLog.xAsClientX}, ${toLog.yAsClientY});");
+                writeLine ("${insetPretty}>> Aligned?  Top=${alignT};  align.Right=${alignR};  align.Bottom=${alignB};  align.Left=${alignL};");
+                writeLine ("${insetPretty}>> sizeRules: (minWidth, MaxWidth)=(${(naForNull(toLog.sizeRules.minWidth))}, ${(naForNull(toLog.sizeRules.maxWidth))});  (minHeight, maxHeight)=(${(naForNull(toLog.sizeRules.minHeight))}, ${(naForNull(toLog.sizeRules.maxHeight))})");
+                writeLine ("${insetPretty}>> Other Contraints: anchors=${eSides.getCommaDelimNamesInVal(toLog.anchors)};");
+
+                if (toLog.hasParent) {
+                    writeLine ("${insetPretty}>> PARENT Data: Owned Child Count=${toLog.parentWidget.getWidgetCount()}; Index of this object in parent WidgetList: ${toLog.parentWidget.indexOfWidget(toLog)};");
+                }
+
             }
 
             //This line will produce an expandable "object>" reference in the console.
-            print(itemToLog);
+            //TODO: Dartium console not yet like Chromium/JS (this does not show as viewable, hierarchical, inspectable object yet:
+            //writeLine(itemToLog);
         }
 
     }); //...forEach
