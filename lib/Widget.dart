@@ -47,6 +47,32 @@ class eWidgetState {
     static final int Moving   = 8;
     static final int Sizing   = 16;
     static final int Updating = 32;
+
+    static final Map Names = const {
+        '0':'Unknown',
+        '1':'Normal',
+        '2':'Loading',
+        '4':'Showing',
+        '8':'Moving',
+        '16':'Sizing',
+        '32':'Updating'
+    };
+
+    static getCommaDelimNamesInVal(int intSides) {
+        String _includedNames = '';
+
+        Names.forEach( (nameItemKey, nameItemValue) {
+            if ( (Math.parseInt(nameItemKey) & intSides) == Math.parseInt(nameItemKey))  {
+                _includedNames = ((_includedNames == Names['0']) ? '' : _includedNames);  //Remove 'Unknown" if it is NOT the *only* "match"
+                _includedNames = "${_includedNames}${(_includedNames.length > 0 ? ',' : '')}${nameItemValue}";
+            }
+        }); //...forEach
+
+        return _includedNames;
+    }
+
+
+
 }
 
 
@@ -103,6 +129,19 @@ class eSides {
         '16':'CX',
         '32':'CY'
     };
+
+    static getCommaDelimNamesInVal(int intSides) {
+        String _includedNames = '';
+
+        Names.forEach( (nameItemKey, nameItemValue) {
+            if ( (Math.parseInt(nameItemKey) & intSides) == Math.parseInt(nameItemKey))  {
+                _includedNames = ((_includedNames == Names['0']) ? '' : _includedNames);  //Remove 'None" if it is NOT the *only* "match"
+                _includedNames = "${_includedNames}${(_includedNames.length > 0 ? ',' : '')}${nameItemValue}";
+            }
+        }); //...forEach
+
+        return _includedNames;
+    }
 
 }
 
@@ -257,20 +296,21 @@ class WidgetDynamics {
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetSizeRules {
-    num _minWidth       = 10.0;     //TODO: THESE MINIMUMS really need to be such that bgRect/borders/etc "fit" with inner rect of zero width?
-    num _minHeight      = 10.0;
+    num _minWidth       = null;
+    num _minHeight      = null;
     num _maxWidth       = null;    //null represents "Infinity" (i.e., no max)
     num _maxHeight      = null;    //null represents "Infinity" (i.e., no max)
     ChangeHandler  changeHandler;
 
-    num get minWidth    => _minWidth;
+    //TODO: THE GET MINIMUM W/H really need to be calculated (vs "20.0" value) such that bgRect/borders/etc "fit" within min (and client rect of zero w/h min)?
+    num get minWidth    => (_minWidth == null ? 20.0 : _minWidth);
     void set minWidth(newVal) {
         if (_minWidth   == newVal) return;
         _minWidth = (_maxWidth != null) ? Math.min(newVal, _maxWidth) : newVal;
         if (changeHandler != null) {changeHandler();}
     }
 
-    num get minHeight   =>  _minHeight;
+    num get minHeight   =>  (_minHeight== null ? 20.0 : _minHeight);
     void set minHeight(newVal) {
         if (_minHeight  == newVal) return;
         _minHeight = (_maxHeight != null) ? Math.min(newVal, _maxHeight) : newVal;
@@ -280,14 +320,14 @@ class WidgetSizeRules {
     num get maxWidth    =>  _maxWidth;
     void set maxWidth(newVal) {
         if (_maxWidth   == newVal) return;
-        _maxWidth = Math.max(newVal, _minWidth);
+        _maxWidth = Math.max(newVal, minWidth);
         if (changeHandler != null) {changeHandler();}
     }
 
     num get maxHeight   =>  _maxHeight;
     void set maxHeight(newVal) {
         if (_maxHeight  == newVal) return;
-        _maxHeight = Math.max(newVal, _minHeight);
+        _maxHeight = Math.max(newVal, minHeight);
         if (changeHandler != null) {changeHandler();}
     }
 
@@ -299,12 +339,12 @@ class WidgetSizeRules {
     */
     num getConstrainedWidth(num proposedVal) {
         num tempMax = (_maxWidth != null) ? Math.min(proposedVal, _maxWidth) : proposedVal;
-        return Math.max(tempMax, _minWidth);
+        return Math.max(tempMax, minWidth);
     }
 
     num getConstrainedHeight(num proposedVal) {
         num tempMax = (_maxHeight != null) ? Math.min(proposedVal, _maxHeight) : proposedVal;
-        return Math.max(tempMax, _minHeight);
+        return Math.max(tempMax, minHeight);
     }
 
 } //WidgetSizeRules
@@ -2027,8 +2067,9 @@ BEGIN: Widget Class
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* This establishes the base class from which all other Widgets will be derived — it is a
-* visual SVG/Dart-based "component". A substantial piece of functionality related
+* This establishes the base class from which all other Widgets used in an [Application]
+* will be derived — it is a visual SVG/Dart-based UI "component" or "control".
+* A substantial piece of functionality related
 * to the positioning/sizing for all Widgets is implemented in this base class, as are
 * rather robust borders, plus movement/sizing abilities as well as visual constraints
 * and event-handling abilities.
@@ -2398,10 +2439,13 @@ class Widget {
 
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
-    * Each Widget instance must have an identifying "name" that is **unique** to the
-    * entire [Application]. This value is set in the constructor.
-    * This [instanceName] will be used, in conjunction with [typeName] to form unique
+    * Each Widget must have an appropriate (component) [typeName].
+    * This value is set inside the constructor; this is read-only accessor.
+    * Sub-classes must set set appropriately in constructor (via _typeName parm).
+    * Along with [instanceName], this value is used to form unique
     * SVG-element identifiers (i.e., "id" attribute values).
+    *
+    * TODO: Will "mirrors" typeMirror be available for this? .simpleType (as in dartdocs)?
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
     String      get instanceName            => _instanceName;
@@ -2690,6 +2734,7 @@ class Widget {
     /**
     * Provide easy access to a "clientX" version of a Widget's [x] coordinates.
     * The window.pageXOffset values compensate for scroll-position (browser horizontal scrollbar pos).
+    * TODO: These clientX/Y values appear in need of refresh immediately after construction if any "align" spec forced move from original x/y pos.
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
     num get xAsClientX  =>  (_hasParent ? (_parentWidget.getClientBounds().L) + _parentWidget.translateX  : 0.0)
