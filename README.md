@@ -6,7 +6,7 @@ DART / SVG Quick UI Development Widgets
 dart-squid is an open-source **D**art / **S**vg **Q**uick **UI** **D**evelopment framework and components / widget set for browser-based **applications**.
 SVG (Scalable Vector Graphics) is used for the UI rendering. CSS is (indirectly) used for styling of SVG Widgets.
 
-The longer-term objectives are to develop both a RAD component set and an IDE that will make creating web-applications very similar to writing Delphi desktop applications.  In fact, if you are familiar with Delphi (VCL), the component structure, hierarch, and implementation paradigm should be somewhat familiar and the Dart language provides very similar programming capabilities.
+The longer-term objectives are to develop both a RAD component set and an IDE that will make creating web-applications very similar to writing Delphi desktop applications.  In fact, if you are familiar with Delphi (VCL), the component structure, hierarchy, and implementation paradigm should be somewhat familiar and the Dart language provides very similar programming capabilities.
 
 ## Status: Alpha ##
 Project is currently in the **alpha** stage of development, but quite functional and rather well documented.
