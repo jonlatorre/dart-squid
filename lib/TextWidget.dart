@@ -102,7 +102,7 @@ class TextWidget extends Widget {
     *    * [String] initialCaption: (optional) the HTML to initially load into our TextWidget.
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    TextWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Text', String initialCaption='']) :
+    TextWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'TextWidget', String initialCaption='']) :
         //CREATE EMBEDDED CLASSES we use...
         _embeddedFO = new HtmlFO(),
 

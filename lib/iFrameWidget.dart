@@ -234,7 +234,7 @@ class iFrameWidget extends Widget {
     *    * [String] initialURL: (optional) TODO - Set after construction outside this right now; implement here.
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    iFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'iFrame', String initialURL='']) :
+    iFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'iFrameWidget', String initialURL='']) :
         //CREATE EMBEDDED CLASSES we need...
         _embeddedFO = new iFrameFO(),
 
