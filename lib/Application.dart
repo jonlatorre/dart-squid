@@ -208,6 +208,22 @@ class Application {
     final bool  showHint        = true;
     final int   hintPause       = 1000;
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Used for development / debugging tracing purposes. When [true] enables trace-points
+    * per [TracingDefs] list constants (global, in Common.dart), and the [Application.trace]
+    * method will write (to browser 'Console') pertinent information for any enabled
+    * trace point(s) that are encountered during execution.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    bool    tracingEnabled   = false;
+
+
+    /*
+    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    BEGIN: PRIVILEGED METHODS (publicly visible accessors to our protected members)
+    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    */
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
@@ -222,13 +238,6 @@ class Application {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     SVGSVGElement get canvas    => _canvas;
-
-
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: PRIVILEGED METHODS (publicly visible accessors to our protected members)
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    */
 
     /**
     * Application Name; notational only, though perhaps useful when setting a page
@@ -419,12 +428,11 @@ class Application {
                 _canvasBounds.T     = rect2.client.top;
                 _canvasBounds.R     = (_canvasBounds.L  + rect2.client.right   - _marginLeft);
                 _canvasBounds.B     = (_canvasBounds.T  + rect2.client.bottom  - _marginTop);
-//                print("NESTED FUTURE _CanvasBounds.L, T, R, B: ${_CanvasBounds.L}, ${_CanvasBounds.T}, ${_CanvasBounds.R}, ${_CanvasBounds.B} ");
-//                print("NESTED FUTURE _CanvasBounds.L, T, R, B: ${_Canvas.width}, ${_Canvas.attributes['height'].convertToSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_PX)}");
-//                _Canvas.attributes['height'].convertToSpecifiedUnits(SVGLength.SVG_LENGTHTYPE_PX);
-//                print("NESTED FUTURE _CanvasBounds.L, T, R, B: ${_Canvas.width}, ${_Canvas.attributes['height'].valueAsString()}");
+
+                trace(103, this);
 
                 if (!_isAppReady) {
+                    trace(100, this);
                     _isAppReady = true;
                     _onAppReady();
                 } else {
@@ -490,6 +498,30 @@ class Application {
     BEGIN: PUBLIC METHODS
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Used for development / debugging tracing purposes, in conjunction with [tracingEnabled].
+    * Dual capabilities depending on whether optional [_objInitiatingTrace] is provided;
+    * when it is, all logging is handled by this method. Otherwise, logging in handled
+    * by caller and caller is simply obtaining return value to determine if a [_tracePoint]
+    * is enabled in the [TracingDefs] list constants (global, in Common.dart).
+    *
+    * ### Parameters (required)
+    *   * [int] _tracePoint: the String version of this value is used to locate the
+    *   matching [TracingDefs] entry, and indicates the tracing-step (tracePoint) encountered.
+    *   * [Dynamic] _objInitiatingTrace: (optional) if provided, contains object to dump
+    *   trace information for (e.g., a [Widget] instance or a subclass thereof); can also
+    *   pass a String message-to-log through this parm instead.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    bool trace(int _tracePoint, [Dynamic _objInitiatingTrace = null]) {
+        if (!tracingEnabled) return false;
+        if (!(TracingDefs[_tracePoint.toString()].isActive)) return false;
+        if (_objInitiatingTrace == null) return true;
+        logToConsole(['LINE1', TracingDefs[_tracePoint.toString()].tracePointDesc, _objInitiatingTrace, 'LINE4']);
+        return true;
+    }
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -618,7 +650,14 @@ class Application {
         if (selectorNames.indexOf('UseVirtualBorder') > -1) {useVirtualBorder = true;}
 
         setSVGAttributes(_cssTestingRect, {'class': selectorNames});
-        //print("BEGIN GetCSSPropertyValuesForClassNames WITH SelectorNames: ${SelectorNames}  targetName: ${targetName}");
+
+        if (trace(101)) {
+            logToConsole([
+                'LINE2',
+                "${TracingDefs['101'].tracePointDesc}   SelectorNames = ${selectorNames};  targetName = ${targetName};",
+                'LINE3'
+            ]);
+        }
 
         //TODO: NOTE THAT SECOND PARM OF getComputedStyle is String name of a pseudo-element (e.g., :first-line or :hover and so forth)
         CSSStyleDeclaration styledec = window.$dom_getComputedStyle(_cssTestingRect, '');
@@ -647,7 +686,13 @@ class Application {
                 //any border style unknown to us shall be treated as "none"
                 sCalculatedValue = (iIndex == -1 ? eBorderStyle.Names[eBorderStyle.None] : eBorderStyle.Names[iIndex]);
 
-//                print("TargetObjectName=${targetName};  sPropertyName=${sPropertyName};  UseVirtualBorder=${useVirtualBorder}; eBorderStyle.Name=${eBorderStyle.Names[iIndex]};  ==>${sCalculatedValue} (CALC)");
+                if (trace(102)) {
+                    logToConsole([
+                        "${TracingDefs['102'].tracePointDesc}   targetName = ${targetName};  sPropertyName = ${sPropertyName};  useVirtualBorder = ${useVirtualBorder};  eBorderStyle.Name = ${eBorderStyle.Names[iIndex]};  CALCULATED VALUE = ${sCalculatedValue} (CALC)",
+                        'LINE4'
+                    ]);
+                }
+
             }
 
             target.calcValue = sCalculatedValue;

@@ -83,7 +83,7 @@ class TextWidget extends Widget {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void extendedRealign() {
         _embeddedFO.updateFOMetrics();
-        //print('extendedRealign fired; instance: ${instanceName}');
+        _applicationObject.trace(200, this);
     }
 
 

@@ -78,7 +78,7 @@ main() {
         const ButtonDef('Widget1',          'myWidget1',            80  , true ),
         const ButtonDef('Widget2',          'myWidget2',            80  , true ),
         const ButtonDef('Widget3',          'myWidget3',            80  , true ),
-        const ButtonDef('Features & Notes', 'WidgetNotesWebPage',   140  , true ),
+        const ButtonDef('Features & Notes', 'WidgetNotesWebPage',   140 , true ),
         const ButtonDef('README (via XHR)', 'EmbedWebPage',         160 , false),
         const ButtonDef('FO Repaint Tests', 'FORepaintTestsPage',   140 , true ),
         const ButtonDef('iFrameWidget',     'EmbedWebPageInIFrame', 120 , false)
@@ -230,8 +230,7 @@ main() {
     void testWidgetOnShowEventCallback(Dynamic eventObj) {
         Tsvg.logToConsole([
             'LINE3',
-            "${eventObj.instanceName} onShow EVENT fired",
-            'LINE3'
+            "${eventObj.instanceName} onShow EVENT fired"
         ]);
     }
 
@@ -598,7 +597,7 @@ main() {
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
         btnLog.on.mouseClick = btnLogAppWidgetsDataToConsoleClick;
-        btnLog.caption = "Log App's Widget's Info Now";
+        btnLog.caption = "Log App's Widgets' Info Now";
         btnLog.show();
 
         Tsvg.logToConsole([
@@ -925,15 +924,7 @@ main() {
 
         Tsvg.logToConsole([
             'LINE1',
-            'Main() Entry...',
-            'Running Application "$applicationName" within ${document.window.location.href} and SVG application canvas element ID=$applicationCanvasElementID',
-            'LINE2',
-            'The following bounds values should appear realistic for current browser-window size...',
-            '    Application.CanvasBounds.Width: ${globalApplicationObject.canvasBounds.Width}',
-            '    Application.CanvasBounds.Height: ${globalApplicationObject.canvasBounds.Height}',
-            '',
-            'Application background styled with CSS Class(es): ${globalApplicationObject.classesCSS}',
-            'LINE1'
+            'runApplication() Entry (via Application object onReady callback)...'
         ]);
 
 
@@ -983,6 +974,8 @@ main() {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     globalApplicationObject = new Tsvg.Application(applicationName, document.query(applicationCanvasElementID), runApplication );
+
+    globalApplicationObject.tracingEnabled = true; //change to false if ALL tracing is to be off.
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

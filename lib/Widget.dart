@@ -1609,8 +1609,6 @@ class CSSTargetsMap {
     void addClassSelectorsForTargetObjectName(String targetName, String newSelectors) {
         if (!_targetObjectsAndSelectors.containsKey(targetName)) return;
 
-        //print("classesCSS OBJECT.AddClassSelectorsForTargetObjectName(${targetName},${newSelectors}): ");
-
         //remove any extraneous spaces
         newSelectors = newSelectors.replaceAll(' ', '');
 
@@ -2954,6 +2952,8 @@ class Widget {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void _updateStylePropertiesListValuesFromCSS() {
+        _applicationObject.trace(8, this);
+
         //Widget_Base, Widget_Frame,Widget_BorderOuter, Widget_BorderInner
         _applicationObject.getCSSPropertyValuesForClassNames(sWBase,  classesCSS[sWBase],  _stylablePropertiesList);
         _applicationObject.getCSSPropertyValuesForClassNames(sWFrame, classesCSS[sWFrame], _stylablePropertiesList);
@@ -3193,15 +3193,29 @@ class Widget {
                     if (goodSibling) {
                         //Use our convenience arrays to get index into appropriate Part.Dim name
                         alignToDimName = eSides.Names[objAlignPart.dimension.toString()];
-//TRACING                 print("ALIGNTESTNOW objAlignPart=${objAlignPart}, objAlignPart.Dimension=${objAlignPart.Dimension.toString()}, alignToDimName: ${alignToDimName}");
-//                        print("ALIGNTESTNOW objAlignPart.objToAlignTo.Metrics=${objAlignPart.objToAlignTo.Metrics}");
-//                        print("ALIGNTESTNOW objAlignPart.objToAlignTo.Metrics[objAlignPart.Part]=${objAlignPart.objToAlignTo.Metrics[objAlignPart.Part]}");
 
                         //if sibling being aligned to has had its position translated, we need to take that into account when aligning to it.
                         translationAdj = ( ('R,L,CX'.contains(alignToDimName)) ? objAlignPart.objToAlignTo.translateX: objAlignPart.objToAlignTo.translateY);
 
                         //our widget part's dimension value depends on the bounds-subcomponent value from the Widget we are aligned to (e.g., it's Margin.Left value)
                         objAlignPart.dimensionValue = (objAlignPart.objToAlignTo.metrics[objAlignPart.part][alignToDimName]) + translationAdj;
+
+                        //Trace will include Widget data followed immediately by AlignSpec info
+                        if (_applicationObject.trace(2)) {
+                            logToConsole([
+                                'LINE2',
+                                TracingDefs['2'].tracePointDesc,
+                                'LINE3',
+                                this,
+                                'LINE5',
+                                "  (AlignSpec) referenced Widget's dimension = ${alignToDimName}; referenced Widget's part = ${eWidgetPart.Names[objAlignPart.part]}; referenced value = ${objAlignPart.dimensionValue};",
+                                'LINE4',
+                                'Referenced Widget (objToAlignTo) follows:',
+                                objAlignPart.objToAlignTo,
+                                'LINE2'
+                            ]);
+                        }
+
                     } else {
                         throw new Exception('(acquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a Sibling of ${_instanceName} in previous SVG Nodes.' );
                     }
@@ -3381,7 +3395,7 @@ class Widget {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void reAlignSiblings() {
-        //print('${instanceName} reAlignSiblings');  //TODO: TRACING
+        _applicationObject.trace(3, this);
 
         Widget ptrWidget = null;
         int countWidgets = 0;
@@ -3482,7 +3496,7 @@ class Widget {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void extendedRealign() {
-        //print("(${instanceName}) Widget.extendedRealign trace");  //TODO: Tracing option
+        _applicationObject.trace(1, this);
     }
 
 
@@ -3548,7 +3562,9 @@ class Widget {
     */
     void handleCSSChanges() {
         _cssChangedSinceRepaint = true;
-        //print("HandleCSSChanges: _CSSChangedSinceRepaint=${_CSSChangedSinceRepaint}  _Visible=${_Visible}");
+
+        _applicationObject.trace(4, this);
+        _applicationObject.trace(4, ">> _cssChangedSinceRepaint=${_cssChangedSinceRepaint}  _visible=${_visible}");
 
         if (_visible) {
             rePaint();
@@ -3633,8 +3649,16 @@ class Widget {
         if (!isMultiSelect) {_applicationObject.clearWidgetSelection();}
 
         _isSelected = ((!isMultiSelect) || (_applicationObject.addWidgetToSelection(this)));
-//        print("--------------");
-//        _ApplicationObject.SelectedWidgetsList.forEach( (widg) {print("SelectedWidgetsList[item]=${widg.InstanceName}"); });
+
+        //Trace to dump selected Widget(s) info...
+        if (_applicationObject.trace(5)) {
+            logToConsole([
+                'LINE2',
+                TracingDefs['5'].tracePointDesc,
+                'LINE3'
+            ]);
+            _applicationObject.selectedWidgetsList.forEach( (widg) {logToConsole(["SelectedWidgetsList[item] = ${widg.instanceName}"]); });
+        }
 
         //Don't allow the initiation of a move or resize on a non-selected item. This prevents double-move of "owned" (unselectable)
         if (!_isSelected) return;
@@ -3703,7 +3727,7 @@ class Widget {
     */
     void mouseMove(MouseEvent event) {
         event.stopPropagation();
-        //print('${instanceName} mouseMove'); //TODO: TRACING
+        _applicationObject.trace(6, this);
 
         //Get difference in position since last processed mousemove (or initial mousedown)...
         num offsetX = event.clientX - _dragStartX;
@@ -3839,7 +3863,9 @@ class Widget {
             num maxX                = _posRules.getMaxX(new MouseNotifyEventObject(this, event));
             acceptProposedX         = acceptProposedX && ((maxX == null) ? true : ((proposedX <= maxX) || (shiftX < 0)));
 
-            //print("MoveTesting: IsCursorInWidgetRangeX=${IsCursorInWidgetRangeX} AcceptProposedX=${AcceptProposedX}  XAsClientX=${XAsClientX}  event.clientX=${event.clientX};");
+            _applicationObject.trace(7, this);
+            _applicationObject.trace(7, "  >> isCursorInWidgetRangeX = ${isCursorInWidgetRangeX};  acceptProposedX = ${acceptProposedX};  xAsClientX = ${xAsClientX};  event.clientX = ${event.clientX};");
+
             if  (acceptProposedX && isCursorInWidgetRangeX) {
                 _translateX = proposedTranslateX;
             }

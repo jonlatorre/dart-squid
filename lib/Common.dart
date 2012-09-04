@@ -23,11 +23,44 @@ This file contains "global" constants, types, etc.; i.e., Commonly needed functi
 BEGIN: GLOBAL constants and types
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
-final String Version        = '2012-08-28 : 0.3.2';
+
+///Structure used in [TracingDefs] Map for use by [Application.trace] functionality.
+class TracingInfo {
+    final bool      isActive;           //trace point on/off?
+    final String    typeName;           //Notational - what Class type is this step in. (narrow down where to look; though, searching for trace(int-value-here) would work in editor).
+    final String    tracePointDesc;     //Notational - so we can quickly look at our const list and recognize purpose of step and/or where in the code it is (e.g., method name); display in standard trace() output too.
+    const TracingInfo(this.isActive, this.typeName, this.tracePointDesc);
+}
+
+
+///Map for use by [Application.trace] functionality. The "key" portion of the Map is our tracePoint (int) value.
+final Map<int, TracingInfo> TracingDefs = const {
+    '1'   : const TracingInfo(false , 'Widget'          , 'extendedRealign method...'),
+    '2'   : const TracingInfo(false , 'Widget'          , '_updateWidgetMetrics > acquireReferencedAlignValues > if (goodSibling)...'),
+    '3'   : const TracingInfo(false , 'Widget'          , 'reAlignSiblings method...'),
+    '4'   : const TracingInfo(false , 'Widget'          , 'handleCSSChanges method...'),
+    '5'   : const TracingInfo(false , 'Widget'          , 'Widget.mouseDown > Widget-Selections info dump...'),
+    '6'   : const TracingInfo(false , 'Widget'          , 'mouseMove method...'),
+    '7'   : const TracingInfo(false , 'Widget'          , 'move > proposed-X-axis-move-test...'),
+    '8'   : const TracingInfo(false , 'Widget'          , '_updateStylePropertiesListValuesFromCSS...'),    //use with traces 101,102
+    '100' : const TracingInfo(true , 'Application'     , '(Application) _updateCanvasBounds > nested Future<ElementRect> > FIRING _onAppReady (ChangeHandler) NOW and STARTING APPLICATION.'),
+    '101' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (BEGIN):'),
+    '102' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (StyleTarget list loop):'),
+    '103' : const TracingInfo(false , 'Application'     , '_updateCanvasBounds > nested Future<ElementRect>...'),
+    '200' : const TracingInfo(false , 'TextWidget'      , 'extendedRealign method...')
+};
+
+
+
+///Widget-set source-code version label.
+final String Version        = '2012-09-04 : 0.3.3';
+
+///Used to produce quickly recognizable visual breaks between logical sections of console-logged output and such; likewise for line2, 3, 4, and 5 styles.
 final String SeparatorLine1 = '███████████████████████████████████████████████████████████████████████████████████████████';
 final String SeparatorLine2 = '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
 final String SeparatorLine3 = '▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪';
 final String SeparatorLine4 = '═══════════════════════════════════════════════════════════════════════════════════════════';
+final String SeparatorLine5 = '-------------------------------------------------------------------------------------------';
 
 
 /*
@@ -374,6 +407,7 @@ void logToConsole(List<Dynamic> itemsToLog) {
                 case 'LINE2': {toLog = SeparatorLine2; break;}
                 case 'LINE3': {toLog = SeparatorLine3; break;}
                 case 'LINE4': {toLog = SeparatorLine4; break;}
+                case 'LINE5': {toLog = SeparatorLine5; break;}
             }
 
             writeLine(toLog);
@@ -393,17 +427,25 @@ void logToConsole(List<Dynamic> itemsToLog) {
                 alignL = !((toLog.align.L.objToAlignTo == null) && (toLog.align.L.dimension == eSides.None));
                 //sizing =
 
-                writeLine ("(${toLog.typeName}) >> Identifying Data: instanceName='${toLog.instanceName}';  HierarchyPath='${toLog.hierarchyPath}';  Tag='${toLog.tag}';");
+                writeLine ("(${toLog.typeName}) >> instanceName = '${toLog.instanceName}';  HierarchyPath = '${toLog.hierarchyPath}';  Tag = '${toLog.tag}';");
                 writeLine ("${insetPretty}>> Current widgetState: ${eWidgetState.getCommaDelimNamesInVal(toLog.widgetState)};");
-                writeLine ("${insetPretty}>> Geometry Data: (x, y)=(${toLog.x}, ${toLog.y});  (translateX, translateY)=(${toLog.translateX}, ${toLog.translateY});  (width, height)=(${toLog.width}, ${toLog.height});  (xAsClientX, yAsClientY)=(${toLog.xAsClientX}, ${toLog.yAsClientY});");
-                writeLine ("${insetPretty}>> Aligned?  Top=${alignT};  align.Right=${alignR};  align.Bottom=${alignB};  align.Left=${alignL};");
-                writeLine ("${insetPretty}>> sizeRules: (minWidth, MaxWidth)=(${(naForNull(toLog.sizeRules.minWidth))}, ${(naForNull(toLog.sizeRules.maxWidth))});  (minHeight, maxHeight)=(${(naForNull(toLog.sizeRules.minHeight))}, ${(naForNull(toLog.sizeRules.maxHeight))})");
-                writeLine ("${insetPretty}>> Other Contraints: anchors=${eSides.getCommaDelimNamesInVal(toLog.anchors)};");
+                writeLine ("${insetPretty}>> Geometry Data: (x, y) or (top, left) = (${toLog.x}, ${toLog.y});  (width, height) = (${toLog.width}, ${toLog.height});  (right, bottom) = (${toLog.x + toLog.width}, ${toLog.y + toLog.height});");
+                writeLine ("${insetPretty}>> Geometry Translation Data: (translateX, translateY) = (${toLog.translateX}, ${toLog.translateY});  (xAsClientX, yAsClientY) = (${toLog.xAsClientX}, ${toLog.yAsClientY});");
+                writeLine ("${insetPretty}>> Aligned?  Top = ${alignT};  align.Right = ${alignR};  align.Bottom = ${alignB};  align.Left = ${alignL};");
+                writeLine ("${insetPretty}>> sizeRules: (minWidth, MaxWidth) = (${(naForNull(toLog.sizeRules.minWidth))}, ${(naForNull(toLog.sizeRules.maxWidth))});  (minHeight, maxHeight) = (${(naForNull(toLog.sizeRules.minHeight))}, ${(naForNull(toLog.sizeRules.maxHeight))})");
+                writeLine ("${insetPretty}>> Other Contraints: anchors = ${eSides.getCommaDelimNamesInVal(toLog.anchors)};");
 
                 if (toLog.hasParent) {
                     writeLine ("${insetPretty}>> PARENT Data: Owned Child Count=${toLog.parentWidget.getWidgetCount()}; Index of this object in parent WidgetList: ${toLog.parentWidget.indexOfWidget(toLog)};");
                 }
+            }  //...if Widget logging
 
+            if (toLog is Application) {
+                insetPretty =   '              >>';
+                writeLine ("(Application) >> name = '${toLog.name}';  Application URL = ${document.window.location.href};  Canvas SVG Element.id = ${toLog.canvas.id};");
+                writeLine ("(Application) >> Environment:  browserType = ${toLog.browserType}; isStandaloneSVG = ${toLog.isStandaloneSVG};  isRunningOnServer = ${toLog.isRunningOnServer};");
+                writeLine ("${insetPretty} Geometry Data: (marginLeft, marginTop) = (${toLog.marginLeft}, ${toLog.marginTop});  canvasBounds(L, T, R, B) = (${toLog.canvasBounds.L}, ${toLog.canvasBounds.T}, ${toLog.canvasBounds.R}, ${toLog.canvasBounds.B}); canvasBounds(width,height) = (${toLog.canvasBounds.Width}, ${toLog.canvasBounds.Height});");
+                writeLine ("${insetPretty} App. Background Style: classesCSS = ${toLog.classesCSS};");
             }
 
             //This line will produce an expandable "object>" reference in the console.
