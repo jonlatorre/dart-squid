@@ -579,6 +579,7 @@ main() {
               widgetInList
           ]);
         }); //...forEach
+
     }
 
 
@@ -860,8 +861,8 @@ main() {
         SelectElement  colorSelectElement = null;
         SelectElement  frameWidthSelectElement = null;
 
-        //findSelectBox = document.query("#comboColor");  //works
-        colorSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboColor");    //works - is this "faster" approach than using "query" (i.e., limits search to div)?
+        //colorSelectElement = document.query("#comboColor");  //works
+        colorSelectElement      = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboColor");    //works - is this "faster" approach than using "query" (i.e., limits search to div)?
         frameWidthSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboFrameWidth");
 
         //assign event-handler to that select element
