@@ -515,11 +515,11 @@ class Application {
     *   pass a String message-to-log through this parm instead.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    bool trace(int _tracePoint, [Dynamic _objInitiatingTrace = null]) {
+    bool trace(int tracePoint, [Dynamic objInitiatingTrace = null]) {
         if (!tracingEnabled) return false;
-        if (!(TracingDefs[_tracePoint.toString()].isActive)) return false;
-        if (_objInitiatingTrace == null) return true;
-        logToConsole(['LINE1', TracingDefs[_tracePoint.toString()].tracePointDesc, _objInitiatingTrace, 'LINE4']);
+        if (!(TracingDefs[tracePoint.toString()].isActive)) return false;
+        if (objInitiatingTrace == null) return true;
+        logToConsole(['LINE1', TracingDefs[tracePoint.toString()].tracePointDesc, objInitiatingTrace, 'LINE4']);
         return true;
     }
 

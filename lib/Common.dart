@@ -34,7 +34,7 @@ class TracingInfo {
 
 
 ///Map for use by [Application.trace] functionality. The "key" portion of the Map is our tracePoint (int) value.
-final Map<int, TracingInfo> TracingDefs = const {
+final Map<String, TracingInfo> TracingDefs = const {
     '1'   : const TracingInfo(false , 'Widget'          , 'extendedRealign method...'),
     '2'   : const TracingInfo(false , 'Widget'          , '_updateWidgetMetrics > acquireReferencedAlignValues > if (goodSibling)...'),
     '3'   : const TracingInfo(false , 'Widget'          , 'reAlignSiblings method...'),
@@ -380,7 +380,7 @@ See SampleApplication for examples of usage.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
 void logToConsole(List<Dynamic> itemsToLog) {
-    final string spacesConst = "                                 ";
+    final   String spacesConst = "                                 ";
     String  insetPretty = "";
     bool    alignT = false;
     bool    alignR = false;
