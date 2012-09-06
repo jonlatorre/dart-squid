@@ -6,6 +6,7 @@
 *.bak
 .7z
 *.js
+*.js.map
 TODO/
 docs/
 *.dll
