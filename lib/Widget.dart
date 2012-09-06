@@ -1891,7 +1891,7 @@ BEGIN: HtmlFO Class
 * display scrollbars (to allow access to overflow) or simply hide any overflow.
 *
 * **Critical Note:** See [dart issue 2977: must "wrap" SVG doc in HTML doc to work!](http://code.google.com/p/dart/issues/detail?id=2977)
-* I.e., for now, this bug is a blocking bug preventing standalong SVG docs using this
+* I.e., for now, this bug is a blocking bug preventing standalone SVG docs using this
 * Class (and classes that implement it, like the TextWidget) from working.
 *
 * ## Discussion and Reason for this Class
@@ -1903,6 +1903,10 @@ BEGIN: HtmlFO Class
 * SVG implementation instead of this embedded (HTML) foreign-object approach for text.
 *
 * If demand merits, we can do the calcs for text internally and replace the FO approach.
+*
+* HTML Element(s) within a FO are accessible from the Dart-code in outside SVG
+* (see project samples directory, Sample 1 for technique).
+* TODO: Confirm that the FO can include script references and execute JS and/or Dart from within FO, independent of outer SVG.
 *
 * ## See Also
 *    * [TextWidget] is the specialized [Widget] subclass that embeds the [HtmlFO] within it.

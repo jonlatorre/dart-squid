@@ -448,9 +448,10 @@ void logToConsole(List<Dynamic> itemsToLog) {
                 writeLine ("${insetPretty} App. Background Style: classesCSS = ${toLog.classesCSS};");
             }
 
-            //This line will produce an expandable "object>" reference in the console.
             //TODO: Dartium console not yet like Chromium/JS (this does not show as viewable, hierarchical, inspectable object yet:
-            //writeLine(itemToLog);
+            //writeLine(itemToLog);  //This line will produce an expandable "object>" reference in the console.
+
+            //TODO: Where is this output from this method going when "run as JS" from WITHIN Dart Editor?  It does not show in Chrome console, but does if JS run outside of Editor?!
         }
 
     }); //...forEach

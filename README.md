@@ -19,7 +19,8 @@ These components currently serve as a proof-of-concept that explores the viabili
 [Online dart-squid Samples](http://mv4t.com/dart-squid/samples/samples-index.html) : I will try to keep this sample up-to-date as any substantial changes to the features/functionality change.
 
 ### Features and Functionality ###
-For now, see Documentation links below, (single-file PDF with more feature discussion coming soon).
+See Documentation links below for more.
+Dartdocs (API) are rather complete, and more detail is available in PDF documentation.
 
 Quick Overview:
 * **Nesting of widgets** (visual and true object-hierarchical); rather like Delphi panels and controls.
@@ -34,7 +35,7 @@ Effects via SVG-Filters are possible.)
 
 ## Documentation ##
 * Source Code is commented in some detail
-* Should be here soon: [Single-File PDF Intro, Discussion, etc.](.)
+* [Single-File PDF: dart-squid SVG UI Widgets Introduction, Discussion, TODO Items, Bug Reports, and related documentation.](http://mv4t.com/dart-squid/docs/dart_squid_SVG_UI_Widgets_Documentation.pdf)
 * [API Reference (aka dartdocs)] (http://mv4t.com/dart-squid/docs/dart_squid.html)
 * [Wiki Documentation](https://github.com/IntersoftDev/dart-squid/wiki/_pages)
 
