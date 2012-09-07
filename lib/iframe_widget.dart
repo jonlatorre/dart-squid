@@ -11,12 +11,12 @@
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: iFrameFO Class
+BEGIN: IFrameFO Class
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* An [iFrameFO] encapsulates an iFrame inside a SVG foreignObject and allows
+* An [IFrameFO] encapsulates an iFrame inside a SVG foreignObject and allows
 * interaction with that iFrame by setting the URL (via [setURL] method) that will
 * be used to retrieve content from and populate the iFrame within.
 *
@@ -25,11 +25,11 @@ BEGIN: iFrameFO Class
 *
 *
 * ## See Also
-*    * [IFrameWidget] is the specialized [Widget] subclass that embeds the [iFrameFO] within it.
+*    * [IFrameWidget] is the specialized [Widget] subclass that embeds the [IFrameFO] within it.
 *    * [HtmlFO] is similar, but allows direct manipulation of embedded HTML content.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class iFrameFO {
+class IFrameFO {
     //These variables obtain their value during createFOStructure
     Widget              _ptrWidget              = null;
     SVGElement          _ptrSVGElementForFO     = null;
@@ -134,11 +134,11 @@ class iFrameFO {
     * [updateFOMetrics] will need to be called during [Widget] alignment.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    iFrameFO() :
+    IFrameFO() :
         _foElementRef   = new SVGElement.tag('foreignObject'),
         _iFrameObj      = new IFrameElement();
 
-} //iFrameFO
+} //IFrameFO
 
 
 
@@ -150,9 +150,9 @@ BEGIN: IFrameWidget Class
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* An [IFrameWidget] is just a [Widget] that contains an embedded [iFrameFO] object
+* An [IFrameWidget] is just a [Widget] that contains an embedded [IFrameFO] object
 * (which is a construct using an iFrame inside a SVG foreignObject). This class allows
-* interaction with that iFrameFO by setting the URL (via [setURL] method) that will
+* interaction with that IFrameFO by setting the URL (via [setURL] method) that will
 * be used to retrieve content from and populate the iFrame within.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -163,8 +163,8 @@ class IFrameWidget extends Widget {
     Variables, setters/getters
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    iFrameFO    _embeddedFO     = null;
-    iFrameFO    get embeddedFO  => _embeddedFO;     //TODO: Expose all, or just part?
+    IFrameFO    _embeddedFO     = null;
+    IFrameFO    get embeddedFO  => _embeddedFO;     //TODO: Expose all, or just part?
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -176,7 +176,7 @@ class IFrameWidget extends Widget {
     * automatically do this if it were handling hierarchically-contained DOM-object property-
     * setting and painting correctly.
     *
-    * TODO: needed by TextWidget; not sure if truly needed in IFrameWidget yet. Confirm.
+    * TODO: needed by HtmlWidget; not sure if truly needed in IFrameWidget yet. Confirm.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void hide() {
@@ -193,7 +193,7 @@ class IFrameWidget extends Widget {
     * See comment for [hide]; same issue being addressed here, but only from standpoint
     * of re-displaying the embedded FO that we have otherwise set "off" during hide.
     *
-    * TODO: needed by TextWidget; not sure if truly needed in IFrameWidget yet. Confirm.
+    * TODO: needed by HtmlWidget; not sure if truly needed in IFrameWidget yet. Confirm.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void show() {
@@ -214,7 +214,7 @@ class IFrameWidget extends Widget {
     }
 
 
-    ///Set the URL used as source-HTML for to populate embedded [iFrameFO] contents.
+    ///Set the URL used as source-HTML for to populate embedded [IFrameFO] contents.
     void setURL(String url) {
         _embeddedFO.setURL(url);
     }
@@ -236,7 +236,7 @@ class IFrameWidget extends Widget {
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     IFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'IFrameWidget', String initialURL='']) :
         //CREATE EMBEDDED CLASSES we need...
-        _embeddedFO = new iFrameFO(),
+        _embeddedFO = new IFrameFO(),
 
         //call super's constructor
         super(instanceName, appInstance, parentInstance, typeName)

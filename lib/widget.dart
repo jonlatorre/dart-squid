@@ -1892,7 +1892,7 @@ BEGIN: HtmlFO Class
 *
 * **Critical Note:** See [dart issue 2977: must "wrap" SVG doc in HTML doc to work!](http://code.google.com/p/dart/issues/detail?id=2977)
 * I.e., for now, this bug is a blocking bug preventing standalone SVG docs using this
-* Class (and classes that implement it, like the TextWidget) from working.
+* Class (and classes that implement it, like the HtmlWidget) from working.
 *
 * ## Discussion and Reason for this Class
 * Put bluntly, *SVG text-handling (as of SVG v1.x) is just too darn tough*, since we
@@ -1909,8 +1909,8 @@ BEGIN: HtmlFO Class
 * TODO: Confirm that the FO can include script references and execute JS and/or Dart from within FO, independent of outer SVG.
 *
 * ## See Also
-*    * [TextWidget] is the specialized [Widget] subclass that embeds the [HtmlFO] within it.
-*    * [iFrameFO] is similar, but allows loading HTML content from a URL.
+*    * [HtmlWidget] is the specialized [Widget] subclass that embeds the [HtmlFO] within it.
+*    * [IFrameFO] is similar, but allows loading HTML content from a URL.
 *
 * ---
 */

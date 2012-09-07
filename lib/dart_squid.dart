@@ -127,7 +127,7 @@
 #source("widget.dart");
 #source("common.dart");
 #source("iframe_widget.dart");
-#source("TextWidget.dart");
+#source("html_widget.dart");
 
 //---------------------------------------------------------------------------------------
 // BELOW are IN-PROGRESS (do not push to github yet)

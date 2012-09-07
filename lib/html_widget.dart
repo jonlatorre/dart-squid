@@ -11,19 +11,19 @@
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: TextWidget Class
+BEGIN: HtmlWidget Class
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* A [TextWidget] is just a [Widget] that contains an embedded [HtmlFO] object
+* A [HtmlWidget] is just a [Widget] that contains an embedded [HtmlFO] object
 * (which implements an SVG foreignObject containing HTML/Body/Div structure).
 * This class allows to leverage that structure and interact with it as though we
 * are working with a "Text Element" of sorts, using this class's [caption] property
 * to set that "text" (including formatted-text, since it supports HTML markup).
 **/
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class TextWidget extends Widget {
+class HtmlWidget extends Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -94,15 +94,15 @@ class TextWidget extends Widget {
 
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     /**
-    * Constructs an TextWidget object after performing, mainly via inheritance, the same
+    * Constructs an HtmlWidget object after performing, mainly via inheritance, the same
     * type of activities that the [Widget] (base class) does during construction.
     *
     * ### Parameters
     *    * see [Widget] (base class) constructor for all parameters aside from the following...
-    *    * [String] initialCaption: (optional) the HTML to initially load into our TextWidget.
+    *    * [String] initialCaption: (optional) the HTML to initially load into our HtmlWidget.
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    TextWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'TextWidget', String initialCaption='']) :
+    HtmlWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'HtmlWidget', String initialCaption='']) :
         //CREATE EMBEDDED CLASSES we use...
         _embeddedFO = new HtmlFO(),
 
@@ -119,5 +119,5 @@ class TextWidget extends Widget {
         caption = initialCaption;
     }
 
-} //class TextWidget
+} //class HtmlWidget
 

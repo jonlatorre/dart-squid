@@ -44,11 +44,11 @@ final Map<String, TracingInfo> TracingDefs = const {
     '6'   : const TracingInfo(false , 'Widget'          , 'mouseMove method...'),
     '7'   : const TracingInfo(false , 'Widget'          , 'move > proposed-X-axis-move-test...'),
     '8'   : const TracingInfo(false , 'Widget'          , '_updateStylePropertiesListValuesFromCSS...'),    //use with traces 101,102
-    '100' : const TracingInfo(true , 'Application'     , '(Application) _updateCanvasBounds > nested Future<ElementRect> > FIRING _onAppReady (ChangeHandler) NOW and STARTING APPLICATION.'),
+    '100' : const TracingInfo(true  , 'Application'     , '(Application) _updateCanvasBounds > nested Future<ElementRect> > FIRING _onAppReady (ChangeHandler) NOW and STARTING APPLICATION.'),
     '101' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (BEGIN):'),
     '102' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (StyleTarget list loop):'),
     '103' : const TracingInfo(false , 'Application'     , '_updateCanvasBounds > nested Future<ElementRect>...'),
-    '200' : const TracingInfo(false , 'TextWidget'      , 'extendedRealign method...')
+    '200' : const TracingInfo(false , 'HtmlWidget'      , 'extendedRealign method...')
 };
 
 

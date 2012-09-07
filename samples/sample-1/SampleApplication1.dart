@@ -50,14 +50,14 @@ main() {
     Tsvg.Widget         testWidget3     = null;
 
     Tsvg.Widget         menuButtonsContainer    = null;
-    List<Tsvg.TextWidget> menuButtons   = null;
+    List<Tsvg.HtmlWidget> menuButtons   = null;
 
-    Tsvg.TextWidget     embeddedWebPage = null;
-    Tsvg.TextWidget     notesPage       = null;
+    Tsvg.HtmlWidget     embeddedWebPage = null;
+    Tsvg.HtmlWidget     notesPage       = null;
     Tsvg.IFrameWidget   webIFrame       = null;
-    Tsvg.TextWidget     foRepaintTests  = null;
+    Tsvg.HtmlWidget     foRepaintTests  = null;
 
-    Tsvg.TextWidget     btnLog      = null;
+    Tsvg.HtmlWidget     btnLog      = null;
 
     //This group is for when we are testing within HTML
     Element divInner    = null;
@@ -242,7 +242,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void btnDeleteWidgetMouseClick(Tsvg.MouseNotifyEventObject eventObj) {
-        Tsvg.TextWidget widget = eventObj.sender;
+        Tsvg.HtmlWidget widget = eventObj.sender;
 
         widget.caption = 'Deleted 1';
 
@@ -275,7 +275,7 @@ main() {
 
 
     void btnTestOnMouseDown(Tsvg.MouseNotifyEventObject eventObj) {
-        Tsvg.TextWidget widget = eventObj.sender;
+        Tsvg.HtmlWidget widget = eventObj.sender;
 
         Tsvg.logToConsole([
             'LINE2',
@@ -521,12 +521,12 @@ main() {
 
 
     void createMenuButtons() {
-        Tsvg.TextWidget tempMenuButton = null;
-        menuButtons =  new List<Tsvg.TextWidget>();
+        Tsvg.HtmlWidget tempMenuButton = null;
+        menuButtons =  new List<Tsvg.HtmlWidget>();
 
         num currentLeft = 10;
         ButtonDefs.forEach( (buttonInList) {
-            tempMenuButton = new Tsvg.TextWidget('MenuButton${buttonInList.tag}', globalApplicationObject, menuButtonsContainer);
+            tempMenuButton = new Tsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, menuButtonsContainer);
             tempMenuButton.setBounds((currentLeft), 10, buttonInList.width, 35);
             currentLeft = currentLeft + buttonInList.width;
             tempMenuButton.align.CY.dimension = Tsvg.eSides.CY;
@@ -585,13 +585,13 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TextWidget being used as a "button" with a click event.
+    HtmlWidget being used as a "button" with a click event.
     This particular one is wired to a routine that logs Application's widget data to console.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createLogAppWidgetsDataToConsoleButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
-        btnLog  = new Tsvg.TextWidget('myTextButton', globalApplicationObject);
+        btnLog  = new Tsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog.setBounds(20,50,225,35);
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
@@ -611,14 +611,14 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TextWidget being used as a "delete button" with a click event.
+    HtmlWidget being used as a "delete button" with a click event.
     This particular one tests truncation of overflow text and also uses callback that
     deletes another widget and logs some information.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createDeleteWidgetButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
-        btnLog  = new Tsvg.TextWidget('myTextButton', globalApplicationObject);
+        btnLog  = new Tsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog.setBounds(20,70,95,35);
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
@@ -639,13 +639,13 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TextWidget (which uses internal foreign object (FO) for text/HTML display).
+    HtmlWidget (which uses internal foreign object (FO) for text/HTML display).
     This particular test is for loading the FO with content returned via XHR
     if we are running this sample on local server.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createWebPageInWidget() {
-        embeddedWebPage = new Tsvg.TextWidget('EmbedWebPage', globalApplicationObject);
+        embeddedWebPage = new Tsvg.HtmlWidget('EmbedWebPage', globalApplicationObject);
         embeddedWebPage.setBounds(50,50,500,500);
         embeddedWebPage.embeddedFO.scrollOverflow = true;
         embeddedWebPage.caption = '''
@@ -685,12 +685,12 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TextWidget (which uses internal foreign object (FO) for text/HTML display).
+    HtmlWidget (which uses internal foreign object (FO) for text/HTML display).
     This example simply displays some static HTML content (notes about dart-squid).
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createNotesWidget() {
-        notesPage  = new Tsvg.TextWidget('WidgetNotesWebPage', globalApplicationObject);
+        notesPage  = new Tsvg.HtmlWidget('WidgetNotesWebPage', globalApplicationObject);
         notesPage.setBounds(100,85,650,550);
         notesPage.isMovable.x = true;
         notesPage.isMovable.y = true;
@@ -750,7 +750,7 @@ main() {
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     This method is called from event handler assigned to an HTML select-element embedded
-    within a foreignObject within the HTML assigned to TextWidget "foRepaintTests"
+    within a foreignObject within the HTML assigned to HtmlWidget "foRepaintTests"
     created in next method (createFoRepaintTestWidget).
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
@@ -783,14 +783,14 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TextWidget (which uses internal foreign object (FO) for text/HTML display).
+    HtmlWidget (which uses internal foreign object (FO) for text/HTML display).
     This example exists to keep tabs on the outstanding issues with Chrome/Dartium/Webkit
     SVG-rendering-issues (within FOs) when page-zoom is other than 100%.  HTML controls
     and repaint-region (in general) is trashed on non-100%-zooms currently.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createFoRepaintTestWidget() {
-        foRepaintTests  = new Tsvg.TextWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
+        foRepaintTests  = new Tsvg.HtmlWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
         foRepaintTests.tag = 'FOR1';
         foRepaintTests.setBounds(300,150,800,500);
         foRepaintTests.isMovable.x = true;
@@ -805,7 +805,7 @@ main() {
         foRepaintTests.caption = '''
             <div id="backgroundColorTest" style="background-color: #add8e6;" >
             <span class="BoldRed" >SVG Components FO Repaint Tests</span>
-            <p>This is a TextWidget that uses <b>SVG ForeignObject (FO)</b> to embed HTML content.</p>
+            <p>This is a HtmlWidget that uses <b>SVG ForeignObject (FO)</b> to embed HTML content.</p>
             <p>HTML Controls test (edit, select, radio) appear below.  Some of these controls interact with Widget(s) in this Sample Application.</p>
             <p>Set this Widget's Frame Color:
                 <select id="comboColor" name="color">
