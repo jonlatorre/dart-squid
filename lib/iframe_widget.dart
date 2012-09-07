@@ -25,7 +25,7 @@ BEGIN: iFrameFO Class
 *
 *
 * ## See Also
-*    * [iFrameWidget] is the specialized [Widget] subclass that embeds the [iFrameFO] within it.
+*    * [IFrameWidget] is the specialized [Widget] subclass that embeds the [iFrameFO] within it.
 *    * [HtmlFO] is similar, but allows direct manipulation of embedded HTML content.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -145,18 +145,18 @@ class iFrameFO {
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: iFrameWidget Class
+BEGIN: IFrameWidget Class
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* An [iFrameWidget] is just a [Widget] that contains an embedded [iFrameFO] object
+* An [IFrameWidget] is just a [Widget] that contains an embedded [iFrameFO] object
 * (which is a construct using an iFrame inside a SVG foreignObject). This class allows
 * interaction with that iFrameFO by setting the URL (via [setURL] method) that will
 * be used to retrieve content from and populate the iFrame within.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class iFrameWidget extends Widget {
+class IFrameWidget extends Widget {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -176,7 +176,7 @@ class iFrameWidget extends Widget {
     * automatically do this if it were handling hierarchically-contained DOM-object property-
     * setting and painting correctly.
     *
-    * TODO: needed by TextWidget; not sure if truly needed in iFrameWidget yet. Confirm.
+    * TODO: needed by TextWidget; not sure if truly needed in IFrameWidget yet. Confirm.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void hide() {
@@ -193,7 +193,7 @@ class iFrameWidget extends Widget {
     * See comment for [hide]; same issue being addressed here, but only from standpoint
     * of re-displaying the embedded FO that we have otherwise set "off" during hide.
     *
-    * TODO: needed by TextWidget; not sure if truly needed in iFrameWidget yet. Confirm.
+    * TODO: needed by TextWidget; not sure if truly needed in IFrameWidget yet. Confirm.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void show() {
@@ -226,7 +226,7 @@ class iFrameWidget extends Widget {
 
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     /**
-    * Constructs an iFrameWidget object after performing, mainly via inheritance, the same
+    * Constructs an IFrameWidget object after performing, mainly via inheritance, the same
     * type of activities that the [Widget] (base class) does during construction.
     *
     * ### Parameters
@@ -234,7 +234,7 @@ class iFrameWidget extends Widget {
     *    * [String] initialURL: (optional) TODO - Set after construction outside this right now; implement here.
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    iFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'iFrameWidget', String initialURL='']) :
+    IFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'IFrameWidget', String initialURL='']) :
         //CREATE EMBEDDED CLASSES we need...
         _embeddedFO = new iFrameFO(),
 
@@ -251,5 +251,5 @@ class iFrameWidget extends Widget {
         //TODO: set any initial URL
     }
 
-} //class iFrameWidget
+} //class IFrameWidget
 

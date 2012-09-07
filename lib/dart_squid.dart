@@ -25,7 +25,7 @@
 * interact. It also keeps track of all Widgets used in the application.
 *   * [Widget] — the base-class for all visual UI components. Applications will include
 * one or more widget objects; these objects can include more specialized derived
-* sub-classes like [iFrameWidget].
+* sub-classes like [IFrameWidget].
 *
 * ---
 * # Getting Started
@@ -123,10 +123,10 @@
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // Code that makes up the dart-squid framework
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-#source("Application.dart");
-#source("Widget.dart");
+#source("application.dart");
+#source("widget.dart");
 #source("common.dart");
-#source("iFrameWidget.dart");
+#source("iframe_widget.dart");
 #source("TextWidget.dart");
 
 //---------------------------------------------------------------------------------------

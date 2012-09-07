@@ -54,7 +54,7 @@ main() {
 
     Tsvg.TextWidget     embeddedWebPage = null;
     Tsvg.TextWidget     notesPage       = null;
-    Tsvg.iFrameWidget   webIFrame       = null;
+    Tsvg.IFrameWidget   webIFrame       = null;
     Tsvg.TextWidget     foRepaintTests  = null;
 
     Tsvg.TextWidget     btnLog      = null;
@@ -81,7 +81,7 @@ main() {
         const ButtonDef('Features & Notes', 'WidgetNotesWebPage',   140 , true ),
         const ButtonDef('README (via XHR)', 'EmbedWebPage',         160 , false),
         const ButtonDef('FO Repaint Tests', 'FORepaintTestsPage',   140 , true ),
-        const ButtonDef('iFrameWidget',     'EmbedWebPageInIFrame', 120 , false)
+        const ButtonDef('IFrameWidget',     'EmbedWebPageInIFrame', 120 , false)
     ];
 
 
@@ -303,7 +303,7 @@ main() {
         if (indexTest > -1) {
             _targetWidget    = globalApplicationObject.getWidgetByIndex(indexTest);
 
-            print("${sender.instanceName}  Click fired at coordinates (${eventObj.eventInfo.clientX},${eventObj.eventInfo.clientY}) by Widget with tag=${eventObj.sender.tag} to show/hide Widget with InstanceName:tag = ${_targetWidget.instanceName}:${_targetWidget.tag}");
+            print("${sender.instanceName}  Click fired at coordinates (${eventObj.eventInfo.clientX}, ${eventObj.eventInfo.clientY}) by Widget with tag = ${eventObj.sender.tag} to ${(_targetWidget.visible ? 'HIDE' : 'SHOW')} Widget with instanceName = ${_targetWidget.instanceName}.");
 
             _targetWidget.toggleVisibility();
 
@@ -873,13 +873,13 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    iFrameWidget example that loads its content from a URL; in this case, display
+    IFrameWidget example that loads its content from a URL; in this case, display
     our company home-page to demonstrate the fully-functional and navigable web-page
     embedded inside a sizable, movable widget.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createWebPageIFrameWidget() {
-        webIFrame  = new Tsvg.iFrameWidget('EmbedWebPageInIFrame', globalApplicationObject);
+        webIFrame  = new Tsvg.IFrameWidget('EmbedWebPageInIFrame', globalApplicationObject);
         webIFrame.setBounds(10,60,700,600);
 
         //Some tests that make use of the setURL method...

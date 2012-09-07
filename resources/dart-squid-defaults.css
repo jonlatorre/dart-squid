@@ -5,7 +5,7 @@ In addition, styles for widgets created in various test-cases are included.
 
 
 We ultimately get the computed value of CSS styles applied to our Widgets,
-via matching class-selector(s), using code like this (see Application.dart):
+via matching class-selector(s), using code like this (see application.dart):
 
     document.defaultView.getComputedStyle(mBackgroundRect,null).getPropertyValue("stroke")
 
@@ -148,8 +148,8 @@ stroke-opacity  : BORDER opacity (all sides will be the same opacity)
 border          : BORDER width AND color AND style.
     See notes (above; FRAME portion of base-widget), since our inner/outer borders
     make same use of properties, plus we add support for other border-styles.
-    We suport most http://www.w3.org/TR/CSS2/box.html#border-style-properties
-    See Widget.dart for eBorderStyle enumerated types of border-styles we support.
+    We support most http://www.w3.org/TR/CSS2/box.html#border-style-properties
+    See widget.dart for eBorderStyle enumerated types of border-styles we support.
 ═══════════════════════════════════════════════════════════════════════════════════════
 */
 .Widget_BorderOuter {
