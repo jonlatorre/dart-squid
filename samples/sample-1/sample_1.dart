@@ -646,7 +646,8 @@ main() {
     */
     void createWebPageInWidget() {
         embeddedWebPage = new Tsvg.HtmlWidget('EmbedWebPage', globalApplicationObject);
-        embeddedWebPage.setBounds(50,50,500,500);
+        embeddedWebPage.setBounds(50,50,800,600);
+        embeddedWebPage.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base'       ,'Widget_Base_White');
         embeddedWebPage.embeddedFO.scrollOverflow = true;
         embeddedWebPage.caption = '''
             <div>
@@ -670,7 +671,7 @@ main() {
                embeddedWebPage.embeddedFO.htmlDiv.innerHTML= req.responseText;
             }
 
-            getWebPageContent("README.html", onSuccess);    //TODO: Create example-file and push to samples dir.
+            getWebPageContent("dart_squid_SVG_UI_Widgets_Documentation.html", onSuccess);
         }
 
         Tsvg.logToConsole([
@@ -704,7 +705,7 @@ main() {
         notesPage.caption = '''
             <div class="FOBackground">
             <span class="BoldRed " >SVG Components Features &amp; Notes</span><br /><br />
-            <div class="SmallText">
+            <div class="FeaturesText">
             Pure-SVG Widget/Component-Set Highlights:<br />
             <ul>
                 <li><b>Nesting of widgets</b> (visual and true object-hierarchical); rather like Delphi panels and controls.</li>
@@ -803,7 +804,7 @@ main() {
         foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','DarkBlueBorderComponent');
         foRepaintTests.embeddedFO.scrollOverflow = true;
         foRepaintTests.caption = '''
-            <div id="backgroundColorTest" style="background-color: #add8e6;" >
+            <div class="FORepaintTest" style="background-color: #fff8dc; " >
             <span class="BoldRed" >SVG Components FO Repaint Tests</span>
             <p>This is a HtmlWidget that uses <b>SVG ForeignObject (FO)</b> to embed HTML content.</p>
             <p>HTML Controls test (edit, select, radio) appear below.  Some of these controls interact with Widget(s) in this Sample Application.</p>

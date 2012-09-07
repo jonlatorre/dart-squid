@@ -424,15 +424,6 @@ rect#PanelRect21 {
     color: black;
 }
 
-.SmallText {
-    font-size: .8em;
-    color: #ffd700;
-}
-
-.SmallText b {
-    color: #ff8c00;
-}
-
 .MyWidget_Base {
     margin: 0;
     padding: 2px;
@@ -519,28 +510,22 @@ h1 {
     margin-top: 6px;
     margin-bottom: 6px;
     font-weight: bold;
-    color: white;
-    text-decoration: none;
+    border-top: 4px solid black;
 }
 
 
 h2 {
-    font-family: "Arial, Helvetica", Sans-serif;
-    padding: 8px;
-    margin: 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
     font-size: 1.5em;
-    background-color: #333333;
-    color: #DD7700;
-    border-top: 1px solid white;
+    border-top: 2px solid black;
 }
 
 h3 {
-    font-family: "Arial, Helvetica", Sans-serif;
-    padding: 8px;
-    margin: 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
     font-size: 1.3em;
-    background-color: #333333;
-    color: #DD7700;
+    border-top: 1px solid black;
 }
 
 
@@ -585,12 +570,38 @@ div.Examples {
     color: #DD7700;
 }
 
+.FeaturesText {
+    font-size: 1em;
+    color: #ffd700;
+}
+
+.FeaturesText b {
+    color: #ff8c00;
+}
+
+.FeaturesText ul, .FeaturesText li {
+    font-size: 1em;
+    color: #ffd700;
+}
+
+
+.FORepaintTest p {
+    margin: 12px 0 12px 0;
+}
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 BEGIN: CSS USED BY SAMPLES APPLICATION 1
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
+
+.Widget_Base_White {
+    margin: 0px;
+    padding: 0px;
+    fill: white;
+    fill-opacity: 1.0;
+}
+
 
 /*
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
