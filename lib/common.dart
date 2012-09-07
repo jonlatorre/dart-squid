@@ -10,9 +10,10 @@
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-Tsvg: Common library for Dart
+Common library for Dart Project
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-This file contains "global" constants, types, etc.; i.e., Commonly needed functionality.
+This file contains "global" (top level) constants, types, etc.
+I.e., commonly needed functionality.
 
 ███████████████████████████████████████████████████████████████████████████████████████████
 */

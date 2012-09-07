@@ -100,7 +100,7 @@
 *
 * ---
 * ## See Also
-* There are some related "helper methods" (in Common.dart) that are relevant and useful:
+* There are some related "helper methods" (in common.dart) that are relevant and useful:
 * [isInstanceNameUnique], [indexOfInstanceName], and [indexOfTag].
 *  ---
 */
@@ -211,7 +211,7 @@ class Application {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Used for development / debugging tracing purposes. When [true] enables trace-points
-    * per [TracingDefs] list constants (global, in Common.dart), and the [Application.trace]
+    * per [TracingDefs] list constants (global, in common.dart), and the [Application.trace]
     * method will write (to browser 'Console') pertinent information for any enabled
     * trace point(s) that are encountered during execution.
     */
@@ -505,7 +505,7 @@ class Application {
     * Dual capabilities depending on whether optional [_objInitiatingTrace] is provided;
     * when it is, all logging is handled by this method. Otherwise, logging in handled
     * by caller and caller is simply obtaining return value to determine if a [_tracePoint]
-    * is enabled in the [TracingDefs] list constants (global, in Common.dart).
+    * is enabled in the [TracingDefs] list constants (global, in common.dart).
     *
     * ### Parameters (required)
     *   * [int] _tracePoint: the String version of this value is used to locate the
