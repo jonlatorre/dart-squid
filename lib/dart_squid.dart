@@ -129,7 +129,7 @@
 #source("exception_types.dart");
 #source("application.dart");
 #source("widget.dart");
-#source("common.dart");
+#source("globals.dart");
 #source("iframe_widget.dart");
 #source("html_widget.dart");
 

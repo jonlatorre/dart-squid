@@ -1658,7 +1658,7 @@ class Widget {
     Widget              _parentWidget           = null;
 
     //IF exists, stores quick reference to SVGElement in which this Widget's generated-SVG element(s) reside (i.e., hierarchically embedded)
-    //Default SVG-materialization target-element shall be on our global Canvas, unless we have a parent widget (see Create method)
+    //Default SVG-materialization target-element shall be our [Application] object's canvas, unless we have a parent widget (see Create method)
     SVGElement          _parentSVGElement       = null;
 
     //enumeration eWidgetState (int); additive/multi-state; beginUpdate/endUpdate methods use too.
