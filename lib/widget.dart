@@ -3767,7 +3767,7 @@ class Widget {
         //Process any potential user-assigned event code to run on ANY mousemove (not just a Widget "move")
         _on.mouseMove(new MouseNotifyEventObject(this, event));
 
-        //Need to make sure any subclass-implmented alignment occurs for THIS widget
+        //Need to make sure any subclass-implemented alignment occurs for THIS widget
         extendedRealign();
 
         //Handle any potentially-affected sibling alignments : TODO: Optimize!!
@@ -3868,7 +3868,7 @@ class Widget {
             acceptProposedX         = acceptProposedX && ((maxX == null) ? true : ((proposedX <= maxX) || (shiftX < 0)));
 
             _applicationObject.trace(7, this);
-            _applicationObject.trace(7, "  >> isCursorInWidgetRangeX = ${isCursorInWidgetRangeX};  acceptProposedX = ${acceptProposedX};  xAsClientX = ${xAsClientX};  event.clientX = ${event.clientX};");
+            _applicationObject.trace(7, "  >> isCursorInWidgetRangeX = ${isCursorInWidgetRangeX};  acceptProposedX = ${acceptProposedX};  xAsClientX = ${xAsClientX};  event.clientX = ${(event == null ? 'null' : event.clientX)};");
 
             if  (acceptProposedX && isCursorInWidgetRangeX) {
                 _translateX = proposedTranslateX;
