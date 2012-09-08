@@ -945,8 +945,8 @@ class WidgetBorderSide {
         });
 
         //TODO: if (Effect): Which side(s) to apply effect to? Should this be per-side, or move effect to border level?
-        //    The following works for FireFox... and, no need for <use xlink:href="../resources/standard-filters.svg#Effect_3D"/> in SVG appcontainer doc. odd.
-        //    line.attributes['filter'] = 'url(../resources/standard-filters.svg#Effect_3D)';
+        //    The following works for FireFox... and, no need for <use xlink:href="../resources/standard_filters.svg#Effect_3D"/> in SVG appcontainer doc. odd.
+        //    line.attributes['filter'] = 'url(../resources/standard_filters.svg#Effect_3D)';
         //
         //    But, for Chrome browser, must define filter INSIDE our Application' container SVG Element
         //    (see: [Application.canvas] property and [Application] class dartdoc details), and then reference as follows:
@@ -954,7 +954,7 @@ class WidgetBorderSide {
         //    http://code.google.com/p/chromium/issues/detail?id=109212 -- BUG REPORT 2-23-2012 (I COMMENTED ON IT); Please "star" this in hopes it then gets fixed.
 
         if (eBorderStyle.EffectsLineCount[_style] < 2 ) {
-            //We take time to set the display attribute only because there is a slight chance a style-change has occured where we went from line2 showing to not.
+            //We take time to set the display attribute only because there is a slight chance a style-change has occurred where we went from line2 showing to not.
             if ( (borderType == eWidgetPart.Inner) || (borderType == eWidgetPart.Outer) ) {
                 lineElement2.attributes['display'] = displayAttrValLine2;
             }
@@ -2497,7 +2497,7 @@ class Widget {
     * with various stylable target sub-components of a Widget. E.g., frame, border parts.
     *
     * Keys are the stylable-target name; associated Values are the CSS selectors that will
-    * be applied to those parts. For consistency, the intial selector names will be identical
+    * be applied to those parts. For consistency, the initial selector names will be identical
     * to the target-property-names, but these can be overridden and added to by implementor.
     *
     * ## See Also
@@ -3720,8 +3720,8 @@ class Widget {
     we simply set this widget as the only selected Widget.
 
     If shift-key is depressed, we are in multi-select mode, and we add to our existing selection(s)
-    (or remve from, if an already-selected widget is shift-clicked again). The application
-    list-managment routine includes logic to prevent effective "doubling+" of a selection,
+    (or remove from, if an already-selected widget is shift-clicked again). The application
+    list-management routine includes logic to prevent effective "doubling+" of a selection,
     by making sure that hierarchically-owned selections are removed automatically.
     See notes in Application(class).AddWidgetToSelection(method) for more details.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -3876,7 +3876,7 @@ class Widget {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void mouseUp(MouseEvent event) {
-        //test for null because we programatically call MouseUp to abort Move() that would otherwise violate PosRules
+        //test for null because we programmatically call MouseUp to abort Move() that would otherwise violate PosRules
         if (event != null) {event.stopPropagation();}
 
         _applicationObject.canvas.on.mouseMove.remove(mouseMoveHandler);
@@ -4006,7 +4006,7 @@ class Widget {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Call endUpdate to signal the end of mass property changes;
-    * endUpdate will then start the visual recalc / repaint sequence and apply outstanding
+    * endUpdate will then start the visual recalculation / repaint sequence and apply outstanding
     * changes.
     *
     * beginUpdate/endUpdate exist to prevent superfluous, and potentially "expensive",
@@ -4199,8 +4199,8 @@ class Widget {
         is not part of the rendering tree when various initial operations are performed on it
         (e.g., especially in sub-classes that add an FO with DOM objects).
         Remember, the SVG default state of the display attribute is "inherit", as it will be here.
-        Once this wideget is "shown" (via show()), we can rely just on using the cascading
-        visual inheritance of disply:inherit/none without a problem.
+        Once this widget is "shown" (via show()), we can rely just on using the cascading
+        visual inheritance of display:inherit/none without a problem.
         TODO: Test the above assertion with post-show-DOM-mods-to-FO-contained-objects yet.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
@@ -4271,7 +4271,7 @@ class Widget {
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
-        Grab defaults from app-level; can be overriden per instance if needed.
+        Grab defaults from app-level; can be overridden per instance if needed.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
         _showHint   = _applicationObject.showHint;
