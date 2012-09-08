@@ -66,7 +66,7 @@
 *
 * **Note:** see the resources sub-directory within the dart-squid project for a
 * prototypical SVG or HTML document that can help fulfill the requirements of this
-* first step (see: prototypicalAppContainer.svg / .html files).
+* first step (see: prototypical_app_container.svg / .html files).
 *
 * ### 2) Implement Dart Code and Use dart-squid Components
 * Every Dart application requires an entry-point method of `main()`, and that method
