@@ -124,6 +124,9 @@
 // Code that makes up the dart-squid framework
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 #source("enumerations.dart");
+#source("event_types.dart");
+#source("events_processor.dart");
+#source("exception_types.dart");
 #source("application.dart");
 #source("widget.dart");
 #source("common.dart");
