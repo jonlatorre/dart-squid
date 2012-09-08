@@ -308,7 +308,7 @@ main() {
             _targetWidget.toggleVisibility();
 
             //update the look of our button to reflect whether it's "target widget" is showing or not.
-            sender.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base,${(_targetWidget.visible ? "LightGreenFill" : "LightPinkFill")}');
+            sender.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(_targetWidget.visible ? "LightGreenFill" : "LightPinkFill")}');
         }
 
     } //menuButtonsClickHandler
@@ -418,6 +418,7 @@ main() {
     */
     void createTestWidget2() {
         testWidget2 = new Tsvg.Widget('myWidget2', globalApplicationObject);
+        testWidget2.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'TanFill');
         testWidget2.setBounds(100,100,400,400);
         testWidget2.isMovable.x = true;
         testWidget2.align.R.objToAlignTo = testWidget1;
@@ -533,10 +534,10 @@ main() {
 
 
             //create a "button" on the canvas; the click event is what makes it behave like a button.
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base,${(buttonInList.isActive ? "LightGreenFill" : "LightPinkFill")}');
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
+            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(buttonInList.isActive ? "LightGreenFill" : "LightPinkFill")}');
+            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
+            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder');
+            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner');
             tempMenuButton.caption = buttonInList.caption;
             tempMenuButton.tag = buttonInList.tag;
 
@@ -593,10 +594,10 @@ main() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
         btnLog  = new Tsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog.setBounds(20,50,225,35);
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner');
         btnLog.on.mouseClick = btnLogAppWidgetsDataToConsoleClick;
         btnLog.caption = "Log App's Widgets' Info Now";
         btnLog.show();
@@ -620,10 +621,10 @@ main() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
         btnLog  = new Tsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog.setBounds(20,70,95,35);
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','WidgetButton_BorderOuter, UseVirtualBorder');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','WidgetButton_BorderInner');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder');
+        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner');
         btnLog.on.mouseClick = btnDeleteWidgetMouseClick;
         btnLog.caption = 'DELETE-1-ABCDEF-GHI-JKL-MNO-PQR-STUVWXY-Z';  //here to test clipping of overflow
         btnLog.show();
@@ -777,7 +778,7 @@ main() {
         print('Wired FO-Contained-Object FrameWidth Value: ${selectFrameWidthValue}');
 
         //Change frame based on that selected value (it holds our CSS class to apply).
-        foRepaintTests.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame, ${selectedColorValue}, ${selectFrameWidthValue}');
+        foRepaintTests.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame, ${selectedColorValue}, ${selectFrameWidthValue}');
 
     } //selectColorChangeHandler
 
@@ -798,17 +799,17 @@ main() {
         foRepaintTests.isMovable.y = true;
         foRepaintTests.isSizable.x = true;
         foRepaintTests.isSizable.y = true;
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'WidgetButton_Base');
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'WidgetButton_Frame');
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','DarkBlueBorderComponent');
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','DarkBlueBorderComponent');
+        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
+        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
+        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','foRepaintTestsOuterBorder');
+        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','foRepaintTestsInnerBorder');
         foRepaintTests.embeddedFO.scrollOverflow = true;
         foRepaintTests.caption = '''
             <div class="FORepaintTest" style="background-color: #fff8dc; " >
             <span class="BoldRed" >SVG Components FO Repaint Tests</span>
             <p>This is a HtmlWidget that uses <b>SVG ForeignObject (FO)</b> to embed HTML content.</p>
             <p>HTML Controls test (edit, select, radio) appear below.  Some of these controls interact with Widget(s) in this Sample Application.</p>
-            <p>Set this Widget's Frame Color:
+            <p>Set this <b>Widget's Frame Color</b>:
                 <select id="comboColor" name="color">
                     <option value="RedColor">Red</option>
                     <option value="MedOrangeColor">Med Orange</option>
@@ -817,7 +818,7 @@ main() {
                     <option value="BrightPurpleColor">Bright Purple</option>
                     <option value="MintGreenColor">Mint Green</option>
                 </select>
-                Set this Widget's Frame Width:
+                Set this <b>Widget's Frame Width</b>:
                 <select id="comboFrameWidth" name="frameWidth">
                     <option value="FrameOption1">2px</option>
                     <option value="FrameOption2">4px</option>
@@ -943,7 +944,7 @@ main() {
         createTestWidget3();
 
 
-        createWebPageIFrameWidget();    //OK
+        createWebPageIFrameWidget();
 
         //Due to BUG with ElementImplementation InnerHtml (Dart issue# 2977), these currently do not work in standalone SVG document.
         if (!globalApplicationObject.isStandaloneSVG) {

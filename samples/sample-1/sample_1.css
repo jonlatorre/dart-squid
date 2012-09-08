@@ -1,0 +1,268 @@
+/*
+███████████████████████████████████████████████████████████████████████████████████████████
+See the resources directory for our "standard" widget-styles and selectors;
+they appear in the dart_squid_default.css file and that file also includes
+a textual explanation of the CSS attributes and how they are used to style
+Widget parts (borders parts, background, etc.).
+
+The Widget class dartdoc for classesCSS property (and Application class, same property)
+discuss how CSS is used for their styling.
+
+The styles contained in this file are specific to sample_1.
+███████████████████████████████████████████████████████████████████████████████████████████
+*/
+
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+BEGIN: CSS USED BY SAMPLES APPLICATION 1
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
+
+.MenuButtonsContainer {
+    margin: 0px;
+    padding: 0px;
+    fill: #333;
+    fill-opacity: .7;
+}
+
+.MenuButtonsContainerFrame {
+    border: 2px solid black;    /*FRAME*/
+    stroke-opacity: 1;          /*FRAME opacity*/
+}
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+show/hide "Menu Buttons" visual indication of associated widget's visibility
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+
+.LightGreenFill {
+    fill: lightgreen;
+    fill-opacity: 1.0;
+}
+
+.LightPinkFill {
+    fill: lightpink;
+    fill-opacity: 1.0;
+}
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+These styles used in various capacities
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+.TanFill {
+    fill: tan;
+}
+
+.RedFill {
+    fill: red;
+    fill-opacity: .9;
+}
+
+.BoldRed {
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+}
+
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+These styles will kick in for the XHR-loaded "readme" content in sample-1
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+
+body {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-family: "Times New Roman, Arial, Helvetica", Sans-serif;
+    text-align: center;
+    font-size: 2.0em;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    border-top: 4px solid black;
+}
+
+
+h2 {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-size: 1.5em;
+    border-top: 2px solid black;
+}
+
+h3 {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-size: 1.3em;
+    border-top: 1px solid black;
+}
+
+
+.Widget_Base_White {
+    margin: 0px;
+    padding: 0px;
+    fill: white;
+    fill-opacity: 1.0;
+}
+
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+These styles will are used in the "features/notes" widget content in sample-1
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+li {
+    margin-bottom: 12px;
+}
+
+.Notes_Base {
+    margin: 2px;
+    padding: 0px;
+    fill: blue;
+    fill-opacity: 1;
+}
+
+.LoweredInsetComponent {
+    border: 4px inset black;
+    stroke-opacity: 1;          /*BORDER opacity*/
+}
+
+.RaisedOutsetComponent {
+    border-right: 4px outset black;
+    border-left: 4px none black;
+    stroke-opacity: 1;          /*BORDER opacity*/
+}
+
+
+.FOBackground {
+    background-color: #333333;
+}
+
+.FeaturesText {
+    font-size: 1em;
+    color: #ffd700;
+}
+
+.FeaturesText b {
+    color: #ff8c00;
+}
+
+.FeaturesText ul, .FeaturesText li {
+    font-size: 1em;
+    color: #ffd700;
+}
+
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+Foreign-Object Repaints-test Widget styling
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+
+.FORepaintTest p {
+    margin: 12px 0 12px 0;
+}
+
+.foRepaintTestsOuterBorder {
+    border-top:     12px solid #00008b;
+    border-right:   12px solid #6495ed;
+    border-bottom:  12px solid #00008b;
+    border-left:    12px solid #6495ed;
+    stroke-opacity:   .8;       /*BORDER opacity*/
+}
+
+.foRepaintTestsInnerBorder {
+    border-top:     4px solid #0000FF;
+    border-right:   6px solid #4682b4;
+    border-bottom:  4px solid #0000FF;
+    border-left:    6px solid #4682b4;
+    stroke-opacity:   .8;       /*BORDER opacity*/
+}
+
+
+/*
+═══════════════════════════════════════════════════════════════════════════════════════
+color options dropdown.
+═══════════════════════════════════════════════════════════════════════════════════════
+*/
+
+.RedColor {
+    border-color: red;
+}
+
+.MedOrangeColor {
+    border-color: #DD7700;
+}
+
+.DarkOrangeColor {
+    border-color: #A95600;
+}
+
+.MedBlueColor {
+    border-color: #3D85C6;
+}
+
+.MintGreenColor {
+    border-color: #6EE6AD;
+}
+
+.BrightPurpleColor {
+    border-color: #C30EDD;
+}
+
+/*
+═══════════════════════════════════════════════════════════════════════════════════════
+border frame options dropdown
+═══════════════════════════════════════════════════════════════════════════════════════
+*/
+
+.FrameOption1 {
+    border-width: 2px;
+}
+
+.FrameOption2 {
+    border-width: 4px;
+}
+
+.FrameOption3 {
+    border-width: 6px;
+}
+
+.FrameOption4 {
+    border-width: 8px;
+}
+
+.FrameOption5 {
+    border-width: 10px;
+}
+
+
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+BEGIN: OTHER IN-PROGRESS / TESTING STUFF...
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+TODO: These are conceptual placeholders for forthcoming UI controls demo.
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+.CenteredTextButton {
+    text-align:center;
+    font-weight:bold;
+}
+
+
+
+

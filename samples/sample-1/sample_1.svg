@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?xml-stylesheet name="CSSLINK" type="text/css" href="../../resources/dart-squid-defaults.css" ?>
+<?xml-stylesheet name="CSSLINK" type="text/css" href="sample_1.css" ?>
 <!--
 ===========================================================================================
 SEE APPLICATION OBJECT (dartdoc) DOCUMENTATION FOR DISCUSSION ABOUT SVG PROPERTIES

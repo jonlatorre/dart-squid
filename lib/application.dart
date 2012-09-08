@@ -258,10 +258,28 @@ class Application {
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
-    * Comma-delimited list of Class Names that CSS selectors will be able to target
-    * and Style.
+    * Comma-delimited list of Class Names that CSS *selectors* will be able to target
+    * and Style. The default selector target is 'ApplicationCanvas'.
     *
-    * See [Widget.classesCSS] property for detailed comments.
+    * The Application class has limited CSS styling potential, as it is
+    * simply the [canvas] background [SVGRectElement] being styled.
+    * As such, any CSS styling applicable to a rect element can be specified.
+    *
+    * ## Example CSS Class Selector
+    * The following example will paint the canvas background fully opaque using a skyblue
+    * fill with a 20px wide dashed border in blue.
+    *
+    *     .ApplicationCanvas {
+    *         fill: skyblue;
+    *         fill-opacity: 1;
+    *         stroke: blue;
+    *         stroke-width: 20px;
+    *         stroke-opacity:   1;
+    *         stroke-dasharray: 1,2;
+    *     }
+    *
+    * ## See Also
+    * [Widget.classesCSS] property for detailed comments regarding Widget styling.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     String get classesCSS           => _classesCSS;

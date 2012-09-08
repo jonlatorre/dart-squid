@@ -2398,12 +2398,85 @@ class Widget {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
-    //Closely related to _StylablePropertiesList in that this Map's VALUES contain CSS Class-Selector(s) to apply to
-    //the list's TargetObject(s) with same value as this Map's KEYS. Interact with the Map via the CSSTargetsMap class methods.
-    //Widget uses familiar CSS-based styling.
-    //Instead of implementing a host of exposed properties and methods for setting various visual-aspects
-    //of our SVG objects, we rely on external CSS stylesheet styles to obtain values used for
-    //styling elements of our widgets; e.g., filling the background, setting side color(s) and width(s).
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Many aspects of a [Widget] can be styled using externally defined CSS rules.
+    * E.g., filling the Widget background, setting border sides, color(s) and width(s), etc.
+    * Although the CSS-stylable attributes are limited currently, quite a few
+    * Widget visual attributes are supported.
+    *
+    * The default selector targets are defined in the Map [mapInitialClassesCSS]
+    *
+    * This [CSSTargetsMap] maintains a Map of Class Names ("key" portion of Map) that
+    * CSS *selectors* will be able to target and Style.
+    * Multiple selectors can be used to style a given target (as one would expect from CSS),
+    * and these selectors are maintained as a comma-delimited string within the "value" portion
+    * of each Map row.
+    *
+    * ## How CSS Properties and Property Values relate to Widget Parts
+    * Our Widget layout closely relates to the [CSS box-model](http://www.w3.org/TR/CSS2/box.html)
+    * See the [WidgetMetrics] discussion of how the various [eWidgetPart] parts come together to
+    * form the Widget.
+    *
+    * We use the following CSS properties, per Widget aspect...
+    *
+    * **NOTE: you must use a valid unit of measure (e.g., px, pt, em) after any sizes in
+    * your Widget-styling CSS or sizes will be interpreted as zero!**  (TODO: Only tested with "px" so far.)
+    * The getComputedStyle ==> getPropertyValue ==> yields *whole number values* (in px), but
+    * *requires* a specified UOM in stylesheet.  **Numbers without UOM suffix yield zero!**
+    *
+    * ### Styling of "Widget_Base"target parts:
+    *
+    *    * **margin** : Distance to inset Outer border (from [parentSVGElement] bounding box);
+    *        note that this can vary PER-SIDE.
+    *    * **padding** : Distance to inset [clientSVGElement] from inner border; this can also
+    *        vary PER-SIDE (e.g., padding-left)
+    *    * **fill** : Widget's background color
+    *    * **fill-opacity** : Widget's background opacity
+    *
+    * ### Styling of "Widget_Frame" target parts:
+    *
+    *    * **stroke-opacity** : "Frame" opacity (all sides will be the same opacity);
+    *        border specifiers do not support opacity, so we use stroke-opacity for this.
+    *    * **border** : "Frame" width *and* color (with frame side(s) being optional: just specify zero-width).
+    *        Valid border sub-properties: ('border-top', 'border-right', 'border-bottom', 'border-left')
+    *        Note: border properties were used (instead of stroke-width) since SVG stroke-width
+    *        has no concept of "sides".
+    *        **NOTE: you must specify a border-type for it to be drawn** (e.g., solid) or it will default to 'none/0px'
+    *        even if you provide non-zero width.  E.g., choose 'border: 1px solid black;'
+    *    * **border-style** : "Frame" stroke style.
+    *        The *only supported style* is "solid" for "Frame", though our outer/inner borders support more styles.
+    *
+    *    * **border side-specifics** can be accessed via:
+    *         'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color' ('border-color')
+    *         'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style' ('border-style')
+    *         'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' ('border-width')
+    *
+    * ### Styling of 'Widget__BorderOuter' and 'Widget__BorderInner' target parts:
+    * The Widget has Outer/Inner borders that may be shown and styled.
+    *
+    *    * **stroke-opacity** : border opacity (all sides will be the same opacity)
+    *    * **border** : border width *and* color *and* style.
+    *        See notes above regarding styling of frame border-parts, since **inner/outer Widget borders
+    *        support using the same CSS properties as the Widget frame**, with the additional
+    *        support for a variety of border-styles.
+    *        Most [CSS2 Standard Border Styles](http://www.w3.org/TR/CSS2/box.html#border-style-properties)
+    *        are supported. See [eBorderStyle] enumerated types of border-styles we support.
+    *
+    * ---
+    * ## Example CSS Class Selectors
+    * Refer to the samples directory for both the dart code and the associated CSS file
+    * used to style Widgets in a variety of ways.
+    *
+    * ## See Also
+    *    * [Application.classesCSS] property for detailed comments regarding [Application] styling.
+    *    * [mapInitialClassesCSS] for default values loaded during Widget construction.
+    *    * [CSSTargetsMap] class
+    *    * [StyleTarget] class
+    *
+    * ---
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     CSSTargetsMap    classesCSS         = null;
 
     /*
@@ -2418,6 +2491,21 @@ class Widget {
     static final String sWOuter         = 'Widget_BorderOuter';
     static final String sWInner         = 'Widget_BorderInner';
 
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Used by Widget styling logic.  Provides *initial* (default) CSS selectors associated
+    * with various stylable target sub-components of a Widget. E.g., frame, border parts.
+    *
+    * Keys are the stylable-target name; associated Values are the CSS selectors that will
+    * be applied to those parts. For consistency, the intial selector names will be identical
+    * to the target-property-names, but these can be overridden and added to by implementor.
+    *
+    * ## See Also
+    *    * [classesCSS] property for more information on Widget styling.
+    *    * [CSSTargetsMap] class
+    *    * [StyleTarget] class
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
     static final Map<String, String> mapInitialClassesCSS    = const {
         'Widget_Base'       :'Widget_Base',
         'Widget_Frame'      :'Widget_Frame',

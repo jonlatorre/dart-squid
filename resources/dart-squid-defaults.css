@@ -1,10 +1,12 @@
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-This file is where we maintain our "standard" widget-styles and selectors.
-In addition, styles for widgets created in various test-cases are included.
+This file is where we maintain our "standard" framework selectors (and their styles) for
+Application, Widgets and sub-classes.
 
+See the Application and Widget classes in dartdocs ('classesCSS' property on each class)
+for more information.
 
-We ultimately get the computed value of CSS styles applied to our Widgets,
+The framework ultimately gets the computed value of CSS styles applied to our Widgets,
 via matching class-selector(s), using code like this (see application.dart):
 
     document.defaultView.getComputedStyle(mBackgroundRect,null).getPropertyValue("stroke")
@@ -14,7 +16,7 @@ via matching class-selector(s), using code like this (see application.dart):
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-BEGIN: STANDARD definitions for Widgets and sub-classes
+BEGIN: STANDARD definitions.
 
 For four-side-specs, remember TRBL (Top, Right, Bottom, Left) order of values.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -36,7 +38,7 @@ This is the standard element used for application background
 
 /*
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-Any application "hints" will show styled as follows
+Any application "hints" will show styled as follows.  TODO: use in framework
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 */
 .Hint {
@@ -61,15 +63,11 @@ The default font to be used mainly for things like simple Captions / Labels, etc
     color: black;
 }
 
-@keyframes marquee {
-	from {
-		stroke: gold;
-	}
-	to  {
-		stroke: red;
-	}
-}
-
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+The Application class will apply this styling to "Selected" widgets.
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
 .SelectedWidget {
     fill-opacity: .2;
     fill: black;
@@ -85,43 +83,41 @@ The default font to be used mainly for things like simple Captions / Labels, etc
 
 /*
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-This is the default Widget setup.
-Our Widget layout closely relates to the CSS box-model: http://www.w3.org/TR/CSS2/box.html
-We use the following properties on our base selector to Style the Widget:
-
-margin          : Distance to inset Outer border (from parentSVGElement bounding box);
-    not that this can vary PER-SIDE.
-
-padding         : Distance to inset ClientSVGElement from inner border; this can also
-    vary PER-SIDE (e.g., padding-left)
-
-fill            : Widget's background color
-
-fill-opacity    : Widget's background opacity
-
-stroke-opacity  : FRAME opacity (all sides will be the same opacity);
-    border specifiers do not support opacity, so we use stroke-opacity for this.
-
-border          : FRAME width AND color (with frame side(s) being optional: just specify zero-width)
-    Valid border sub-properties: 'border-top', 'border-right', 'border-bottom', 'border-left')
-    Note: border properties were used (instead of stroke-width) since SVG stroke-width
-    has no concept of "sides".
-    NOTE: you MUST specify a border-type (e.g., solid) or it will default to 'none/0px'
-    even if you provide non-zero width.  E.g., choose 'border: 1px solid black;'
-
-border-style    : FRAME stroke style.
-    The ONLY SUPPORTED STYLE IS "solid" for FRAME, though our outer/inner borders support more styles.
-
-We can access border side-specifics via:
-    'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color' ('border-color')
-    'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style' ('border-style')
-    'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' ('border-width')
-
-
-NOTE: YOU MUST USE A valid unit of measure (e.g., px, pt, em) AFTER ANY SIZES in CSS or
-they will intrepret to zero!!!  Have not tested with anything other than "px" so far.
-The getComputedStyle ==> getPropertyValue ==> yields WHOLE NUMBER VALUES (in px), but
-REQUIRES a specified UOM in stylesheet.  Numbers without UOM suffix yield ZERO!
+* This is the default Widget setup.    SEE WIDGET DARTDOCS - classesCSS documentation.
+*
+* Our Widget layout closely relates to the [CSS box-model](http://www.w3.org/TR/CSS2/box.html)
+*
+* ### Styling of "Widget_Base" target parts:
+*
+* We use the following CSS properties:
+*
+*    * **margin** : Distance to inset Outer border (from [parentSVGElement] bounding box);
+*        note that this can vary PER-SIDE.
+*    * **padding** : Distance to inset [clientSVGElement] from inner border; this can also
+*        vary PER-SIDE (e.g., padding-left)
+*    * **fill** : Widget's background color
+*    * **fill-opacity** : Widget's background opacity
+*    * **stroke-opacity** : "Frame" opacity (all sides will be the same opacity);
+*        border specifiers do not support opacity, so we use stroke-opacity for this.
+*    * **border** : "Frame" width *and* color (with frame side(s) being optional: just specify zero-width).
+*        Valid border sub-properties: ('border-top', 'border-right', 'border-bottom', 'border-left')
+*        Note: border properties were used (instead of stroke-width) since SVG stroke-width
+*        has no concept of "sides".
+*        **NOTE: you must specify a border-type for it to be drawn** (e.g., solid) or it will default to 'none/0px'
+*        even if you provide non-zero width.  E.g., choose 'border: 1px solid black;'
+*    * **border-style** : "Frame" stroke style.
+*        The *only supported style* is "solid" for "Frame", though our outer/inner borders support more styles.
+*
+*    * **border side-specifics** can be accessed via:
+*         'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color' ('border-color')
+*         'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style' ('border-style')
+*         'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' ('border-width')
+*
+*
+* **NOTE: you must use a valid unit of measure (e.g., px, pt, em) after any sizes in
+* your Widget-styling CSS or sizes will be interpreted as zero!**  (TODO: Only tested with "px" so far.)
+* The getComputedStyle ==> getPropertyValue ==> yields *whole number values* (in px), but
+* *requires* a specified UOM in stylesheet.  **Numbers without UOM suffix yield zero!**
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 */
 .Widget_Base {
@@ -140,6 +136,8 @@ REQUIRES a specified UOM in stylesheet.  Numbers without UOM suffix yield ZERO!
 
 /*
 ═══════════════════════════════════════════════════════════════════════════════════════
+SEE DARTDOCS
+
 We use the following properties on our border selector to further Style the Widget's
 optional Outer/Inner borders:
 
@@ -162,50 +160,6 @@ border          : BORDER width AND color AND style.
     stroke-opacity:   1;    /* FRAME opacity */
 }
 
-
-
-/*
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-This is the default Button setup.
-Currently used in sample-app non-fully-native-SVG buttons (i.e., text rendered via FO).
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-*/
-.WidgetButton_Base {
-    margin: 2px;
-    padding: 2px;
-    fill: lightgray;
-    fill-opacity: 1;
-}
-
-.WidgetButton_Frame {
-    border: 2px #d3d3d3;
-    border-style: solid;
-    stroke-opacity:   1;
-}
-
-.WidgetButton_BorderOuter {
-    border: 2px outset black;
-    stroke-opacity:   1;
-}
-
-.WidgetButton_BorderInner {
-    border: 1px none #a9a9a9;
-    stroke-opacity:   1;
-}
-
-
-/*
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-This is the default Scrollbar class setup.   TODO: IN-PROGRESS / TESTING
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-*/
-.RightScrollbarMetrics {
-    border: 0px solid white;  /*FRAME*/
-    fill: white;
-    fill-opacity: .1;
-    margin  : 0 -10px 0 0;   /*Negative margin, equal to width of border/padding (of myWidget) moves us over the frame/border */
-    padding : 1px;
-}
 
 
 /*
@@ -265,222 +219,32 @@ Enumerate our STANDARD BORDER STYLE definitions here
 
 
 /*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-END: STANDARD definitions for Widgets and sub-classes
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-*/
-
-
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-BEGIN: OTHER IN-PROGRESS / TESTING STUFF...
-CSS USED IN VARIOUS TEST-CASES and/or DOCUMENTATION
-
-TODO: Rather disorganized currently; clean this up some.
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-*/
-
-/*
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-TODO: NOT USED currently
-Another set of "panel" styles.
+Provide some standard selectors for "Button" Widget styling.
+Currently used in sample-app non-fully-native-SVG buttons (i.e., using Html_Widget).
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 */
-.WidgetPanel_Base {
+.ButtonWidget_Base {
     margin: 2px;
-    padding: 10px;
-    fill: black;
+    padding: 2px;
+    fill: lightgray;
     fill-opacity: 1;
-    border: 4px white;      /* FRAME */
-    border-style: solid;    /* only valid border-style for our FRAME */
-    stroke-opacity:   1;    /* FRAME opacity */
 }
 
-.WidgetPanel_BorderOuter {
-    border: 2px solid black;
+.ButtonWidget_Frame {
+    border: 2px #d3d3d3;
+    border-style: solid;
     stroke-opacity:   1;
 }
 
-.WidgetPanel_BorderInner {
+.ButtonWidget_BorderOuter {
+    border: 2px outset black;
+    stroke-opacity:   1;
+}
+
+.ButtonWidget_BorderInner {
     border: 1px none #a9a9a9;
     stroke-opacity:   1;
-}
-
-
-/*
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-TODO: OTHER STANDARD definitions here that need to be implemented yet
-These are conceptual placeholders that are important for full-UI features.
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-
-Application (level)...
-InactiveWidgetColor : 'silver', InactiveTextFont, etc.
-RequiredFieldsBackground {color: skyblue}
-RequiredFieldsFont {font-weight: bold; font-color: black}
-ReadOnlyFieldsBackground {color: grey}
-ReadOnlyFieldsFont {stroke-opacity: 70; font italic, etc}
-HintBackground   {fill    : 'lemonchiffon', fill-opacity: 70},
-
-rect:hover {
-  fill-opacity:     0.5;
-  stroke-opacity:   0.5;
-  stroke-dasharray: 1,2;
-}
-
-*/
-
-#myWidget_Widget_Border_Outer_T1 {
-    border: 12px purple;
-    border-style: dashed;
-    stroke-opacity:   .8;
-}
-
-
-.FOBackground {
-    background-color: #333333;
-}
-
-.Widget_Base_Movable {
-    fill: lightsteelblue;
-    fill-opacity: .9;
-    border: 4px solid #aaaaff;  /*FRAME*/
-    stroke-opacity: 1;          /*FRAME opacity*/
-}
-
-.WidgetButtonContainer {
-    fill: #bdb76b;
-    fill-opacity: 1;
-}
-
-.Margin10 {
-    margin: 10px;
-}
-
-.Padding10 {
-    padding: 10px;
-}
-
-.L_R_Border20 {
-    border-top-width: 0;
-    border-bottom-width: 0;
-    border-left-width: 20px;
-    border-right-width: 20px;
-}
-
-.DarkBlueBorderComponent {
-    border: 8px solid #00008b;
-    stroke-opacity:   .8;       /*BORDER opacity*/
-}
-
-.TanFill {
-    fill: tan;
-}
-
-.RedFill {
-    fill: red;
-    fill-opacity: .9;
-}
-
-.BlueFill {
-    fill: blue;
-    fill-opacity: .9;
-}
-
-.LightGreenFill {
-    fill: lightgreen;
-    fill-opacity: 1.0;
-}
-
-.LightPinkFill {
-    fill: lightpink;
-    fill-opacity: 1.0;
-}
-
-.container {
-    fill-opacity: 0.5;
-    fill: #FFFFFF;
-}
-
-.container2 {
-    stroke-width: 20px;
-    stroke: #aaaaff;
-}
-
-rect#PanelRect21 {
-    stroke: #000000;
-    fill: #0011FF;
-    fill-opacity: 1;
-}
-
-.BoldRed {
-    font-size: 20px;
-    font-weight: bold;
-    color: red;
-}
-
-.BoldBlack {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: black;
-}
-
-.MyWidget_Base {
-    margin: 0;
-    padding: 2px;
-    fill: skyblue;
-    fill-opacity: 1;
-    border: 10px solid steelblue;   /*FRAME*/
-    border-style: solid;
-    stroke-opacity:   .8;           /*FRAME opacity*/
-}
-
-
-.SpeedButtons {
-    margin : 0 10px 0 0;
-    padding: 0px;
-    border: 0px darkslategray;  /* FRAME */
-    border-style: solid;        /* FRAME */
-}
-
-
-.CenteredTextButton {
-    text-align:center;
-    font-weight:bold;
-}
-
-
-.Notes_Base {
-    margin: 2px;
-    padding: 0px;
-    fill: blue;
-    fill-opacity: 1;
-}
-
-.LoweredInsetComponent {
-    border: 4px inset black;
-    stroke-opacity: 1;          /*BORDER opacity*/
-}
-
-.RaisedOutsetComponent {
-    border-right: 4px outset black;
-    border-left: 4px none black;
-    stroke-opacity: 1;          /*BORDER opacity*/
-}
-
-li {
-    margin-bottom: 12px;
-}
-
-.MenuButtonsContainer {
-    margin: 0px;
-    padding: 0px;
-    fill: #333;
-    fill-opacity: .7;
-}
-
-.MenuButtonsContainerFrame {
-    border: 2px solid black;    /*FRAME*/
-    stroke-opacity: 1;          /*FRAME opacity*/
 }
 
 
@@ -490,44 +254,11 @@ BEGIN: CSS USED BY SAMPLES WEB-PAGE(S)
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
 
-body {
-    font-family: Verdana, Arial, sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    text-decoration: none;
-    padding: 0;
-    margin: 0;
-}
-
-.no-padding {
-    padding: 0;
-}
-
-h1 {
-    font-family: "Times New Roman, Arial, Helvetica", Sans-serif;
-    text-align: center;
-    font-size: 2.0em;
-    margin-top: 6px;
-    margin-bottom: 6px;
-    font-weight: bold;
-    border-top: 4px solid black;
-}
-
-
-h2 {
-    margin-top: 6px;
-    margin-bottom: 6px;
-    font-size: 1.5em;
-    border-top: 2px solid black;
-}
-
-h3 {
-    margin-top: 6px;
-    margin-bottom: 6px;
-    font-size: 1.3em;
-    border-top: 1px solid black;
-}
-
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+Samples Index Page Header Styles and other custom styling
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
 
 .Examples {
     padding: 8px 8px 24px 8px;
@@ -544,6 +275,37 @@ div.Examples {
     text-align: justify;
     background-color: #404040;
     color: #CCC;
+}
+
+.Examples h1 {
+    font-family: "Times New Roman, Arial, Helvetica", Sans-serif;
+    text-align: center;
+    font-size: 2.0em;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+
+.Examples h2 {
+    font-family: "Arial, Helvetica", Sans-serif;
+    padding: 8px;
+    margin-top: 12px;
+    font-size: 1.5em;
+    background-color: #333333;
+    color: #DD7700;
+    border-top: 1px solid white;
+}
+
+.Examples h3 {
+    font-family: "Arial, Helvetica", Sans-serif;
+    padding: 8px;
+    margin: 0;
+    font-size: 1.3em;
+    background-color: #333333;
+    color: #DD7700;
 }
 
 .Examples p {
@@ -570,98 +332,54 @@ div.Examples {
     color: #DD7700;
 }
 
-.FeaturesText {
-    font-size: 1em;
-    color: #ffd700;
-}
-
-.FeaturesText b {
-    color: #ff8c00;
-}
-
-.FeaturesText ul, .FeaturesText li {
-    font-size: 1em;
-    color: #ffd700;
-}
-
-
-.FORepaintTest p {
-    margin: 12px 0 12px 0;
-}
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-BEGIN: CSS USED BY SAMPLES APPLICATION 1
+TODO: OTHER STANDARD definitions here that need to be implemented yet
+These are conceptual placeholders that are important for full-UI features.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
 
-.Widget_Base_White {
-    margin: 0px;
-    padding: 0px;
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+TODO: IN-PROGRESS / TESTING
+This is the default Scrollbar class setup.
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+.RightScrollbarMetrics {
+    border: 0px solid white;  /*FRAME*/
     fill: white;
-    fill-opacity: 1.0;
+    fill-opacity: .1;
+    margin  : 0 -10px 0 0;   /*Negative margin, equal to width of border/padding (of myWidget) moves us over the frame/border */
+    padding : 1px;
 }
 
 
 /*
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-color options dropdown.
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+Application (level)...
+InactiveWidgetColor : 'silver', InactiveTextFont, etc.
+RequiredFieldsBackground {color: skyblue}
+RequiredFieldsFont {font-weight: bold; font-color: black}
+ReadOnlyFieldsBackground {color: grey}
+ReadOnlyFieldsFont {stroke-opacity: 70; font italic, etc}
+HintBackground   {fill    : 'lemonchiffon', fill-opacity: 70},
+
+rect:hover {
+  fill-opacity:     0.5;
+  stroke-opacity:   0.5;
+  stroke-dasharray: 1,2;
+
+//the following did not work when applied to SVG elements... (webkit not implemented yet?)
+@keyframes marquee {
+	from {
+		stroke: gold;
+	}
+	to  {
+		stroke: red;
+	}
+}
+
+}
+
 */
-
-.RedColor {
-    border-color: red;
-}
-
-.MedOrangeColor {
-    border-color: #DD7700;
-}
-
-.DarkOrangeColor {
-    border-color: #A95600;
-}
-
-.MedBlueColor {
-    border-color: #3D85C6;
-}
-
-.MintGreenColor {
-    border-color: #6EE6AD;
-}
-
-.BrightPurpleColor {
-    border-color: #C30EDD;
-}
-
-/*
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-border frame options dropdown
-▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-*/
-
-.FrameOption1 {
-    border-width: 2px;
-}
-
-.FrameOption2 {
-    border-width: 4px;
-}
-
-.FrameOption3 {
-    border-width: 6px;
-}
-
-.FrameOption4 {
-    border-width: 8px;
-}
-
-.FrameOption5 {
-    border-width: 10px;
-}
-
-
-
-
-
-
-
