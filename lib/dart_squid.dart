@@ -128,6 +128,7 @@
 #source("events_processor.dart");
 #source("exception_types.dart");
 #source("application.dart");
+#source("widget_borders.dart");
 #source("widget.dart");
 #source("globals.dart");
 #source("iframe_widget.dart");
