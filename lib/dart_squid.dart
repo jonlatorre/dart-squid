@@ -127,9 +127,11 @@
 #source("event_types.dart");
 #source("events_processor.dart");
 #source("exception_types.dart");
+#source("object_bounds.dart");
 #source("application.dart");
 #source("widget_borders.dart");
 #source("widget_constraints.dart");
+#source("widget_metrics.dart");
 #source("widget.dart");
 #source("globals.dart");
 #source("iframe_widget.dart");
