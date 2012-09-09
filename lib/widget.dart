@@ -10,256 +10,6 @@
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: WIDGET-STYLING CLASSES
-███████████████████████████████████████████████████████████████████████████████████████████
-*/
-
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-/**
-* A [Widget] maintains a list of these style-able targets ('StyleTarget') in
-* its _StylablePropertiesList.
-* A Widget can have aspects of its visual presentation styled by CSS, including
-* its background, frame, and inner & outer borders, via these targets.
-*
-* A Widget's [CSSTargetsMap] (exposed as [Widget.classesCSS] property) map *keys* correspond to
-* [StyleTarget.targetObject] values; this allows us to determine which selector "class-names"
-* (from Widget's classesCSS map-VALUES) will be applied to a targetObject in order to compute
-* resulting, post-styled, calcValue for each TargetProperty.
-*/
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class StyleTarget {
-
-    /**
-    * The logical visual sub-component of the Widget that we are styling (e.g., its Frame).
-    */
-    String  targetObject    = '';
-
-    /**
-    * Within a [targetObject], various TargetProperties can be affected by CSS values.
-    * Within a targetObject, e.g., the border-style, border-width, and stroke-color properties may be
-    * available for styling with CSS.
-    *
-    * **NOTE:** even though *SVG-specific* PropertyNames show in Chrome's object-inspector (debugger)
-    * as non-hyphenated camelCase, our list and lookups must use hyphenated lower-case form
-    * (at least for Chrome v18-23+) to get values.
-    */
-    String  targetProperty  = '';
-
-    /**
-    * In the absence of externally-provided (or determinable) value, this is what
-    * the [calcValue] will apply to the [targetProperty]; i.e., these are logical
-    * defaults for a Widget's styling.
-    */
-    String  defaultValue    = '';
-
-    /**
-    * The value to be assigned to the [targetProperty] as determined by applying
-    * CSS class-selector(s), from matches in CSSTargetsMap, to a Widget's
-    * [targetObject] / [targetProperty].
-    */
-    String  calcValue       = null;     //Calculated
-
-    StyleTarget (this.targetObject, this.targetProperty, this.defaultValue);
-
-} //class StyleTarget
-
-
-
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-/**
-* A map of TargetObject names (KEY) and associated comma-delimited list of CSS Class Names selectors (VALUE)
-* pairs that indicate what CSS classes are to be applied to a Widget's StyleTarget.TargetObject in order
-* to affect the Calculated values for [StyleTarget.targetProperty] when we apply CSS rules to
-* compute a "Styled" widget's values.
-*
-* The embedded [Map] object is exposed only via specialized methods for proper encapsulation and
-* to prevent user from bypassing change-detection logic. Operations like adding to
-* or removing from the comma-delim values string are done through methods that detect change
-* while also ensuring proper formatting of this string.
-*
-* ## NOTE
-* We must use the *non-comma-delimited equivalent* value (in [Application.getCSSPropertyValuesForClassNames])
-* because of how the off-screen class-resolution expects it to be formatted.
-* We use the [] operator to access this space-delimited version of value.
-*
-* ## See Also
-* The notes accompanying the [StyleTarget] class help to better understand how this class
-* fits into things.
-*
-* ---
-*
-*/
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class CSSTargetsMap {
-
-    /**
-    * The "key" for this Map is TargetObject names (aligned with values in our StylablePropertiesList —
-    * a list of [StyleTarget] objects).
-    * The "value" portion of this Map holds our "AppliedSelectors" (comma-delim class-selectors)
-    * to apply to target.
-    */
-    Map<String, String> _targetObjectsAndSelectors = null;
-
-    /**
-    * (optional) a callback method available to perform functionality when
-    * CSS styling changes occur.  Useful for triggering Widget metrics recalcs / rendering updates.
-    */
-    ChangeHandler  changeHandler;
-
-    //Constructor
-    CSSTargetsMap();
-
-
-    ///Easy way to start with fresh map without change-triggering.
-    void initialize(Map fromMap) {
-        _targetObjectsAndSelectors = new Map.from(fromMap);
-
-        //remove any extraneous spaces
-        for (String key in _targetObjectsAndSelectors.getKeys()) {
-            _targetObjectsAndSelectors[key] = _targetObjectsAndSelectors[key].replaceAll(' ', '');
-        }
-    }
-
-
-    ///Useful for debugging purposes.
-    String getMapAsString() => _targetObjectsAndSelectors.toString();
-
-
-    ///Clears the Map.
-    void clear() {
-        _targetObjectsAndSelectors.clear();
-        if (changeHandler != null) {changeHandler();}
-    }
-
-
-
-    /**
-    * Returns the value portion of map that contains any Class selector(s),
-    * but as *space-delim* version which is critically important in off-screen
-    * CSS calcs performed in [Application] object.
-    */
-    String operator [] (String key) => _getFormattedMapValue(key);
-
-    String _getFormattedMapValue(String key) {
-        String sTemp = _targetObjectsAndSelectors[key];
-        return (sTemp != null ? _targetObjectsAndSelectors[key].replaceAll(',', ' ') : '');
-    }
-
-
-
-    ///Set the *entire* appliedSelectors value for a Stylable Target if the key exists; otherwise, ignore.
-    void setClassSelectorsForTargetObjectName(String targetName, String appliedSelectors) {
-        //remove any extraneous spaces
-        appliedSelectors = appliedSelectors.replaceAll(' ', '');
-
-        if (_targetObjectsAndSelectors.containsKey(targetName)) {
-            _targetObjectsAndSelectors[targetName] = appliedSelectors;
-
-            if (changeHandler != null) {changeHandler();}
-        }
-    }
-
-
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    /**
-    * Add selector(s) in [newSelectors] to an existing Map entry's (with key = [targetName])
-    * list of class-selectors (comma-delim).
-    *
-    * If the key does not exists, ignore the request, as it would be meaningless for styling.
-    * The added value(s) must remain unique in the appliedSelectors string.
-    * If a change to value portion results from this request, fire the [changeHandler].
-    */
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void addClassSelectorsForTargetObjectName(String targetName, String newSelectors) {
-        if (!_targetObjectsAndSelectors.containsKey(targetName)) return;
-
-        //remove any extraneous spaces
-        newSelectors = newSelectors.replaceAll(' ', '');
-
-        List<String> existingSelectorsAsList    = _targetObjectsAndSelectors[targetName].split(',');
-        List<String> newSelectorsAsList         = newSelectors.split(',');
-        List<String> addTheseSelectorsList      = new List<String>();
-        bool hasChanged = false;
-
-        for (String sSelector in newSelectorsAsList) {
-            if (existingSelectorsAsList.indexOf(sSelector) == -1) {
-                //our Selectors do not already include...
-                hasChanged = true;
-                addTheseSelectorsList.add(sSelector);
-            }
-        }
-
-        if (!hasChanged) return;
-
-        //add any newly-found selectors and convert this list back into a single comma-delim string value...
-        existingSelectorsAsList.addAll(addTheseSelectorsList);
-
-        StringBuffer sbTemp = new StringBuffer();
-        int i = 0;
-        for (String sSelector in existingSelectorsAsList) {
-            if (i > 0) {sbTemp.add(',');}
-            sbTemp.add(sSelector.trim());
-            i++;
-        }
-
-        _targetObjectsAndSelectors[targetName] = sbTemp.toString();
-
-        if (changeHandler != null) {changeHandler();}
-
-    } //AddClassSelectorForTargetObjectName
-
-
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    /**
-    * Remove selector(s) in [delSelectors] from an existing Map entry's (with key = [targetName])
-    * list of class-selectors (comma-delim).
-    * If the key does not exists, ignore the request, as it would be meaningless for styling.
-    * If a change to value portion results from this request, fire the [changeHandler].
-    */
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void removeClassSelectorsForTargetObjectName(String targetName, String delSelectors) {
-        if (!_targetObjectsAndSelectors.containsKey(targetName)) return;
-
-        //remove any extraneous spaces
-        delSelectors = delSelectors.replaceAll(' ', '');
-
-        List<String> existingSelectorsAsList    = _targetObjectsAndSelectors[targetName].split(',');
-        List<String> delSelectorsAsList         = delSelectors.split(',');
-
-        bool hasChanged = false;
-
-        for (String sSelector in delSelectorsAsList) {
-            if (existingSelectorsAsList.indexOf(sSelector) > -1) {
-                //found one to remove...
-                hasChanged = true;
-                existingSelectorsAsList.removeRange(existingSelectorsAsList.indexOf(sSelector), 1);
-            }
-        }
-
-        if (!hasChanged) return;
-
-        //convert any values remaining in our list back into a single comma-delim string value...
-        StringBuffer sbTemp = new StringBuffer();
-        int i = 0;
-        for (String sSelector in existingSelectorsAsList) {
-            if (i > 0) {sbTemp.add(',');}
-            sbTemp.add(sSelector.trim());
-            i++;
-        }
-
-        _targetObjectsAndSelectors[targetName] = sbTemp.toString();
-
-        if (changeHandler != null) {changeHandler();}
-
-    } //RemoveClassSelectorsForTargetObjectName
-
-
-} //class CSSTargetsMap
-
-
-
-/*
-███████████████████████████████████████████████████████████████████████████████████████████
 BEGIN: Widget Class
 This is the primary UI Component in this framework.  The "base" control.
 ███████████████████████████████████████████████████████████████████████████████████████████
@@ -548,9 +298,6 @@ class Widget {
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
 
-    //List of StyleTarget instances. These stylable targets can have CSS Class-Selector(s) applied to them via our classesCSS property.
-    List<StyleTarget>   _stylablePropertiesList = null;
-
     num             _y                  = 0.0;
     num             _x                  = 0.0;
     num             _width              = 20.0;
@@ -572,22 +319,8 @@ class Widget {
     //Can this item be resized with the mouse? (via mousedown/mousemove/mouseup)?
     DynamicsConstraint     _isSizable           = null;
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TODO-REF#1: THE FOLLOWING VARIABLES ARE HERE TO WORKAROUND AN ISSUE IN DART:
-        http://code.google.com/p/dart/issues/detail?id=144
-
-    We use the approach from here as a workaround:
-        http://japhr.blogspot.com/2012/03/really-really-removing-event-handlers.html
-
-    Basically, just create pointers to our event methods and add/remove (.on.) these instead
-    of direct method references.   NOTE: set the values in the constructor!
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    var mouseDownHandler;
-    var mouseClickHandler;
-    var mouseMoveHandler;
-    var mouseUpHandler;
+    //List of StyleTarget instances. These stylable targets can have CSS Class-Selector(s) applied to them via our classesCSS property.
+    List<StyleTarget>   _stylablePropertiesList = null;
 
 
     /*
@@ -595,6 +328,163 @@ class Widget {
     BEGIN: Public variables/accessors.
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
+
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    VARIOUS CONSTANTS
+    TODO: IF this will increase mem-efficiency/speed, move other literals here
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+
+    ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Base" properties.
+    static final String sWBase          = 'Widget_Base';
+    ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Frame" properties.
+    static final String sWFrame         = 'Widget_Frame';
+    ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Outer Border" properties.
+    static final String sWOuter         = 'Widget_BorderOuter';
+    ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Inner Border" properties.
+    static final String sWInner         = 'Widget_BorderInner';
+
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Used by Widget styling logic.  Provides *initial* (default) CSS selectors associated
+    * with various stylable target sub-components of a Widget. E.g., frame, border parts.
+    *
+    * Keys are the stylable-target name; associated Values are the CSS selectors that will
+    * be applied to those parts. For consistency, the initial selector names will be identical
+    * to the target-property-names, but these can be overridden and added to by implementor.
+    *
+    * ## See Also
+    *    * [classesCSS] property for more information on Widget styling.
+    *    * [CSSTargetsMap] class
+    *    * [StyleTarget] class
+    *    * [InitialStylableWidgetProperties] sets up initial stylable properties on Widget.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    static final Map<String, String> mapInitialClassesCSS    = const {
+        'Widget_Base'       :'Widget_Base',
+        'Widget_Frame'      :'Widget_Frame',
+        'Widget_BorderOuter':'Widget_BorderOuter',
+        'Widget_BorderInner':'Widget_BorderInner'
+    };
+
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Define the CSS-stylable target objects/properties (and their default values) this
+    * Widget implements.  These *constants* values are transferred, during constructor, into
+    * the instance variable: `_stylablePropertiesList`.
+    *
+    * *At this time*, CSS can only be used to style the entire border-part (group) at once, which is fine,
+    * since you can layer CSS Classes up such that if you wish to affect a change on one minor component
+    * of a widget-part (e.g., the Frame's right-border color), you can do so by simply setting up a
+    * CSS class-selector like `FrameRightBorderColor {border-right: 1px solid red}`, and include this
+    * selector on the Frame-target by setting `classesCSS(sWFrame) = "$sWFrame, FrameRightBorderColor"`
+    *
+    * *Ultimately*, if there is a need (due to speed or such) to have more "direct" access to updating a
+    * single, or narrow group of, value(s), our part-naming convention could come into play (see below)
+    * and we could include in our stylable properties list any "targetable" subsets, like "Widget_Base_Background")
+    *
+    * Stylable Part Naming Convention for "id" attributes (i.e., the "TargetObject") on the
+    * actual SVG element:
+    *     InstanceName_Component_SubComponent[_SubComponent][_SubComponent]...
+    *
+    *     e.g.,: InstanceName_Widget_BorderType_BorderSubComponent_Side/Path[stroke#]... which results in...
+    *     e.g.,: InstanceName_Widget_BorderOuter_Outer_Left2
+    *
+    * ## HOW THESE ARE USED:
+    * See [StyleTarget] and [CSSTargetsMap] class comments for more details.
+    *
+    * The Widget's [classesCSS] (instance of CSSTargetsMap), maintains a comma-delim
+    * string of CSS Selector "classes" to apply to target objects in our stylable-properties-list.
+    *
+    * *Per-side property enumerations* are included in this list because, even if a property
+    * like "margin" is specified in CSS,
+    * we need to return the calculated value **per-side** (for our internal drawing routines).
+    *
+    * NOTE: Sub-classes must extend upon this by providing their own list of additional
+    * stylable parts to apply/calc CSS for (and, derived Widgets would have to apply the
+    * resulting calculated values to any applicable SVG elements they own). As such, any
+    * subclass must call `_addStylablePropertiesToWidget()` passing in a list similar to this one.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    static final List<ConstStyleTarget>  InitialStylableWidgetProperties = const [
+        /*
+        GROUP 1:
+        Begin with properties that are styled by applying Base Widget class-selector(s); notice that for this group, we could have used
+        a single group, and thus a single call to retrieve "Base" and "Frame" styling, since the CSS Properties used for each do not conflict/overlap.
+        But, since we could end up using properties like "filter" for both for widget background and its frame, separation was chosen.
+        */
+        const ConstStyleTarget(sWBase  , 'margin-top'          , '0'      ),
+        const ConstStyleTarget(sWBase  , 'margin-right'        , '0'      ),
+        const ConstStyleTarget(sWBase  , 'margin-bottom'       , '0'      ),
+        const ConstStyleTarget(sWBase  , 'margin-left'         , '0'      ),
+        const ConstStyleTarget(sWBase  , 'padding-top'         , '0'      ),
+        const ConstStyleTarget(sWBase  , 'padding-right'       , '0'      ),
+        const ConstStyleTarget(sWBase  , 'padding-bottom'      , '0'      ),
+        const ConstStyleTarget(sWBase  , 'padding-left'        , '0'      ),
+        const ConstStyleTarget(sWBase  , 'fill'                , 'black'  ),
+        const ConstStyleTarget(sWBase  , 'fill-opacity'        , '0.0'    ),
+
+        const ConstStyleTarget(sWFrame , 'border-top-style'    , 'none'   ),
+        const ConstStyleTarget(sWFrame , 'border-right-style'  , 'none'   ),
+        const ConstStyleTarget(sWFrame , 'border-bottom-style' , 'none'   ),
+        const ConstStyleTarget(sWFrame , 'border-left-style'   , 'none'   ),
+        const ConstStyleTarget(sWFrame , 'border-top-width'    , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-right-width'  , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-bottom-width' , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-top-color'    , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-right-color'  , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-bottom-color' , '0'      ),
+        const ConstStyleTarget(sWFrame , 'border-left-color'   , '0'      ),
+        const ConstStyleTarget(sWFrame , 'stroke-opacity'      , '1.0'    ),
+
+        /*
+        GROUP 2: properties that are styled by applying Outer-Border class-selector(s)
+        NOTE:   Border-STYLE(s) are at end of each group and must remain there. The GetCSS... routine processes this array in order,
+                and when it reaches the style attribute(s), it performs lookups on width-value(s) to determine border-type (our
+                enumerated internal "type").
+        */
+        const ConstStyleTarget(sWOuter , 'border-top-style'    , 'none'   ),
+        const ConstStyleTarget(sWOuter , 'border-right-style'  , 'none'   ),
+        const ConstStyleTarget(sWOuter , 'border-bottom-style' , 'none'   ),
+        const ConstStyleTarget(sWOuter , 'border-left-style'   , 'none'   ),
+        const ConstStyleTarget(sWOuter , 'border-top-width'    , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-right-width'  , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-bottom-width' , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-top-color'    , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-right-color'  , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-bottom-color' , '0'      ),
+        const ConstStyleTarget(sWOuter , 'border-left-color'   , '0'      ),
+        const ConstStyleTarget(sWOuter , 'stroke-opacity'      , '0.0'    ),
+
+        //Group3: properties that are styled by applying Inner-Border class-selector(s)
+        const ConstStyleTarget(sWInner , 'border-top-style'    , 'none'   ),
+        const ConstStyleTarget(sWInner , 'border-right-style'  , 'none'   ),
+        const ConstStyleTarget(sWInner , 'border-bottom-style' , 'none'   ),
+        const ConstStyleTarget(sWInner , 'border-left-style'   , 'none'   ),
+        const ConstStyleTarget(sWInner , 'border-top-width'    , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-right-width'  , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-bottom-width' , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-top-color'    , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-right-color'  , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-bottom-color' , '0'      ),
+        const ConstStyleTarget(sWInner , 'border-left-color'   , '0'      ),
+        const ConstStyleTarget(sWInner , 'stroke-opacity'      , '0.0'    )
+
+        //Group[n] (specialized/additional stylable targets can be added via subclasses)
+
+        //TODO: stroke-linecap by part?
+        //TODO: effect(s) by part?
+
+    ]; //_listInitialStylableProperties
+
+
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
@@ -677,39 +567,24 @@ class Widget {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     CSSTargetsMap    classesCSS         = null;
 
+
+
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    VARIOUS CONSTANTS  :TODO -- IF this will increase mem-efficiency/speed, move literals here
+    TODO-REF#1: THE FOLLOWING VARIABLES ARE HERE TO WORKAROUND AN ISSUE IN DART:
+        http://code.google.com/p/dart/issues/detail?id=144
+
+    We use the approach from here as a workaround:
+        http://japhr.blogspot.com/2012/03/really-really-removing-event-handlers.html
+
+    Basically, just create pointers to our event methods and add/remove (.on.) these instead
+    of direct method references.   NOTE: set the values in the constructor!
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-
-    //our CSS-stylable targets (and, the default class-selector-values to match)
-    static final String sWBase          = 'Widget_Base';
-    static final String sWFrame         = 'Widget_Frame';
-    static final String sWOuter         = 'Widget_BorderOuter';
-    static final String sWInner         = 'Widget_BorderInner';
-
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    /**
-    * Used by Widget styling logic.  Provides *initial* (default) CSS selectors associated
-    * with various stylable target sub-components of a Widget. E.g., frame, border parts.
-    *
-    * Keys are the stylable-target name; associated Values are the CSS selectors that will
-    * be applied to those parts. For consistency, the initial selector names will be identical
-    * to the target-property-names, but these can be overridden and added to by implementor.
-    *
-    * ## See Also
-    *    * [classesCSS] property for more information on Widget styling.
-    *    * [CSSTargetsMap] class
-    *    * [StyleTarget] class
-    */
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    static final Map<String, String> mapInitialClassesCSS    = const {
-        'Widget_Base'       :'Widget_Base',
-        'Widget_Frame'      :'Widget_Frame',
-        'Widget_BorderOuter':'Widget_BorderOuter',
-        'Widget_BorderInner':'Widget_BorderInner'
-    };
+    var mouseDownHandler;
+    var mouseClickHandler;
+    var mouseMoveHandler;
+    var mouseUpHandler;
 
 
     /*
@@ -1119,109 +994,19 @@ class Widget {
         //TODO : Remove Updating from _widgetState if it exists?
     }
 
+
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Populate list with stylable targets applicable to this Widget.
+    Populate list with stylable targets-objects/properties applicable to this Widget.
+    Pass in a list of constant values from which to obtain initializing data.
 
-    AT THIS TIME, CSS can only be used to style the entire border-part (group) at once, which is fine,
-    since you can layer CSS Classes up such that if you wish to affect a change on one minor component
-    of a widget-part (e.g., the Frame's right-border color), you can do so by simply setting up a
-    CSS class-selector like "FrameRightBorderColor {border-right: 1px solid red}", and include this
-    selector on the Frame-target by setting classesCSS(sWFrame) = "$sWFrame, FrameRightBorderColor"
-
-    ULTIMATELY, if there is a need (due to speed or such) to have more "direct" access to updating a
-    single, or narror group of, value(s), our part-naming convention could come into play (see below)
-    and we could include in our stylable properties list any "targetable" subsets, like "Widget_Base_Background")
-
-    Stylable Part Naming Convention for "id" attributes (i.e., the "TargetObject"):
-        InstanceName_Component_SubComponent[_SubComponent][_SubComponent]...
-
-        e.g.,: InstanceName_Widget_BorderType_BorderSubComponent_Side/Path[stroke#]... which results in...
-        e.g.,: InstanceName_Widget_BorderOuter_Outer_Left2
-
-    HOW THESE ARE USED:  see CSSTargetsMap class comments.
-    Our classesCSS (instance of CSSTargetsMap), maintains a comma-delim list of CSS Selector "classes"
-    to apply to target objects in our stylable-properties-list.
-
-    PER-SIDE property ENUMERATIONS are included because, even if a property like "margin" is specified in CSS,
-    we need to return the calculated value PER-SIDE (for our internal drawing routines).
-
-    NOTE: Sub-classes must extend this function to apply/calc CSS to any applicable SVG elements owned by a derived Widget
+    NOTE: see _listInitialStylableProperties comments.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void _loadStylablePropertiesList() {
-
-        void addObjToList(TargetObject, TargetProperty, [DefaultValue = '0']) {
-            _stylablePropertiesList.add(new StyleTarget(TargetObject, TargetProperty, DefaultValue));
-        }
-
-        //TODO: stroke-linecap by part?
-
-        /*
-        GROUP 1:
-        Begin with properties that are styled by applying Base Widget class-selector(s); notice that for this group, we could have used
-        a single group, and thus a single call to retrieve "Base" and "Frame" styling, since the CSS Properties used for each do not conflict/overlap.
-        But, since we could end up using properties like "filter" for both for widget background and its frame, separation was chosen.
-        */
-        addObjToList(sWBase, 'margin-top'          , '0'      );
-        addObjToList(sWBase, 'margin-right'        , '0'      );
-        addObjToList(sWBase, 'margin-bottom'       , '0'      );
-        addObjToList(sWBase, 'margin-left'         , '0'      );
-        addObjToList(sWBase, 'padding-top'         , '0'      );
-        addObjToList(sWBase, 'padding-right'       , '0'      );
-        addObjToList(sWBase, 'padding-bottom'      , '0'      );
-        addObjToList(sWBase, 'padding-left'        , '0'      );
-        addObjToList(sWBase, 'fill'                , 'black'  );
-        addObjToList(sWBase, 'fill-opacity'        , '0.0'    );
-
-        addObjToList(sWFrame, 'border-top-style'    , 'none'   );
-        addObjToList(sWFrame, 'border-right-style'  , 'none'   );
-        addObjToList(sWFrame, 'border-bottom-style' , 'none'   );
-        addObjToList(sWFrame, 'border-left-style'   , 'none'   );
-        addObjToList(sWFrame, 'border-top-width'    , '0'      );
-        addObjToList(sWFrame, 'border-right-width'  , '0'      );
-        addObjToList(sWFrame, 'border-bottom-width' , '0'      );
-        addObjToList(sWFrame, 'border-left-width'   , '0'      );
-        addObjToList(sWFrame, 'border-top-color'    , '0'      );
-        addObjToList(sWFrame, 'border-right-color'  , '0'      );
-        addObjToList(sWFrame, 'border-bottom-color' , '0'      );
-        addObjToList(sWFrame, 'border-left-color'   , '0'      );
-        addObjToList(sWFrame, 'stroke-opacity'      , '1.0'    );
-
-        /*
-        GROUP 2: properties that are styled by applying Outer-Border class-selector(s)
-        NOTE:   Border-STYLE(s) are at end of each group and must remain there. The GetCSS... routine processes this array in order,
-                and when it reaches the style attribute(s), it performs lookups on width-value(s) to determine border-type (our
-                enumerated internal "type").
-        */
-        addObjToList(sWOuter, 'border-top-style'     , 'none'   );
-        addObjToList(sWOuter, 'border-right-style'   , 'none'   );
-        addObjToList(sWOuter, 'border-bottom-style'  , 'none'   );
-        addObjToList(sWOuter, 'border-left-style'    , 'none'   );
-        addObjToList(sWOuter, 'border-top-width'     , '0'      );
-        addObjToList(sWOuter, 'border-right-width'   , '0'      );
-        addObjToList(sWOuter, 'border-bottom-width'  , '0'      );
-        addObjToList(sWOuter, 'border-left-width'    , '0'      );
-        addObjToList(sWOuter, 'border-top-color'     , '0'      );
-        addObjToList(sWOuter, 'border-right-color'   , '0'      );
-        addObjToList(sWOuter, 'border-bottom-color'  , '0'      );
-        addObjToList(sWOuter, 'border-left-color'    , '0'      );
-        addObjToList(sWOuter, 'stroke-opacity'       , '0.0'    );
-
-        //Group3: properties that are styled by applying Inner-Border class-selector(s)
-        addObjToList(sWInner, 'border-top-style'     , 'none'   );
-        addObjToList(sWInner, 'border-right-style'   , 'none'   );
-        addObjToList(sWInner, 'border-bottom-style'  , 'none'   );
-        addObjToList(sWInner, 'border-left-style'    , 'none'   );
-        addObjToList(sWInner, 'border-top-width'     , '0'      );
-        addObjToList(sWInner, 'border-right-width'   , '0'      );
-        addObjToList(sWInner, 'border-bottom-width'  , '0'      );
-        addObjToList(sWInner, 'border-left-width'    , '0'      );
-        addObjToList(sWInner, 'border-top-color'     , '0'      );
-        addObjToList(sWInner, 'border-right-color'   , '0'      );
-        addObjToList(sWInner, 'border-bottom-color'  , '0'      );
-        addObjToList(sWInner, 'border-left-color'    , '0'      );
-        addObjToList(sWInner, 'stroke-opacity'       , '0.0'    );
+    void _addStylablePropertiesToWidget(List<ConstStyleTarget> listToAdd) {
+        listToAdd.forEach( (ConstStyleTarget intitial) {
+            _stylablePropertiesList.add(new StyleTarget(intitial.targetObject, intitial.targetProperty, intitial.defaultValue));
+        });
 
         //Group[n]...  added in subclasses
 
@@ -2631,8 +2416,8 @@ class Widget {
         //Indexed on CSS-stylable targets name; initial/default class-selector-values use same name.
         classesCSS.initialize(mapInitialClassesCSS);
 
-        //Setup our CSS "stylable targets"
-        _loadStylablePropertiesList();
+        //Setup our CSS "stylable targets"; sub-class constructors can add to this
+        _addStylablePropertiesToWidget(InitialStylableWidgetProperties);
 
         //Time to make the default SVG objects we'll be using to render a Widget.
         _create();

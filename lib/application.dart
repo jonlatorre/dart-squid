@@ -421,7 +421,7 @@ class Application {
         See comments included with _isAppReady/_onAppReady variables for more info about
         how/why callback was used.
 
-        DOING THIS WITHOUT FUTURES: (EASY IN JS; dart:html framework made this ridiculous.
+        DOING THIS WITHOUT FUTURES: (EASY IN JS; dart:html framework made this ridiculous)
         The following few lines of code were the ONLY "immediate" version (non Future) that worked
         in Dartium from what I could determine, though the need to figure out scrollbar width
         was an added layer of garbage subject to issues:

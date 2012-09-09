@@ -25,6 +25,10 @@ BEGIN: GLOBAL ("top level") constants and types
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// BEGIN: Tracing related
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
 ///Structure used in [TracingDefs] Map for use by [Application.trace] functionality.
 class TracingInfo {
     final bool      isActive;           //trace point on/off?
@@ -52,6 +56,9 @@ final Map<String, TracingInfo> TracingDefs = const {
 };
 
 
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// BEGIN: Misc
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 ///Widget-set source-code version label.
 final String Version        = '2012-09-04 : 0.3.3';

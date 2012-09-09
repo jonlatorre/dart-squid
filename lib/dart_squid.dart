@@ -128,6 +128,7 @@
 #source("events_processor.dart");
 #source("exception_types.dart");
 #source("object_bounds.dart");
+#source("style_targets_css.dart");
 #source("application.dart");
 #source("widget_borders.dart");
 #source("widget_constraints.dart");
