@@ -59,7 +59,9 @@ class eWidgetState {
         '32':'Updating'
     };
 
-    static getCommaDelimNamesInVal(int intSides) {
+
+    ///Mainly useful for tracing routines; put all state-value-names pertaining to an additive "state" into human-readable string.
+    static String getCommaDelimNamesInVal(int intSides) {
         String _includedNames = '';
 
         Names.forEach( (nameItemKey, nameItemValue) {
@@ -71,6 +73,47 @@ class eWidgetState {
 
         return _includedNames;
     }
+
+    ///Convenience method: test for  existence of Normal state within combined states.
+    static bool isNormal(int statesToTest) {
+        return ( (statesToTest & Normal) == Normal);
+    }
+
+    ///Convenience method: test for  existence of Loading state within combined states.
+    static bool isLoading(int statesToTest) {
+        return ( (statesToTest & Loading) == Loading);
+    }
+
+    ///Convenience method: test for existence of Showing state within combined states.
+    static bool isShowing(int statesToTest) {
+        return ( (statesToTest & Showing) == Showing);
+    }
+
+    ///Convenience method: test for existence of Moving state within combined states.
+    static bool isMoving(int statesToTest) {
+        return ( (statesToTest & Moving) == Moving);
+    }
+
+    ///Convenience method: test for existence of Sizing state within combined states.
+    static bool isSizing(int statesToTest) {
+        return ( (statesToTest & Sizing) == Sizing);
+    }
+
+    ///Convenience method: test for existence of Updating state within combined states.
+    static bool isUpdating(int statesToTest) {
+        return ( (statesToTest & Updating) == Updating);
+    }
+
+    ///Convenience method: remove state specified in [stateToRemove] from [combinedState] *if* it exists within combined state; return resulting [combinedState].
+    static int removeState(int combinedState, int stateToRemove) {
+        return combinedState - ( ( (combinedState & stateToRemove) == stateToRemove) ? stateToRemove : 0);
+    }
+
+    ///Convenience method: set state specified in [stateToSet] in [combinedState] *if* it is not already set within combined state; return resulting [combinedState].
+    static int setState(int combinedState, int stateToSet) {
+        return combinedState + ( ( (combinedState & stateToSet) == stateToSet) ? 0 : stateToSet);
+    }
+
 
 } //eWidgetState class
 
