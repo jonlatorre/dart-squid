@@ -180,16 +180,6 @@ class Widget {
     String              _fillColor              = 'none';   //'none', 'transparent', '' each indicate no-fill
     String              _fillOpacity            = '0.0';    //fill not showing by default
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    If CSS styles (classesCSS) have been modified since a RePaint occurred,
-    (e.g., after a [beginUpdate] and prior to [endUpdate]), store that knowledge here.
-    Use this info to optimize repaints by avoiding unnecessary CSS related recalcs.
-    The RePaint method resets this to false at completion.
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-    bool                _cssChangedSinceRepaint     = true;
-
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -314,10 +304,10 @@ class Widget {
 
     //Can this item be moved with the mouse? (via mousedown/mousemove/mouseup)?
     //TODO: MoveTarget (what group in widget) to detect moves on?  Also, should Alignment be cleared if moved?
-    DynamicsConstraint      _isMovable          = null;
+    DynamicsConstraint  _isMovable      = null;
 
     //Can this item be resized with the mouse? (via mousedown/mousemove/mouseup)?
-    DynamicsConstraint     _isSizable           = null;
+    DynamicsConstraint  _isSizable      = null;
 
     //List of StyleTarget instances. These stylable targets can have CSS Class-Selector(s) applied to them via our classesCSS property.
     List<StyleTarget>   _stylablePropertiesList = null;
@@ -346,31 +336,6 @@ class Widget {
     static final String sWInner         = 'Widget_BorderInner';
 
 
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    /**
-    * Used by Widget styling logic.  Provides *initial* (default) CSS selectors associated
-    * with various stylable target sub-components of a Widget. E.g., frame, border parts.
-    *
-    * Keys are the stylable-target name; associated Values are the CSS selectors that will
-    * be applied to those parts. For consistency, the initial selector names will be identical
-    * to the target-property-names, but these can be overridden and added to by implementor.
-    *
-    * ## See Also
-    *    * [classesCSS] property for more information on Widget styling.
-    *    * [CSSTargetsMap] class
-    *    * [StyleTarget] class
-    *    * [InitialStylableWidgetProperties] sets up initial stylable properties on Widget.
-    */
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    static final Map<String, String> mapInitialClassesCSS    = const {
-        'Widget_Base'       :'Widget_Base',
-        'Widget_Frame'      :'Widget_Frame',
-        'Widget_BorderOuter':'Widget_BorderOuter',
-        'Widget_BorderInner':'Widget_BorderInner'
-    };
-
-
-
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Define the CSS-stylable target objects/properties (and their default values) this
@@ -385,7 +350,8 @@ class Widget {
     *
     * *Ultimately*, if there is a need (due to speed or such) to have more "direct" access to updating a
     * single, or narrow group of, value(s), our part-naming convention could come into play (see below)
-    * and we could include in our stylable properties list any "targetable" subsets, like "Widget_Base_Background")
+    * and we could include in our stylable properties list any "targetable" subsets,
+    * like "Widget_Base_Background")
     *
     * Stylable Part Naming Convention for "id" attributes (i.e., the "TargetObject") on the
     * actual SVG element:
@@ -407,7 +373,8 @@ class Widget {
     * NOTE: Sub-classes must extend upon this by providing their own list of additional
     * stylable parts to apply/calc CSS for (and, derived Widgets would have to apply the
     * resulting calculated values to any applicable SVG elements they own). As such, any
-    * subclass must call `_addStylablePropertiesToWidget()` passing in a list similar to this one.
+    * subclass must extend or override  [createWidgetCSSTargetsStylableProperties] to create
+    * stylable properties for additional or alternative (respectively) lists similar to this one.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     static final List<ConstStyleTarget>  InitialStylableWidgetProperties = const [
@@ -493,7 +460,7 @@ class Widget {
     * Although the CSS-stylable attributes are limited currently, quite a few
     * Widget visual attributes are supported.
     *
-    * The default selector targets are defined in the Map [mapInitialClassesCSS]
+    * The default selector targets are defined in [createWidgetCssStyleTargets]
     *
     * This [CSSTargetsMap] maintains a Map of Class Names ("key" portion of Map) that
     * CSS *selectors* will be able to target and Style.
@@ -558,7 +525,7 @@ class Widget {
     *
     * ## See Also
     *    * [Application.classesCSS] property for detailed comments regarding [Application] styling.
-    *    * [mapInitialClassesCSS] for default values loaded during Widget construction.
+    *    * [createWidgetCssStyleTargets] for default values loaded during Widget construction.
     *    * [CSSTargetsMap] class
     *    * [StyleTarget] class
     *
@@ -590,15 +557,11 @@ class Widget {
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     BEGIN: PRIVILEGED METHODS (publicly visible accessors to our protected members)
+
+    READ ONLY values will ONLY have "getters" without corresponding "setters";
+    these R/O accessors tend to be grouped toward the top of this region of code.
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    READ ONLY values will ONLY have "getters" without corresponding "setters"
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-
 
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
@@ -950,142 +913,97 @@ class Widget {
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: RENDERING AND STYLING-RELATED METHODS
+    BEGIN: Styling / Repainting / Metrics / Bounds Calcs / Realignment Logic...
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    BEGIN: APPLY STYLES METHOD(S)...
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    /**
-    * Centralizes the "repainting" of the Widget.  Includes logic to bypass repaints while
-    * inside a [beginUpdate] ... [endUpdate] block.  Also only re-calculates any CSS-sourced
-    * visual properties if a CSS change has been detected since last [rePaint] operation.
-    *
-    * ### See Also
-    *   * [rePaintFull]
+    These are fired (via callbacks) from the [CSSTargetsMap] class when any changes to
+    the CSS-class-selectors (applied to various Widget "target objects") are detected.
+    The caller (various methods inside [CSSTargetsMap]) has already performed any required
+    off-screen CSS computation by applying the latest class-selectors and using the
+    [Application.getCSSPropertyValuesForClassNames] method to obtain values.
+
+    Values derived from our CSS calculations are stored in [_StylablePropertiesList]
+    and applied to appropriate internal variables and/or SVG part in these methods.
+
+    See (for more related comments):
+        [createWidgetCssStyleTargets] and
+        [createWidgetCSSTargetsStylableProperties]
+
+    NOTE: Sub-classes must provide additional methods for callbacks to apply CSS to
+    any applicable SVG elements owned by a derived Widget
+
+    TODO: Address pseudo-SELECTORS (HOVER, etc) via ONLY CSS
+
+    Any changes to CSS specifications could affect visual stying as well as imply
+    a need to perform realignments and such (if CSS was used to affect metrics, e.g.,
+    by altering border-widths). So, when an object is [Visible], fire a repaint after
+    applying any styling updates.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void rePaint() {
-        if ( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) return;  //bypass during mass-updates
-
-        if (_cssChangedSinceRepaint) {
-            _updateStylePropertiesListValuesFromCSS();
-            _applyStylesToWidgetParts();
-        }
-        reAlign();
-
-        //reset flag, so we can trap any further CSS changes
-        _cssChangedSinceRepaint = false;
-    } //...RePaint
 
 
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    /**
-    * Force the re-calculation of any CSS-sourced visual properties, followed by a
-    * "repainting" of the Widget. Currently not used internally anywhere.
-    *
-    * ### See Also
-    *   * [rePaint]
+    /*
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    Helper method to simplify life a bit...
+    ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void rePaintFull() {
-        _cssChangedSinceRepaint = true;
-        rePaint();
-        //TODO : Remove Updating from _widgetState if it exists?
+    String _obtainStyleCalcValue(String objName, String propName) {
+        return  getStyleTargetFromListByObjAndProperty(_stylablePropertiesList, objName, propName).calcValue;
     }
 
 
     /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Populate list with stylable targets-objects/properties applicable to this Widget.
-    Pass in a list of constant values from which to obtain initializing data.
-
-    NOTE: see _listInitialStylableProperties comments.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    Widget Fill, Margin, and Padding...
+    ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    void _addStylablePropertiesToWidget(List<ConstStyleTarget> listToAdd) {
-        listToAdd.forEach( (ConstStyleTarget intitial) {
-            _stylablePropertiesList.add(new StyleTarget(intitial.targetObject, intitial.targetProperty, intitial.defaultValue));
-        });
+    void _applyStylesToWidgetBase(String targetObjectName) {
 
-        //Group[n]...  added in subclasses
+        _fillColor              = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName, 'fill'));
+        _fillOpacity            = ((_fillColor == 'none') ? '0.0' : _obtainStyleCalcValue(targetObjectName, 'fill-opacity'));
+        _borders.Margin.T.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-top'    ));
+        _borders.Margin.R.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-right'  ));
+        _borders.Margin.B.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-bottom' ));
+        _borders.Margin.L.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-left'   ));
+        _borders.Padding.T.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-top'   ));
+        _borders.Padding.R.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-right' ));
+        _borders.Padding.B.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-bottom'));
+        _borders.Padding.L.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-left'  ));
 
-    } //..._loadStylablePropertiesList
+        if (_visible) {
+             rePaint();
+        }
+    } //_applyStylesToWidgetBase
 
 
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Call the method that will perform an off-screen computation by applying any CSS-class-selectors
-    as they apply to our standard Widget base/border elements.
-
-    See: _loadStylablePropertiesList (for more related comments)
-
-    NOTE: Sub-classes must extend this function to apply/calc CSS to any applicable SVG elements owned by a derived Widget
-
-    TODO: Address pseudo-SELECTORS (HOVER, etc) via ONLY CSS
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    void _updateStylePropertiesListValuesFromCSS() {
-        _applicationObject.trace(8, this);
-
-        //Widget_Base, Widget_Frame,Widget_BorderOuter, Widget_BorderInner
-        _applicationObject.getCSSPropertyValuesForClassNames(sWBase,  classesCSS[sWBase],  _stylablePropertiesList);
-        _applicationObject.getCSSPropertyValuesForClassNames(sWFrame, classesCSS[sWFrame], _stylablePropertiesList);
-        _applicationObject.getCSSPropertyValuesForClassNames(sWOuter, classesCSS[sWOuter], _stylablePropertiesList);
-        _applicationObject.getCSSPropertyValuesForClassNames(sWInner, classesCSS[sWInner], _stylablePropertiesList);
-    } //_updateStylePropertiesListValuesFromCSS
-
-
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Values are derived from our CSS calculations, and stored in _StylablePropertiesList, are moved to
-    appropriate internal variables.
-
     NOTES:
         The ORDER of updating our Widget values matters.
-        Style-setting relies on us already having set the border-width values, since we
-        support two border-style values not defined by standard CSS.
+        Style-setting (via [setStyle] calls) relies on us already having set the
+        *border-width values*, since we support two border-styles not defined by standard CSS
+        (see "virtual" border types in [eBorderStyle]).
 
-    PER-SIDE property ENUMERATIONS are examined because, even if a property like "margin" is specified in CSS,
-    we need to return the calculated value PER-SIDE (for our internal drawing routines).
+    PER-SIDE property ENUMERATIONS are examined because, even if a property like "margin"
+    is specified in CSS, we need to return the calculated value PER-SIDE
+    (for our internal drawing routines).
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void _applyStylesToWidgetParts() {
-        /*
-        ═══════════════════════════════════════════════════════════════════════════════════════
-        a method to simplify life a bit...
-        ═══════════════════════════════════════════════════════════════════════════════════════
-        */
-        String obtainStyleCalcValue(String objName, String propName) {
-            return  getStyleTargetFromListByObjAndProperty(_stylablePropertiesList, objName, propName).calcValue;
-        }
-
-
-        /*
-        ═══════════════════════════════════════════════════════════════════════════════════════
-        Fill, Margin, and Padding...
-        ═══════════════════════════════════════════════════════════════════════════════════════
-        */
-        _fillColor              = ensureStandardNoneColor(obtainStyleCalcValue(sWBase, 'fill'));
-        _fillOpacity            = ((_fillColor == 'none') ? '0.0' : obtainStyleCalcValue(sWBase, 'fill-opacity'));
-        _borders.Margin.T.width = Math.parseInt(obtainStyleCalcValue(sWBase, 'margin-top'    ));
-        _borders.Margin.R.width = Math.parseInt(obtainStyleCalcValue(sWBase, 'margin-right'  ));
-        _borders.Margin.B.width = Math.parseInt(obtainStyleCalcValue(sWBase, 'margin-bottom' ));
-        _borders.Margin.L.width = Math.parseInt(obtainStyleCalcValue(sWBase, 'margin-left'   ));
-        _borders.Padding.T.width= Math.parseInt(obtainStyleCalcValue(sWBase, 'padding-top'   ));
-        _borders.Padding.R.width= Math.parseInt(obtainStyleCalcValue(sWBase, 'padding-right' ));
-        _borders.Padding.B.width= Math.parseInt(obtainStyleCalcValue(sWBase, 'padding-bottom'));
-        _borders.Padding.L.width= Math.parseInt(obtainStyleCalcValue(sWBase, 'padding-left'  ));
-
+    void _applyStylesToWidgetBorders(String targetObjectName) {
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         Frame, Outer, Inner: each use CSS prop values similarly
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        void applyStylesToWidgetPart(WidgetBorder bPart, String objName) {
+        void applyStylesToWidgetPart(WidgetBorder bPart) {
             String  sTemp       = '';
 
             //workaround for issue with non-100%-zoom-factor-getcomputedstyle returning bogus non-INT values!
@@ -1100,111 +1018,60 @@ class Widget {
                 }
             }
 
-            bPart.T.width       = getProperWidthValues(obtainStyleCalcValue(objName,  'border-top-width'       ));
-            bPart.R.width       = getProperWidthValues(obtainStyleCalcValue(objName,  'border-right-width'     ));
-            bPart.B.width       = getProperWidthValues(obtainStyleCalcValue(objName,  'border-bottom-width'    ));
-            bPart.L.width       = getProperWidthValues(obtainStyleCalcValue(objName,  'border-left-width'      ));
+            bPart.T.width       = getProperWidthValues(_obtainStyleCalcValue(targetObjectName,  'border-top-width'       ));
+            bPart.R.width       = getProperWidthValues(_obtainStyleCalcValue(targetObjectName,  'border-right-width'     ));
+            bPart.B.width       = getProperWidthValues(_obtainStyleCalcValue(targetObjectName,  'border-bottom-width'    ));
+            bPart.L.width       = getProperWidthValues(_obtainStyleCalcValue(targetObjectName,  'border-left-width'      ));
 
-            bPart.T.color       = ensureStandardNoneColor(obtainStyleCalcValue(objName,  'border-top-color'    ));
-            bPart.R.color       = ensureStandardNoneColor(obtainStyleCalcValue(objName,  'border-right-color'  ));
-            bPart.B.color       = ensureStandardNoneColor(obtainStyleCalcValue(objName,  'border-bottom-color' ));
-            bPart.L.color       = ensureStandardNoneColor(obtainStyleCalcValue(objName,  'border-left-color'   ));
+            bPart.T.color       = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName,  'border-top-color'    ));
+            bPart.R.color       = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName,  'border-right-color'  ));
+            bPart.B.color       = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName,  'border-bottom-color' ));
+            bPart.L.color       = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName,  'border-left-color'   ));
 
-            sTemp   = obtainStyleCalcValue(objName, 'stroke-opacity' );
+            sTemp   = _obtainStyleCalcValue(targetObjectName, 'stroke-opacity' );
             bPart.T.opacity     = ((bPart.T.color == 'none') ? '0.0' : sTemp);
             bPart.R.opacity     = ((bPart.R.color == 'none') ? '0.0' : sTemp);
             bPart.B.opacity     = ((bPart.B.color == 'none') ? '0.0' : sTemp);
             bPart.L.opacity     = ((bPart.L.color == 'none') ? '0.0' : sTemp);
 
             //only valid styles for frame are solid or none.
-            bPart.T.setStyle(obtainStyleCalcValue(objName, 'border-top-style'   ) );
-            bPart.R.setStyle(obtainStyleCalcValue(objName, 'border-right-style' ) );
-            bPart.B.setStyle(obtainStyleCalcValue(objName, 'border-bottom-style') );
-            bPart.L.setStyle(obtainStyleCalcValue(objName, 'border-left-style'  ) );
+            bPart.T.setStyle(_obtainStyleCalcValue(targetObjectName, 'border-top-style'   ) );
+            bPart.R.setStyle(_obtainStyleCalcValue(targetObjectName, 'border-right-style' ) );
+            bPart.B.setStyle(_obtainStyleCalcValue(targetObjectName, 'border-bottom-style') );
+            bPart.L.setStyle(_obtainStyleCalcValue(targetObjectName, 'border-left-style'  ) );
         }
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
-        Frame, Outer, Inner processing
+        Frame, Outer, Inner processing simply varies sub-component of Borders is being updated.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        applyStylesToWidgetPart(_borders.Frame, sWFrame);
-        applyStylesToWidgetPart(_borders.Outer, sWOuter);
-        applyStylesToWidgetPart(_borders.Inner, sWInner);
+        switch (targetObjectName) {
+            case sWFrame :
+                applyStylesToWidgetPart(_borders.Frame);
+                break;
+            case sWOuter :
+                applyStylesToWidgetPart(_borders.Outer);
+                break;
+            case sWInner :
+                applyStylesToWidgetPart(_borders.Inner);
+                break;
+        }
 
-    } //_applyStylesToWidgetParts
+        if (_visible) {
+             rePaint();
+        }
 
+    } //_applyStylesToWidgetBorders
 
 
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Method that consolidates the visual updates to all aspects of our Widget.  
-    This is called from ReAlign() when any changes to Widget properties/state will affect 
-    the background, border(s), or selection-rect position.
+    END: ... APPLY STYLES METHOD(S)
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void renderBordersAndBackground() {
 
-        ObjectBounds ptrBoundsForBgRect      = _widgetMetrics.Inner;
-
-        /*  transform="translate(x,y), scale(scalex,scaley)"...
-            Need to translate inversely-proportionate to the scale in order to keep the x/y of the SVG tag at same
-            visual position after scaling.  Also, consider: do we want top-left corner to remain stationary, or center-point?
-            TODO: implement translate for positioning post-scale(other than 1, 1)...
-            TODO: handle any rotations too
-        */
-        _entireGroupSVGElement.attributes['transform'] =
-            'translate(${((_hasParent ? _parentWidget.getClientBounds().L : 0 ) + _translateX)},${((_hasParent ? _parentWidget.getClientBounds().T : 0 ) + _translateY)}), scale(1,1)';
-
-        setSVGAttributes(_bgRectSVGElement, {
-            'x'             : (ptrBoundsForBgRect.L).toString(),
-            'y'             : (ptrBoundsForBgRect.T).toString(),
-            'width'         : (ptrBoundsForBgRect.Width).toString(),
-            'height'        : (ptrBoundsForBgRect.Height).toString(),
-            'fill'          : _fillColor,
-            'fill-opacity'  : _fillOpacity,
-            'stroke'        : 'none',
-            'stroke-width'  : '0'
-        });
-
-        //Keep our (potentially-displayed) selection-indicator-rect updated
-        ObjectBounds ptrBoundsForSelectRect      = _widgetMetrics.Margin;
-        setSVGAttributes(_selectionRect, {
-            'x'             : (ptrBoundsForSelectRect.L).toString(),
-            'y'             : (ptrBoundsForSelectRect.T).toString(),
-            'width'         : (ptrBoundsForSelectRect.Width).toString(),
-            'height'        : (ptrBoundsForSelectRect.Height).toString(),
-        });
-
-
-        _borders.Outer.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Outer);
-        _borders.Frame.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Frame);
-        _borders.Inner.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Inner);
-
-        _borders[eWidgetPart.Frame].T.updateBorderLineElements();
-        _borders[eWidgetPart.Frame].R.updateBorderLineElements();
-        _borders[eWidgetPart.Frame].B.updateBorderLineElements();
-        _borders[eWidgetPart.Frame].L.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].T.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].R.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].B.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].L.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].T.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].R.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].B.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].L.updateBorderLineElements();
-
-    } //...renderBordersAndBackground
-
-
-
-
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: Metrics / Bounds Calcs / Realignment Logic...
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    */
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -1506,6 +1373,26 @@ class Widget {
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
+    * Centralizes the "repainting" of the Widget.  Includes logic to bypass repaints while
+    * inside a [beginUpdate] ... [endUpdate] block.  Also only re-applies any CSS-sourced
+    * visual property values if a CSS change has been detected since last [rePaint] operation.
+    *
+    * ### Parameters
+    * [cssChangedSinceRepaint] should be passed [true] when outstanding CSS style-calculations
+    * exist that need applied to various Widget Parts.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void rePaint([bool cssChangedSinceRepaint = false]) {
+        if (eWidgetState.isUpdating(_widgetState))  return;  //bypass during mass-updates
+        if (eWidgetState.isLoading(_widgetState))   return;  //bypass while in initial state
+
+        reAlign();
+    }
+
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
     * If a widget's [metrics] are changing by way of setting a property that could alter any
     * [ObjectBounds] values, any "owned" (child widgets) may have their bounds and/or
     * position affected. E.g., changes to [x], [y], [width], [height], [align], and [anchors]
@@ -1522,7 +1409,7 @@ class Widget {
     void reAlign([int currentDepth = 0]) {
 
         //prevent superfluous recalculations if we are in a bulk-update state
-        if ( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) return;
+        if (eWidgetState.isUpdating(_widgetState)) return;
 
         int depth = ( (currentDepth == 0) ? 1 : currentDepth + 1);
         int tempChildCount = getWidgetCount();
@@ -1575,6 +1462,76 @@ class Widget {
     }
 
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Method that consolidates the visual updates to all aspects of our Widget.
+    * Much of the real work is done via the [WidgetBorderSide.updateBorderLineElements] logic,
+    * since so much of a Widget's styling has to do with the line elements that used to
+    * draw the borders.
+    *
+    * This method is called from [reAlign] when any changes to Widget properties/state
+    * will affect the background, border(s), or selection-rect position.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void renderBordersAndBackground() {
+
+        ObjectBounds ptrBoundsForBgRect      = _widgetMetrics.Inner;
+
+        /*
+        ═══════════════════════════════════════════════════════════════════════════════════════
+        NOTES regarding: transform="translate(x,y), scale(scalex,scaley)"...
+        TODO: implement translate for positioning post-scale(other than 1, 1)...
+        Need to translate inversely-proportionate to the scale in order to keep the x/y
+        of the SVG tag at same visual position after scaling.
+        Also, consider: do we want top-left corner to remain stationary, or center-point?
+        TODO: handle any rotations too
+        ═══════════════════════════════════════════════════════════════════════════════════════
+        */
+        _entireGroupSVGElement.attributes['transform'] =
+            'translate(${((_hasParent ? _parentWidget.getClientBounds().L : 0 ) + _translateX)},${((_hasParent ? _parentWidget.getClientBounds().T : 0 ) + _translateY)}), scale(1,1)';
+
+        setSVGAttributes(_bgRectSVGElement, {
+            'x'             : (ptrBoundsForBgRect.L).toString(),
+            'y'             : (ptrBoundsForBgRect.T).toString(),
+            'width'         : (ptrBoundsForBgRect.Width).toString(),
+            'height'        : (ptrBoundsForBgRect.Height).toString(),
+            'fill'          : _fillColor,
+            'fill-opacity'  : _fillOpacity,
+            'stroke'        : 'none',
+            'stroke-width'  : '0'
+        });
+
+        //Keep our (potentially-displayed) selection-indicator-rect updated
+        ObjectBounds ptrBoundsForSelectRect = _widgetMetrics.Margin;
+        setSVGAttributes(_selectionRect, {
+            'x'             : (ptrBoundsForSelectRect.L).toString(),
+            'y'             : (ptrBoundsForSelectRect.T).toString(),
+            'width'         : (ptrBoundsForSelectRect.Width).toString(),
+            'height'        : (ptrBoundsForSelectRect.Height).toString(),
+        });
+
+
+        _borders.Outer.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Outer);
+        _borders.Frame.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Frame);
+        _borders.Inner.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Inner);
+
+        _borders[eWidgetPart.Frame].T.updateBorderLineElements();
+        _borders[eWidgetPart.Frame].R.updateBorderLineElements();
+        _borders[eWidgetPart.Frame].B.updateBorderLineElements();
+        _borders[eWidgetPart.Frame].L.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].T.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].R.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].B.updateBorderLineElements();
+        _borders[eWidgetPart.Outer].L.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].T.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].R.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].B.updateBorderLineElements();
+        _borders[eWidgetPart.Inner].L.updateBorderLineElements();
+
+    } //...renderBordersAndBackground
+
+
+
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -1625,26 +1582,6 @@ class Widget {
         }
     }
 
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    handleCSSChanges (callback fired from classesCSS changehandler)
-
-    Any changes to CSS specifications could affect visual stying as well as imply
-    a need to perform realignments and such (if CSS was used to affect metrics, e.g.,
-    by altering border-widths).
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    void handleCSSChanges() {
-        _cssChangedSinceRepaint = true;
-
-        _applicationObject.trace(4, this);
-        _applicationObject.trace(4, ">> _cssChangedSinceRepaint=${_cssChangedSinceRepaint}  _visible=${_visible}");
-
-        if (_visible) {
-            rePaint();
-        }
-    }
 
 
     /*
@@ -1755,11 +1692,11 @@ class Widget {
 
         //if we are moving a Widget, and it is movable along an axis that would make alignments along that axis meaningless, clear alignment that would no longer be meaningful
         if (isMovingAttempt) {
-            _widgetState = _widgetState + ( ( (_widgetState & eWidgetState.Moving) == eWidgetState.Moving) ? 0 : eWidgetState.Moving);
+            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Moving);
 
             if (_isMovable.x) {
                 _x = _widgetMetrics.Margin.L;   //our Widget's Left-most Bounds
-                _align.clearAlignsOnAxisX();  //if we want something to remain aligned "relative" after moving, bypass this line.  TODO??
+                _align.clearAlignsOnAxisX();    //if we want something to remain aligned "relative" after moving, bypass this line.  TODO??
             }
 
             if (_isMovable.y) {
@@ -1770,7 +1707,7 @@ class Widget {
             //Widget shall be more transparent during movement
             _entireGroupSVGElement.attributes['opacity'] = '0.7';
         } else {
-            _widgetState = _widgetState + ( ( (_widgetState & eWidgetState.Sizing) == eWidgetState.Sizing) ? 0 : eWidgetState.Sizing);
+            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Sizing);
 
             //Border shall be more transparent during movement
             _borders.allBordersSVGGroupElement.attributes['opacity'] = '0.6';
@@ -1813,7 +1750,7 @@ class Widget {
         _dragStartY = event.clientY;
 
         //Update position or sizing...
-        if ( (_widgetState & eWidgetState.Moving) == eWidgetState.Moving) {
+        if (eWidgetState.isMoving(_widgetState)) {
             move(offsetX, offsetY, event);
 
             //Process any potential user-assigned code to trigger upon move
@@ -1870,14 +1807,15 @@ class Widget {
 
         //Restore opacity after movement/sizing (if Move, entire widget effects applied, otherwise just border);
         //TODO: Get values from CSS -- Application-wide setting.
-        if ( (_widgetState & eWidgetState.Moving) == eWidgetState.Moving) {
+        if (eWidgetState.isMoving(_widgetState)) {
             _entireGroupSVGElement.attributes['opacity'] = '1.0';
-            _widgetState = _widgetState - eWidgetState.Moving;
+            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Moving);
         } else {
             _borders.allBordersSVGGroupElement.attributes['opacity'] = '1.0';
-            _widgetState = _widgetState - ( ( (_widgetState & eWidgetState.Sizing) == eWidgetState.Sizing) ? 0 : eWidgetState.Sizing);
+            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Sizing);
         }
     } //... mouseUp()
+
 
 
     /*
@@ -1980,9 +1918,12 @@ class Widget {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void beginUpdate() {
-        if ( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) return;       //already in Updating state
 
-        _widgetState = _widgetState + eWidgetState.Updating;
+        //Already in Updating state? (note: next line wouldn't care; this is here for placeholder
+        //if we later want to allow "nested" begin/endupdates... change return to inc count, etc.)
+        if (eWidgetState.isUpdating(_widgetState)) return;
+
+        _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Updating);
     }
 
 
@@ -2002,10 +1943,10 @@ class Widget {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void endUpdate() {
-        if ( !( (_widgetState & eWidgetState.Updating) == eWidgetState.Updating) ) return;  //already not in Updating state
+        if ( !(eWidgetState.isUpdating(_widgetState))) return;  //already not in Updating state
 
-        _widgetState = _widgetState - eWidgetState.Updating;
-        rePaint();
+        _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Updating);
+        rePaint(true); //assume CSS style changes during bulk-update
     }
 
 
@@ -2124,19 +2065,20 @@ class Widget {
         Also, if initial show, transition our state from loading to normal.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        if ( (_widgetState & eWidgetState.Loading) == eWidgetState.Loading) {
-            //set flag to force RePaint to include CSS recalcs
-            _cssChangedSinceRepaint = true;
-            rePaint();
+        if (eWidgetState.isLoading(_widgetState)) {
 
-            _widgetState = _widgetState - eWidgetState.Loading;
-            _widgetState = _widgetState + eWidgetState.Normal;
+            //Fire ALL CSS change handlers on initial show.
+            classesCSS.updateAllCSSValues();
+
+            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Loading);
+            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Normal);
+            rePaint(true);
         }
 
         //call any user-provided method
         _on.show(new NotifyEventObject(this));
 
-        _widgetState = _widgetState + ( ( (_widgetState & eWidgetState.Showing) == eWidgetState.Showing) ? 0 : eWidgetState.Showing);
+        _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Showing);
     } //...Show()
 
 
@@ -2157,9 +2099,96 @@ class Widget {
         //Call any user-method to occur when Widget is hidden.  This is perfect place to prep for re-alignment, etc.
         _on.hide(new NotifyEventObject(this));
 
-        _widgetState = _widgetState - ( ( (_widgetState & eWidgetState.Showing) == eWidgetState.Showing) ? 0 : eWidgetState.Showing);
-
+        _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Showing);
     } //...hide()
+
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Called by constructor. Required by Widget CSS styling logic.
+    * Provides *initial* (default) values for CSS-to-Stylable-Widget-object-targets
+    * mappings contained in [classesCSS] and loaded via [CSSTargetsMap.createDefaults] method.
+    *
+    * Sub-classes must add to or remove from this list as needed to expose/hide stylable
+    * widget-parts. The called createDefaults method is setup such that it can be called
+    * repeatedly with additional List(s) of values to add; just be sure that each
+    * additional [CssTargetAndSelectorData.targetObjectName] is unique to the entire list.
+    *
+    * When new components are created that are "composite widgets" (i.e., widgets using
+    * other widgets within then), the widgets held internal to another will potentially
+    * need the container-widget to map new part-names/change-handlers that pass values
+    * to internalized widgets appropriately.
+    *
+    * TODO: EXAMPLE COMING SOON.  It also may make more sense to create derived-widgets
+    * created for specialized embedded-use in composite widgets.  E.g., scroll-bar's trackbar.
+    *
+    * ## See Also
+    *    * [classesCSS] property for more information on Widget styling.
+    *    * [CSSTargetsMap] class
+    *    * [StyleTarget] class
+    *    * [InitialStylableWidgetProperties] contains initial stylable properties on Widget and
+    *    additional details about how these values are used.
+    *    * [createWidgetCSSTargetsStylableProperties] loads internal list of stylable properties.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void createWidgetCssStyleTargets() {
+
+        classesCSS.createDefaults(
+            [
+                new CssTargetAndSelectorData(sWBase     , sWBase   , false  , _applyStylesToWidgetBase),
+                new CssTargetAndSelectorData(sWFrame    , sWFrame  , false  , _applyStylesToWidgetBorders),
+                new CssTargetAndSelectorData(sWOuter    , sWOuter  , false  , _applyStylesToWidgetBorders),
+                new CssTargetAndSelectorData(sWInner    , sWInner  , false  , _applyStylesToWidgetBorders),
+                new CssTargetAndSelectorData('Font'     , 'Font'   , true   , null)  //TODO: Implement in derived - this only tests logic for now
+            ]
+        );
+
+    }
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Called by constructor. Required by Widget CSS styling logic.
+    * Sets up *initial* (default) values for list of stylable CSS properties that can
+    * apply to those stylable targets created in [createWidgetCssStyleTargets].
+    *
+    * Override / extended by subclasses to add/remove styling properties used by controls.
+    *
+    * ## See Also
+    *    * [classesCSS] property for more information on Widget styling.
+    *    * [CSSTargetsMap] class
+    *    * [StyleTarget] class
+    *    * [InitialStylableWidgetProperties] contains initial stylable properties on Widget and
+    *    additional details about how these values are used.
+    *    * [createWidgetCssStyleTargets] loads [classesCSS] data.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void createWidgetCSSTargetsStylableProperties() {
+        _addStylablePropertiesToWidget(InitialStylableWidgetProperties);
+    }
+
+
+    /*
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    Used by [createWidgetCSSTargetsStylableProperties]
+    Logic kept external to that method so that any code overriding that method still has
+    access to this helper method (otherwise, this would have just been encapsulated therein).
+
+    Populate list with stylable targets-objects/properties applicable to this Widget.
+    Pass in a list of constant values from which to obtain initializing data.
+
+    Only load the stylable properties that are even possible to "target" per the
+    values created during [createWidgetCssStyleTargets].
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    */
+    void _addStylablePropertiesToWidget(List<ConstStyleTarget> listToAdd) {
+        listToAdd.forEach( (ConstStyleTarget intitial) {
+            if (classesCSS._targetObjectsAndSelectors.containsKey(intitial.targetObject)) {
+                _stylablePropertiesList.add(new StyleTarget(intitial.targetObject, intitial.targetProperty, intitial.defaultValue));
+            }
+        });
+    }
 
 
 
@@ -2263,6 +2292,7 @@ class Widget {
     } //...Create()
 
 
+
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     /**
     * DESTRUCTOR
@@ -2347,7 +2377,7 @@ class Widget {
         //Create list to hold our CSS-Stylable properties.  Subclasses will add entries to this.
         _stylablePropertiesList     = new List<StyleTarget>(),
 
-        classesCSS      = new CSSTargetsMap()
+        classesCSS      = new CSSTargetsMap(appInstance)
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -2363,6 +2393,10 @@ class Widget {
         }
 
         _applicationObject  = appInstance;
+
+        //required setup (not achievable during constructor do to limitations on accessing "this")
+        classesCSS.setStylablePropertiesListRef(_stylablePropertiesList);
+
 
         /*
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -2384,7 +2418,13 @@ class Widget {
             }
         } //catch
 
-        //Test validity of parent, if specified, and raise exception if specified parent obj not proper type
+
+        /*
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        Test validity of parent, if specified, and raise exception if specified parent object
+        is not of proper [Widget] (or derivation thereof) type.
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        */
         if ((parentInstance != null) && (parentInstance is! Widget)) {
             throw new InvalidTypeException('(${_instanceName}) Invalid Widget Constructor: specified Parent-Instance value is neither null nor an instance of Widget.',  '[Widget]', parentInstance);
         }
@@ -2412,14 +2452,22 @@ class Widget {
         mouseUpHandler      = mouseUp;
 
 
-        //Create initial values for CSS-to-Stylable-targets map
-        //Indexed on CSS-stylable targets name; initial/default class-selector-values use same name.
-        classesCSS.initialize(mapInitialClassesCSS);
+        /*
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        Create initial values for CSS-to-Stylable-Widget-object-targets mappings AND associated
+        list of stylable CSS properties that can apply to those targets.  Both of these
+        routines can be overridden / extended by subclasses to add/remove stylable targets/etc.
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        */
+        createWidgetCssStyleTargets();
+        createWidgetCSSTargetsStylableProperties();
 
-        //Setup our CSS "stylable targets"; sub-class constructors can add to this
-        _addStylablePropertiesToWidget(InitialStylableWidgetProperties);
 
-        //Time to make the default SVG objects we'll be using to render a Widget.
+        /*
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        Time to actually create the default SVG objects used to render a Widget.
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        */
         _create();
 
 
@@ -2431,7 +2479,6 @@ class Widget {
         _isMovable.changeHandler    = handleIsMovableIsSizableChanges;
         _isSizable.changeHandler    = handleIsMovableIsSizableChanges;
         _sizeRules.changeHandler    = handleSizeRuleChanges;
-        classesCSS.changeHandler    = handleCSSChanges;
 
         _align.alignSpecs.forEach( (objAlignPart) {
             objAlignPart.changeHandler = handleAlignmentChanges;

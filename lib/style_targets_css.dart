@@ -90,12 +90,45 @@ class StyleTarget {
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class ConstStyleTarget {
+    ///A CSS-stylable-target on a Widget
     final String  targetObject;
+
+    ///A particular CSS property applicable to a [targetObject]
     final String  targetProperty;
+
+    ///Default value for the [targetProperty] if CSS-calculations yield no result.
     final String  defaultValue;
+
     const ConstStyleTarget (this.targetObject, this.targetProperty, this.defaultValue);
 }
 
+
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* Used as storage structure within [CSSTargetsMap] internal Map's "values" portion of Map.
+* See that class for more information.
+*
+* ## See Also
+* [Widget.createWidgetCssStyleTargets] : creates a list of these objects and executes
+* [CSSTargetsMap.createDefaults] to load the map with values.
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class CssTargetAndSelectorData {
+    ///A CSS-stylable-target on a Widget
+    String  targetObjectName;
+
+    ///CSS selectors applied to a given [targetObjectName]
+    String  appliedCssSelectors;
+
+    ///When [true] there is no need to peform off-screen CSS-calc routines to obtain values.
+    bool    isStyledDirectly;
+
+    ///(optional) a callback method available to perform functionality when appliedCssSelectors change
+    ChangeHandler  changeHandler;
+
+
+    CssTargetAndSelectorData (this.targetObjectName, this.appliedCssSelectors, this.isStyledDirectly, this.changeHandler);
+}
 
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -121,72 +154,151 @@ class ConstStyleTarget {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class CSSTargetsMap {
 
+    //See constructor notes.
+    Application _applicationObject = null;
+
+    //See constructor notes.
+    List<StyleTarget> _stylablePropertiesList = null;
+
+    //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * The "key" for this Map is TargetObject names (aligned with values in our StylablePropertiesList —
     * a list of [StyleTarget] objects).
-    * The "value" portion of this Map holds our "AppliedSelectors" (comma-delim class-selectors)
-    * to apply to target.
+    * The "value" portion of this Map holds our "appliedCssSelectors" (comma-delim class-selectors)
+    * and other information that applies to target.
     */
-    Map<String, String> _targetObjectsAndSelectors = null;
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    Map<String, CssTargetAndSelectorData> _targetObjectsAndSelectors = null;
 
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
-    * (optional) a callback method available to perform functionality when
-    * CSS styling changes occur.  Useful for triggering Widget metrics recalcs / rendering updates.
+    * Handles creation of internal (private) Map.
+    *
+    * ## Parameters
+    *    * [Application] _applicationObject : a reference to the [Application] object
+    *     to use for CSS calc calls (to [Application.getCSSPropertyValuesForClassNames]).
+    *
+    * NOTE: **must call** [setStylablePropertiesListRef] in addition to this constructor
+    * prior to this object being used.
     */
-    ChangeHandler  changeHandler;
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    CSSTargetsMap(this._applicationObject) :
+        _targetObjectsAndSelectors = new  Map()
+    {}
 
-    //Constructor
-    CSSTargetsMap();
 
-
-    ///Easy way to start with fresh map without change-triggering.
-    void initialize(Map fromMap) {
-        _targetObjectsAndSelectors = new Map.from(fromMap);
-
-        //remove any extraneous spaces
-        for (String key in _targetObjectsAndSelectors.getKeys()) {
-            _targetObjectsAndSelectors[key] = _targetObjectsAndSelectors[key].replaceAll(' ', '');
-        }
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * See constructor note. This must be called (by Widget) within Widget constructor prior
+    * to any operations that could use this object!
+    *    * [List<StyleTarget>] _listStylableProperties : reference to [Widget] instance's
+    *    CSS-stylable-targetObjectName/Properties where CSS calculations will be stored.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void setStylablePropertiesListRef(List<StyleTarget> listRef) {
+        _stylablePropertiesList  = listRef;
     }
 
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Easy way to populate our [Map] without triggering changeHandler.
+    * Initially, populate Map with key = value
+    * (i.e., key/target-object-name and default-selector-name are identical).
+    * This is done so that any "default" StyleTargets on a Widget can be styled using
+    * a CSS selector of the same name.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void createDefaults(List<CssTargetAndSelectorData> targets) {
+        targets.forEach( (CssTargetAndSelectorData target) {
+            _targetObjectsAndSelectors[target.targetObjectName] = target;
+        });
+    }
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     ///Useful for debugging purposes.
-    String getMapAsString() => _targetObjectsAndSelectors.toString();
-
-
-    ///Clears the Map.
-    void clear() {
-        _targetObjectsAndSelectors.clear();
-        if (changeHandler != null) {changeHandler();}
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    String getMapAsString() {
+        String sTemp = '';
+        _targetObjectsAndSelectors.forEach( (String targetName, CssTargetAndSelectorData item) {
+            sTemp = "${sTemp}${(sTemp.length > 0 ? ',    ' : '')}";
+            sTemp = "${sTemp}${targetName} : ${item.appliedCssSelectors}";
+        });
+        return sTemp;
     }
 
 
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
-    * Returns the value portion of map that contains any Class selector(s),
+    * Returns the [CssTargetAndSelectorData.appliedCssSelectors] value
+    * portion of Map that contains any CSS Class selector(s),
     * but as *space-delim* version which is critically important in off-screen
     * CSS calcs performed in [Application] object.
     */
-    String operator [] (String key) => _getFormattedMapValue(key);
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    String operator [] (String key) => _getFormattedSelectors(key);
 
-    String _getFormattedMapValue(String key) {
-        String sTemp = _targetObjectsAndSelectors[key];
-        return (sTemp != null ? _targetObjectsAndSelectors[key].replaceAll(',', ' ') : '');
+    String _getFormattedSelectors(String key) {
+        String sTemp = _targetObjectsAndSelectors[key].appliedCssSelectors;
+        return (sTemp != null ? sTemp.replaceAll(',', ' ') : '');
     }
 
 
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    ///Helper method for repetitive logic.
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void _fireCssPropertyUpdatesAndNonNullHandler(String targetName) {
+        if (_targetObjectsAndSelectors[targetName].changeHandler != null) {
 
-    ///Set the *entire* appliedSelectors value for a Stylable Target if the key exists; otherwise, ignore.
-    void setClassSelectorsForTargetObjectName(String targetName, String appliedSelectors) {
-        //remove any extraneous spaces
-        appliedSelectors = appliedSelectors.replaceAll(' ', '');
+            //Only need to call CSS property-value off-screen calc routine for those Widget parts not "directly" styled,
+            //by their changeHandler. This could be due to inline-CSS-style considerations or other method of styling.
+            if ( !_targetObjectsAndSelectors[targetName].isStyledDirectly) {
+                //NOTE: instead of using the "key" value from Map, use the [] operator equiv to get the NON-COMMA-DELIM version of key! (IMPORTANT)
+                _applicationObject.getCSSPropertyValuesForClassNames(targetName, _getFormattedSelectors(targetName),  _stylablePropertiesList);
+            }
 
-        if (_targetObjectsAndSelectors.containsKey(targetName)) {
-            _targetObjectsAndSelectors[targetName] = appliedSelectors;
-
-            if (changeHandler != null) {changeHandler();}
+            _targetObjectsAndSelectors[targetName].changeHandler(targetName);
         }
     }
+
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Convenience method. Will traverse all objects in our Map, call the
+    * [Application.getCSSPropertyValuesForClassNames] for each entry, and fire any non-null
+    * (assigned) CSS-change event-handler for each.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void updateAllCSSValues() {
+        _targetObjectsAndSelectors.forEach( (String targetName, CssTargetAndSelectorData target) {
+            _fireCssPropertyUpdatesAndNonNullHandler(targetName);
+        });
+    }
+
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Replace the [CssTargetAndSelectorData.appliedCssSelectors] value
+    * for a given [CssTargetAndSelectorData.targetObjectName] within the Map
+    * if the key exists; otherwise, ignore.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    void setClassSelectorsForTargetObjectName(String targetName, String newSelectors) {
+        //remove any extraneous spaces
+        newSelectors = newSelectors.replaceAll(' ', '');
+
+        if (_targetObjectsAndSelectors.containsKey(targetName)) {
+            _targetObjectsAndSelectors[targetName].appliedCssSelectors = newSelectors;
+
+            _fireCssPropertyUpdatesAndNonNullHandler(targetName);
+        }
+    }
+
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -205,7 +317,7 @@ class CSSTargetsMap {
         //remove any extraneous spaces
         newSelectors = newSelectors.replaceAll(' ', '');
 
-        List<String> existingSelectorsAsList    = _targetObjectsAndSelectors[targetName].split(',');
+        List<String> existingSelectorsAsList    = _targetObjectsAndSelectors[targetName].appliedCssSelectors.split(',');
         List<String> newSelectorsAsList         = newSelectors.split(',');
         List<String> addTheseSelectorsList      = new List<String>();
         bool hasChanged = false;
@@ -231,11 +343,12 @@ class CSSTargetsMap {
             i++;
         }
 
-        _targetObjectsAndSelectors[targetName] = sbTemp.toString();
+        _targetObjectsAndSelectors[targetName].appliedCssSelectors = sbTemp.toString();
 
-        if (changeHandler != null) {changeHandler();}
+        _fireCssPropertyUpdatesAndNonNullHandler(targetName);
 
     } //AddClassSelectorForTargetObjectName
+
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -252,7 +365,7 @@ class CSSTargetsMap {
         //remove any extraneous spaces
         delSelectors = delSelectors.replaceAll(' ', '');
 
-        List<String> existingSelectorsAsList    = _targetObjectsAndSelectors[targetName].split(',');
+        List<String> existingSelectorsAsList    = _targetObjectsAndSelectors[targetName].appliedCssSelectors.split(',');
         List<String> delSelectorsAsList         = delSelectors.split(',');
 
         bool hasChanged = false;
@@ -276,9 +389,9 @@ class CSSTargetsMap {
             i++;
         }
 
-        _targetObjectsAndSelectors[targetName] = sbTemp.toString();
+        _targetObjectsAndSelectors[targetName].appliedCssSelectors = sbTemp.toString();
 
-        if (changeHandler != null) {changeHandler();}
+        _fireCssPropertyUpdatesAndNonNullHandler(targetName);
 
     } //RemoveClassSelectorsForTargetObjectName
 
