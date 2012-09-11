@@ -123,7 +123,6 @@ class WidgetBorderSide {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     num     get width   => _width;
-
     void    set width(num newWidth) {
         newWidth = (newWidth == null ? 0 : newWidth);
         if (!isSpacingOnly) {
@@ -133,13 +132,8 @@ class WidgetBorderSide {
         }
     }
 
-    //When calculating line-positions, stroke line-center will be adjusted by 1/2 its width when border uses just one line,
-    //and when using two lines, the line-centers are at 1/4 and 3/4 of total border width. So, pass in 1, 2, or 3 to get adjuster.
-    num     getStrokeInset(num quarterCount) => _width / 4.0 * quarterCount;
-
 
     int     get style   => _style;  //enumeration eBorderStyle (int)
-
     void    setStyle(String newStyle) {
         if ( (borderType == eWidgetPart.Margin) || (borderType == eWidgetPart.Padding)) return; //default of none is only possible value
 
@@ -165,16 +159,29 @@ class WidgetBorderSide {
 
 
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Call this method to update the SVG Line Element(s) based on our latest object property
-    values that influence the SVG drawing.
-
-    NOTE: stroke-linecap=("round" or "square") was REQUIRED in order to get final corner
-    "joins" correct without adjusting coordinates. Otherwise, you need to adjust final
-    coordinate to not inset (lengthwise) for stroke-width if bevel or no linejoin specified.
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Helper method.
+    * When calculating line-positions, stroke line-center will be adjusted by 1/2 its
+    * width when border uses just one line, and when using two lines, the line-centers
+    * are at 1/4 and 3/4 of total border width. So, pass in 1, 2, or 3 to get adjuster.
     */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    num     getStrokeInset(num quarterCount) => _width / 4.0 * quarterCount;
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Update the SVG Line Element(s) based on our latest object property
+    * values that influence the SVG drawing.
+    * See [Widget.renderBordersAndBackground], which is currently the only method that needs
+    * to call this.
+    *
+    * NOTE: stroke-linecap=("round" or "square") was REQUIRED in order to get final corner
+    * "joins" correct without adjusting coordinates. Otherwise, you need to adjust final
+    * coordinate to not inset (lengthwise) for stroke-width if bevel or no linejoin specified.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void updateBorderLineElements() {
         String displayAttrValLine1  = ( ((_width != 0.0) && (opacity != '0.0') && (_style > eBorderStyle.None)) ? 'inherit' : 'none');
         String displayAttrValLine2  = ( ((_width != 0.0) && (opacity != '0.0') && (eBorderStyle.EffectsLineCount[_style] == 2)) ? 'inherit' : 'none');
@@ -185,7 +192,7 @@ class WidgetBorderSide {
         Color lineColor;
         lineColor = new Color.fromBrowserRBGString(colorValue1);
 
-        //print ("BorderType =${eWidgetPart.Names[BorderType]} Style=${eBorderStyle.Names[_Style]} RGB=${LineColor.FormattedRGBString()} Width=${_Width} EffectsLineCount=${eBorderStyle.EffectsLineCount[_Style]} SplitWidth=${_Width / eBorderStyle.EffectsLineCount[_Style]}")  ;
+        //TODO: TRACING: print ("BorderType =${eWidgetPart.Names[BorderType]} Style=${eBorderStyle.Names[_Style]} RGB=${LineColor.FormattedRGBString()} Width=${_Width} EffectsLineCount=${eBorderStyle.EffectsLineCount[_Style]} SplitWidth=${_Width / eBorderStyle.EffectsLineCount[_Style]}")  ;
         //any style other than "solid" indicates use of our predefined borderspecs (vs. color-coordinated-shifting-attempt); use BLACK color to obtain typical grey-scale Windows-like effects.
         if (_style > eBorderStyle.Solid) {
             if (eBorderStyle.EffectsLineCount[_style] == 2) {
@@ -323,7 +330,7 @@ class WidgetBorder {
     WidgetBorderSide    B   = null;
     WidgetBorderSide    L   = null;
 
-    //denorm from constructor scope for convenience
+    //denormalized from constructor scope for convenience
     String              _instanceNameAndType   = '';
     int                 _part   = eWidgetPart.None;         //enumeration eWidgetPart (int)
 

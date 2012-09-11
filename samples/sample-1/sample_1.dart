@@ -778,7 +778,7 @@ main() {
         print('Wired FO-Contained-Object FrameWidth Value: ${selectFrameWidthValue}');
 
         //Change frame based on that selected value (it holds our CSS class to apply).
-        foRepaintTests.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame, ${selectedColorValue}, ${selectFrameWidthValue}');
+        foRepaintTests.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame', 'ButtonWidget_Frame, ${selectedColorValue}, ${selectFrameWidthValue}');
 
     } //selectColorChangeHandler
 
