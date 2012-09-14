@@ -204,9 +204,9 @@ class Application {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
-    //Implement Hint processing in Widgets; this is to be app-wide default value
-    final bool  showHint        = true;
-    final int   hintPause       = 1000;
+    //Implement Hint processing in Widgets; this is to be app-wide default value //TODO - ALLOW CHANGES
+    const bool  showHint        = true;
+    const int   hintPause       = 1000;
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
@@ -426,7 +426,7 @@ class Application {
         in Dartium from what I could determine, though the need to figure out scrollbar width
         was an added layer of garbage subject to issues:
 
-            final int   scrollBarWidth  = 17;  //"standard" width?
+            static const int scrollBarWidth  = 17;  //"standard" width?
             _canvasBounds.R  = (_canvasBounds.L + window.innerWidth  - scrollBarWidth);
             _canvasBounds.B  = (_canvasBounds.T + window.innerHeight - scrollBarWidth);
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -499,8 +499,8 @@ class Application {
             ptrChildWidget = _widgetsList[i];
             if (!ptrChildWidget.hasParent) {
                 ptrChildWidgetAlignObj = ptrChildWidget.align;
-                if (((ptrChildWidgetAlignObj.R.objToAlignTo == null) && (ptrChildWidgetAlignObj.R.dimension > eSides.None)) ||
-                    ((ptrChildWidgetAlignObj.B.objToAlignTo == null) && (ptrChildWidgetAlignObj.B.dimension > eSides.None)))
+                if (((ptrChildWidgetAlignObj.R.objToAlignTo == null) && (ptrChildWidgetAlignObj.R.dimension > eSides.NONE)) ||
+                    ((ptrChildWidgetAlignObj.B.objToAlignTo == null) && (ptrChildWidgetAlignObj.B.dimension > eSides.NONE)))
                 {
                     ptrChildWidget.reAlign();
                     ptrChildWidget.reAlignSiblings();  //since other top-level widgets could align to the re-aligned widget
@@ -694,15 +694,15 @@ class Application {
 
             //See if we have a CSS style specification to convert to our internal enumeration value
             if (sPropertyName.indexOf('style') > -1) {
-                //now, see if style maps to one in our list of style names: e.g., index of 1 for "solid"
-                iIndex = eBorderStyle.Names.indexOf(sCalculatedValue.toLowerCase());
+                //now, see if style maps to one in our list of style names: e.g., index of 1 for "SOLID",... unknown values default to "NONE" type.
+                iIndex = eBorderStyle.getEnumValueDefaultNone(sCalculatedValue.toUpperCase());
 
-                //now, check for "virtual" extensions to inset/outset border-styles; convert those to our own internal styles of lowered/raised respectively
-                if ((iIndex == eBorderStyle.Outset)  && (useVirtualBorder)) {iIndex = eBorderStyle.Raised;}
-                if ((iIndex == eBorderStyle.Inset)   && (useVirtualBorder)) {iIndex = eBorderStyle.Lowered;}
+                //First, check for "virtual" extensions to inset/outset border-styles; convert those to our own internal styles of lowered/raised respectively
+                if ((iIndex == eBorderStyle.OUTSET)  && (useVirtualBorder)) {iIndex = eBorderStyle.RAISED;}
+                if ((iIndex == eBorderStyle.INSET)   && (useVirtualBorder)) {iIndex = eBorderStyle.LOWERED;}
 
-                //any border style unknown to us shall be treated as "none"
-                sCalculatedValue = (iIndex == -1 ? eBorderStyle.Names[eBorderStyle.None] : eBorderStyle.Names[iIndex]);
+                //Handle all other (non-virtual) border styles now; any unknowns have already been mapped to internal "NONE" type.
+                sCalculatedValue = eBorderStyle.Names[iIndex];
 
                 if (trace(102)) {
                     logToConsole([

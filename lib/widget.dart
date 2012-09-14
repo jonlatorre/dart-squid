@@ -213,7 +213,7 @@ class Widget {
     SVGElement          _parentSVGElement       = null;
 
     //enumeration eWidgetState (int); additive/multi-state; beginUpdate/endUpdate methods use too.
-    int                 _widgetState            = eWidgetState.Loading;
+    int                 _widgetState            = eWidgetState.LOADING;
 
     //reference to the group (SVG "g" element) this ENTIRE Widget's SVG will be rendered into; aka 'EntireGroupSVGElement' as public property
     SVGGElement         _entireGroupSVGElement  = null;
@@ -280,7 +280,7 @@ class Widget {
     TODO: implement anchor center(s) ability in alignment code
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    int             _anchors            = eSides.None;
+    int             _anchors            = eSides.NONE;
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -327,13 +327,13 @@ class Widget {
     */
 
     ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Base" properties.
-    static final String sWBase          = 'Widget_Base';
+    static const String W_BASE          = 'Widget_Base';
     ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Frame" properties.
-    static final String sWFrame         = 'Widget_Frame';
+    static const String W_FRAME         = 'Widget_Frame';
     ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Outer Border" properties.
-    static final String sWOuter         = 'Widget_BorderOuter';
+    static const String W_OUTER         = 'Widget_BorderOuter';
     ///A CSS-stylable targetObject name (and, the default class-selector-value to match) for "Inner Border" properties.
-    static final String sWInner         = 'Widget_BorderInner';
+    static const String W_INNER         = 'Widget_BorderInner';
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -346,7 +346,7 @@ class Widget {
     * since you can layer CSS Classes up such that if you wish to affect a change on one minor component
     * of a widget-part (e.g., the Frame's right-border color), you can do so by simply setting up a
     * CSS class-selector like `FrameRightBorderColor {border-right: 1px solid red}`, and include this
-    * selector on the Frame-target by setting `classesCSS(sWFrame) = "$sWFrame, FrameRightBorderColor"`
+    * selector on the Frame-target by setting `classesCSS[W_FRAME] = "${W_FRAME}, FrameRightBorderColor"`
     *
     * *Ultimately*, if there is a need (due to speed or such) to have more "direct" access to updating a
     * single, or narrow group of, value(s), our part-naming convention could come into play (see below)
@@ -377,37 +377,37 @@ class Widget {
     * stylable properties for additional or alternative (respectively) lists similar to this one.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    static final List<ConstStyleTarget>  InitialStylableWidgetProperties = const [
+    static const List<ConstStyleTarget>  InitialStylableWidgetProperties = const [
         /*
         GROUP 1:
         Begin with properties that are styled by applying Base Widget class-selector(s); notice that for this group, we could have used
         a single group, and thus a single call to retrieve "Base" and "Frame" styling, since the CSS Properties used for each do not conflict/overlap.
         But, since we could end up using properties like "filter" for both for widget background and its frame, separation was chosen.
         */
-        const ConstStyleTarget(sWBase  , 'margin-top'          , '0'      ),
-        const ConstStyleTarget(sWBase  , 'margin-right'        , '0'      ),
-        const ConstStyleTarget(sWBase  , 'margin-bottom'       , '0'      ),
-        const ConstStyleTarget(sWBase  , 'margin-left'         , '0'      ),
-        const ConstStyleTarget(sWBase  , 'padding-top'         , '0'      ),
-        const ConstStyleTarget(sWBase  , 'padding-right'       , '0'      ),
-        const ConstStyleTarget(sWBase  , 'padding-bottom'      , '0'      ),
-        const ConstStyleTarget(sWBase  , 'padding-left'        , '0'      ),
-        const ConstStyleTarget(sWBase  , 'fill'                , 'black'  ),
-        const ConstStyleTarget(sWBase  , 'fill-opacity'        , '0.0'    ),
+        const ConstStyleTarget(W_BASE  , 'margin-top'          , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-right'        , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-bottom'       , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-left'         , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-top'         , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-right'       , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-bottom'      , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-left'        , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'fill'                , 'black'  ),
+        const ConstStyleTarget(W_BASE  , 'fill-opacity'        , '0.0'    ),
 
-        const ConstStyleTarget(sWFrame , 'border-top-style'    , 'none'   ),
-        const ConstStyleTarget(sWFrame , 'border-right-style'  , 'none'   ),
-        const ConstStyleTarget(sWFrame , 'border-bottom-style' , 'none'   ),
-        const ConstStyleTarget(sWFrame , 'border-left-style'   , 'none'   ),
-        const ConstStyleTarget(sWFrame , 'border-top-width'    , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-right-width'  , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-bottom-width' , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-left-width'   , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-top-color'    , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-right-color'  , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-bottom-color' , '0'      ),
-        const ConstStyleTarget(sWFrame , 'border-left-color'   , '0'      ),
-        const ConstStyleTarget(sWFrame , 'stroke-opacity'      , '1.0'    ),
+        const ConstStyleTarget(W_FRAME , 'border-top-style'    , 'none'   ),
+        const ConstStyleTarget(W_FRAME , 'border-right-style'  , 'none'   ),
+        const ConstStyleTarget(W_FRAME , 'border-bottom-style' , 'none'   ),
+        const ConstStyleTarget(W_FRAME , 'border-left-style'   , 'none'   ),
+        const ConstStyleTarget(W_FRAME , 'border-top-width'    , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-right-width'  , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-bottom-width' , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-top-color'    , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-right-color'  , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-bottom-color' , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-left-color'   , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'stroke-opacity'      , '1.0'    ),
 
         /*
         GROUP 2: properties that are styled by applying Outer-Border class-selector(s)
@@ -415,34 +415,34 @@ class Widget {
                 and when it reaches the style attribute(s), it performs lookups on width-value(s) to determine border-type (our
                 enumerated internal "type").
         */
-        const ConstStyleTarget(sWOuter , 'border-top-style'    , 'none'   ),
-        const ConstStyleTarget(sWOuter , 'border-right-style'  , 'none'   ),
-        const ConstStyleTarget(sWOuter , 'border-bottom-style' , 'none'   ),
-        const ConstStyleTarget(sWOuter , 'border-left-style'   , 'none'   ),
-        const ConstStyleTarget(sWOuter , 'border-top-width'    , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-right-width'  , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-bottom-width' , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-left-width'   , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-top-color'    , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-right-color'  , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-bottom-color' , '0'      ),
-        const ConstStyleTarget(sWOuter , 'border-left-color'   , '0'      ),
-        const ConstStyleTarget(sWOuter , 'stroke-opacity'      , '0.0'    ),
+        const ConstStyleTarget(W_OUTER , 'border-top-style'    , 'none'   ),
+        const ConstStyleTarget(W_OUTER , 'border-right-style'  , 'none'   ),
+        const ConstStyleTarget(W_OUTER , 'border-bottom-style' , 'none'   ),
+        const ConstStyleTarget(W_OUTER , 'border-left-style'   , 'none'   ),
+        const ConstStyleTarget(W_OUTER , 'border-top-width'    , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-right-width'  , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-bottom-width' , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-top-color'    , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-right-color'  , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-bottom-color' , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-left-color'   , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'stroke-opacity'      , '0.0'    ),
 
         //Group3: properties that are styled by applying Inner-Border class-selector(s)
-        const ConstStyleTarget(sWInner , 'border-top-style'    , 'none'   ),
-        const ConstStyleTarget(sWInner , 'border-right-style'  , 'none'   ),
-        const ConstStyleTarget(sWInner , 'border-bottom-style' , 'none'   ),
-        const ConstStyleTarget(sWInner , 'border-left-style'   , 'none'   ),
-        const ConstStyleTarget(sWInner , 'border-top-width'    , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-right-width'  , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-bottom-width' , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-left-width'   , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-top-color'    , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-right-color'  , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-bottom-color' , '0'      ),
-        const ConstStyleTarget(sWInner , 'border-left-color'   , '0'      ),
-        const ConstStyleTarget(sWInner , 'stroke-opacity'      , '0.0'    )
+        const ConstStyleTarget(W_INNER , 'border-top-style'    , 'none'   ),
+        const ConstStyleTarget(W_INNER , 'border-right-style'  , 'none'   ),
+        const ConstStyleTarget(W_INNER , 'border-bottom-style' , 'none'   ),
+        const ConstStyleTarget(W_INNER , 'border-left-style'   , 'none'   ),
+        const ConstStyleTarget(W_INNER , 'border-top-width'    , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-right-width'  , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-bottom-width' , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-top-color'    , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-right-color'  , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-bottom-color' , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-left-color'   , '0'      ),
+        const ConstStyleTarget(W_INNER , 'stroke-opacity'      , '0.0'    )
 
         //Group[n] (specialized/additional stylable targets can be added via subclasses)
 
@@ -1047,13 +1047,13 @@ class Widget {
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
         switch (targetObjectName) {
-            case sWFrame :
+            case W_FRAME :
                 applyStylesToWidgetPart(_borders.Frame);
                 break;
-            case sWOuter :
+            case W_OUTER :
                 applyStylesToWidgetPart(_borders.Outer);
                 break;
-            case sWInner :
+            case W_INNER :
                 applyStylesToWidgetPart(_borders.Inner);
                 break;
         }
@@ -1119,7 +1119,7 @@ class Widget {
 
             _align.alignSpecs.forEach( (objAlignPart) {
             
-                if ((objAlignPart.objToAlignTo != null) && (objAlignPart.dimension > eSides.None)) {
+                if ((objAlignPart.objToAlignTo != null) && (objAlignPart.dimension > eSides.NONE)) {
                     //If Aligning to a Sibling presumably... verify validity and acquire value if valid.
 
                     //make sure referenced widget is earlier in SVG node list than THIS widget.
@@ -1134,7 +1134,7 @@ class Widget {
 
                     if (goodSibling) {
                         //Use our convenience arrays to get index into appropriate Part.Dim name
-                        alignToDimName = eSides.Names[objAlignPart.dimension.toString()];
+                        alignToDimName = eSides.ShortNames[objAlignPart.dimension.toString()];
 
                         //if sibling being aligned to has had its position translated, we need to take that into account when aligning to it.
                         translationAdj = ( ('R,L,CX'.contains(alignToDimName)) ? objAlignPart.objToAlignTo.translateX: objAlignPart.objToAlignTo.translateY);
@@ -1214,11 +1214,11 @@ class Widget {
                 ptrCurrBounds.L = ptrPrevBounds.L + ((_borders[prevBoundsType].L != null) ? _borders[prevBoundsType].L.width : 0 );
             }
 
-            _calcSingleBounds(eWidgetPart.Outer,        eWidgetPart.Margin);
-            _calcSingleBounds(eWidgetPart.Frame,        eWidgetPart.Outer);
-            _calcSingleBounds(eWidgetPart.Inner,        eWidgetPart.Frame);
-            _calcSingleBounds(eWidgetPart.Padding,      eWidgetPart.Inner);
-            _calcSingleBounds(eWidgetPart.ClientBounds, eWidgetPart.Padding);
+            _calcSingleBounds(eWidgetPart.OUTER,    eWidgetPart.MARGIN);
+            _calcSingleBounds(eWidgetPart.FRAME,    eWidgetPart.OUTER);
+            _calcSingleBounds(eWidgetPart.INNER,    eWidgetPart.FRAME);
+            _calcSingleBounds(eWidgetPart.PADDING,  eWidgetPart.INNER);
+            _calcSingleBounds(eWidgetPart.CLIENT,   eWidgetPart.PADDING);
         } //...calcBounds
 
 
@@ -1234,17 +1234,17 @@ class Widget {
         E.g., if aligned to center of X (CX), any alignment of right/left are ignored as this centering overrides.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        if (_align.CX.dimension != eSides.None) {
+        if (_align.CX.dimension != eSides.NONE) {
             ptrWidgetBounds.L   = _align.CX.dimensionValue - mTempAdjCX;
             ptrWidgetBounds.R   = _align.CX.dimensionValue + mTempAdjCX;
         } else {
             //handle right/left alignment:
             //are both sides NOT aligned to anything?
-            if ((_align.L.dimension == eSides.None) && (_align.R.dimension == eSides.None)) {
+            if ((_align.L.dimension == eSides.NONE) && (_align.R.dimension == eSides.NONE)) {
                 ptrWidgetBounds.L = _x;
                 ptrWidgetBounds.R = mTempR;
             } else {
-                if (_align.L.dimension != eSides.None) {
+                if (_align.L.dimension != eSides.NONE) {
                     //Left align specified (right may be too...)
                     ptrWidgetBounds.L = _align.L.dimensionValue;
 
@@ -1253,7 +1253,7 @@ class Widget {
                         ptrWidgetBounds.R = Math.max((ptrWidgetBounds.L + _width + 1), mTempR);  //prevent negative width
                     } else {
                         //see if Right align exists (since it is not mutually exclusive of Left align decision tree we are in)...
-                        if (_align.R.dimension != eSides.None) {
+                        if (_align.R.dimension != eSides.NONE) {
                             ptrWidgetBounds.R = _align.R.dimensionValue;
                         } else {
                             ptrWidgetBounds.R = ptrWidgetBounds.L + _width;
@@ -1276,17 +1276,17 @@ class Widget {
 
 
         //Y-Axis alignment code...
-        if (_align.CY.dimension != eSides.None) {
+        if (_align.CY.dimension != eSides.NONE) {
             ptrWidgetBounds.T   = _align.CY.dimensionValue - mTempAdjCY;
             ptrWidgetBounds.B   = _align.CY.dimensionValue + mTempAdjCY;
         } else {
             //handle top/bottom alignment
             //are both sides NOT aligned to anything?
-            if ((_align.T.dimension == eSides.None) && (_align.B.dimension == eSides.None)) {
+            if ((_align.T.dimension == eSides.NONE) && (_align.B.dimension == eSides.NONE)) {
                 ptrWidgetBounds.T = _y;
                 ptrWidgetBounds.B = mTempB;
             } else {
-                if (_align.T.dimension != eSides.None) {
+                if (_align.T.dimension != eSides.NONE) {
                     //Top align specified (bottom may be too...)
                     ptrWidgetBounds.T = _align.T.dimensionValue;
 
@@ -1295,7 +1295,7 @@ class Widget {
                         ptrWidgetBounds.B = Math.max((ptrWidgetBounds.T + _height + 1), mTempB);  //prevent negative Height
                     } else {
                         //see if Bottom align exists (since it is not mutually exclusive of Top align decision tree we are in)...
-                        if (_align.B.dimension != eSides.None) {
+                        if (_align.B.dimension != eSides.NONE) {
                             ptrWidgetBounds.B = _align.B.dimensionValue;
                         } else {
                             ptrWidgetBounds.B = ptrWidgetBounds.T + _height;
@@ -1515,18 +1515,18 @@ class Widget {
         _borders.Frame.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Frame);
         _borders.Inner.updateBorderSideStrokeCoordinatesFromBounds(_widgetMetrics.Inner);
 
-        _borders[eWidgetPart.Frame].T.updateBorderLineElements();
-        _borders[eWidgetPart.Frame].R.updateBorderLineElements();
-        _borders[eWidgetPart.Frame].B.updateBorderLineElements();
-        _borders[eWidgetPart.Frame].L.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].T.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].R.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].B.updateBorderLineElements();
-        _borders[eWidgetPart.Outer].L.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].T.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].R.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].B.updateBorderLineElements();
-        _borders[eWidgetPart.Inner].L.updateBorderLineElements();
+        _borders[eWidgetPart.FRAME].T.updateBorderLineElements();
+        _borders[eWidgetPart.FRAME].R.updateBorderLineElements();
+        _borders[eWidgetPart.FRAME].B.updateBorderLineElements();
+        _borders[eWidgetPart.FRAME].L.updateBorderLineElements();
+        _borders[eWidgetPart.OUTER].T.updateBorderLineElements();
+        _borders[eWidgetPart.OUTER].R.updateBorderLineElements();
+        _borders[eWidgetPart.OUTER].B.updateBorderLineElements();
+        _borders[eWidgetPart.OUTER].L.updateBorderLineElements();
+        _borders[eWidgetPart.INNER].T.updateBorderLineElements();
+        _borders[eWidgetPart.INNER].R.updateBorderLineElements();
+        _borders[eWidgetPart.INNER].B.updateBorderLineElements();
+        _borders[eWidgetPart.INNER].L.updateBorderLineElements();
 
     } //...renderBordersAndBackground
 
@@ -1692,7 +1692,7 @@ class Widget {
 
         //if we are moving a Widget, and it is movable along an axis that would make alignments along that axis meaningless, clear alignment that would no longer be meaningful
         if (isMovingAttempt) {
-            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Moving);
+            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.MOVING);
 
             if (_isMovable.x) {
                 _x = _widgetMetrics.Margin.L;   //our Widget's Left-most Bounds
@@ -1707,7 +1707,7 @@ class Widget {
             //Widget shall be more transparent during movement
             _entireGroupSVGElement.attributes['opacity'] = '0.7';
         } else {
-            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Sizing);
+            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.SIZING);
 
             //Border shall be more transparent during movement
             _borders.allBordersSVGGroupElement.attributes['opacity'] = '0.6';
@@ -1809,10 +1809,10 @@ class Widget {
         //TODO: Get values from CSS -- Application-wide setting.
         if (eWidgetState.isMoving(_widgetState)) {
             _entireGroupSVGElement.attributes['opacity'] = '1.0';
-            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Moving);
+            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.MOVING);
         } else {
             _borders.allBordersSVGGroupElement.attributes['opacity'] = '1.0';
-            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Sizing);
+            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.SIZING);
         }
     } //... mouseUp()
 
@@ -1861,7 +1861,7 @@ class Widget {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void move(num shiftX, num shiftY, [MouseEvent event]) {
-        final num closeEnough = 50.0; //a little "slack" for a bit stickier edge during moves in case mouse gets out infront of event processor a bit
+        const num CLOSE_ENOUGH = 50.0; //a little "slack" for a bit stickier edge during moves in case mouse gets out infront of event processor a bit
         num proposedTranslateX  = _translateX + shiftX;
         num proposedTranslateY  = _translateY + shiftY;
         num proposedX           = _x + proposedTranslateX;
@@ -1869,7 +1869,7 @@ class Widget {
 
         if ((_isMovable.x) && (shiftX != 0.0)) {
             bool isCursorInWidgetRangeX = (event == null) ||
-                ((event.clientX >= (xAsClientX - (shiftX > 0 ? 0 : closeEnough))) && (event.clientX <= (xAsClientX + _width + (shiftX < 0 ? 0 : closeEnough))));
+                ((event.clientX >= (xAsClientX - (shiftX > 0 ? 0 : CLOSE_ENOUGH))) && (event.clientX <= (xAsClientX + _width + (shiftX < 0 ? 0 : CLOSE_ENOUGH))));
 
             num minX                = _posRules.getMinX(new MouseNotifyEventObject(this, event));
             bool acceptProposedX    = ((minX == null) ? true : ((proposedX >= minX) || (shiftX > 0)));
@@ -1886,7 +1886,7 @@ class Widget {
 
         if ((_isMovable.y) && (shiftY != 0.0)) {
             bool isCursorInWidgetRangeY = (event == null) ||
-                ((event.clientY >= (yAsClientY - (shiftY > 0 ? 0 : closeEnough))) && (event.clientY <= (yAsClientY + _height + (shiftY < 0 ? 0 : closeEnough))));
+                ((event.clientY >= (yAsClientY - (shiftY > 0 ? 0 : CLOSE_ENOUGH))) && (event.clientY <= (yAsClientY + _height + (shiftY < 0 ? 0 : CLOSE_ENOUGH))));
 
             num minY                = _posRules.getMinY(new MouseNotifyEventObject(this, event));
             bool acceptProposedY    = ((minY == null) ? true : ((proposedY >= minY) || (shiftY > 0)));
@@ -1923,7 +1923,7 @@ class Widget {
         //if we later want to allow "nested" begin/endupdates... change return to inc count, etc.)
         if (eWidgetState.isUpdating(_widgetState)) return;
 
-        _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Updating);
+        _widgetState = eWidgetState.setState(_widgetState, eWidgetState.UPDATING);
     }
 
 
@@ -1945,7 +1945,7 @@ class Widget {
     void endUpdate() {
         if ( !(eWidgetState.isUpdating(_widgetState))) return;  //already not in Updating state
 
-        _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Updating);
+        _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.UPDATING);
         rePaint(true); //assume CSS style changes during bulk-update
     }
 
@@ -2039,12 +2039,12 @@ class Widget {
     * Sets attributes on the Widget's [entireGroupSVGElement] — i.e., the outermost visual
     * SVG container object within which all renderable visual objects for the Widget are
     * hierarchically contained — such that the Widget is "Showing". The [widgetState] is
-    * updated to include [eWidgetState.Showing].
+    * updated to include [eWidgetState.SHOWING].
     *
     * Event hooks exist herein for [Widget.on.beforeShow] and [Widget.on.show].
     *
     * When method *first* shows Widget content, the [widgetState] is transitioned
-    * out of [eWidgetState.Loading] and into [eWidgetState.Normal].
+    * out of [eWidgetState.LOADING] and into [eWidgetState.NORMAL].
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void show() {
@@ -2070,15 +2070,15 @@ class Widget {
             //Fire ALL CSS change handlers on initial show.
             classesCSS.updateAllCSSValues();
 
-            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Loading);
-            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Normal);
+            _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.LOADING);
+            _widgetState = eWidgetState.setState(_widgetState, eWidgetState.NORMAL);
             rePaint(true);
         }
 
         //call any user-provided method
         _on.show(new NotifyEventObject(this));
 
-        _widgetState = eWidgetState.setState(_widgetState, eWidgetState.Showing);
+        _widgetState = eWidgetState.setState(_widgetState, eWidgetState.SHOWING);
     } //...Show()
 
 
@@ -2086,7 +2086,7 @@ class Widget {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Essentially the opposite of [show]. Likewise, the [widgetState] is
-    * updated to omit [eWidgetState.Showing].
+    * updated to omit [eWidgetState.SHOWING].
     *
     * Event hooks exist herein for [Widget.on.hide].
     */
@@ -2099,7 +2099,7 @@ class Widget {
         //Call any user-method to occur when Widget is hidden.  This is perfect place to prep for re-alignment, etc.
         _on.hide(new NotifyEventObject(this));
 
-        _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.Showing);
+        _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.SHOWING);
     } //...hide()
 
 
@@ -2136,10 +2136,10 @@ class Widget {
 
         classesCSS.createDefaults(
             [
-                new CssTargetAndSelectorData(sWBase     , sWBase   , false  , _applyStylesToWidgetBase),
-                new CssTargetAndSelectorData(sWFrame    , sWFrame  , false  , _applyStylesToWidgetBorders),
-                new CssTargetAndSelectorData(sWOuter    , sWOuter  , false  , _applyStylesToWidgetBorders),
-                new CssTargetAndSelectorData(sWInner    , sWInner  , false  , _applyStylesToWidgetBorders),
+                new CssTargetAndSelectorData(W_BASE     , W_BASE   , false  , _applyStylesToWidgetBase),
+                new CssTargetAndSelectorData(W_FRAME    , W_FRAME  , false  , _applyStylesToWidgetBorders),
+                new CssTargetAndSelectorData(W_OUTER    , W_OUTER  , false  , _applyStylesToWidgetBorders),
+                new CssTargetAndSelectorData(W_INNER    , W_INNER  , false  , _applyStylesToWidgetBorders),
                 new CssTargetAndSelectorData('Font'     , 'Font'   , true   , null)  //TODO: Implement in derived - this only tests logic for now
             ]
         );

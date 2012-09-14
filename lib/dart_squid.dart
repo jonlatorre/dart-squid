@@ -80,8 +80,8 @@
 * the inner SVG Element (see Step 1 above) that will be our [Application.canvas]:
 *
 *     squid.Application globalApplicationObject = null;
-*     final String applicationCanvasElementID  = '#dartsquidAppCanvas';
-*     final String applicationName             = 'myAppName';
+*     const String APP_CANVAS_ELEMENT_ID    = '#dartsquidAppCanvas';
+*     const String APP_NAME                 = 'myAppName';
 *
 * Still within `main()` we define a method that the [Application] object will transfer
 * execution to when it is "ready" (i.e., after it has finished computing canvas
@@ -103,7 +103,7 @@
 * Just before the end of `main()', we place code that instantiates our [Application]
 * object like this:
 *
-*     globalApplicationObject = new squid.Application(applicationName, document.query(applicationCanvasElementID), runApplication );
+*     globalApplicationObject = new squid.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication );
 *
 * Notice that `runApplication` is a *method reference* (to a callback routine)
 * where the application-execution will begin, as mentioned earlier.
@@ -130,6 +130,7 @@
 #source("object_bounds.dart");
 #source("style_targets_css.dart");
 #source("application.dart");
+#source("line_and_color.dart");
 #source("widget_borders.dart");
 #source("widget_constraints.dart");
 #source("widget_metrics.dart");

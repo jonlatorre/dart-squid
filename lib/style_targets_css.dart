@@ -120,7 +120,7 @@ class CssTargetAndSelectorData {
     ///CSS selectors applied to a given [targetObjectName]
     String  appliedCssSelectors;
 
-    ///When [true] there is no need to peform off-screen CSS-calc routines to obtain values.
+    ///When [true] there is no need to perform off-screen CSS-calc routines to obtain values.
     bool    isStyledDirectly;
 
     ///(optional) a callback method available to perform functionality when appliedCssSelectors change

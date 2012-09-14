@@ -21,7 +21,7 @@ I.e., commonly needed functionality.
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: GLOBAL ("top level") constants and types
+BEGIN: constants and types
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
@@ -34,6 +34,7 @@ class TracingInfo {
     final bool      isActive;           //trace point on/off?
     final String    typeName;           //Notational - what Class type is this step in. (narrow down where to look; though, searching for trace(int-value-here) would work in editor).
     final String    tracePointDesc;     //Notational - so we can quickly look at our const list and recognize purpose of step and/or where in the code it is (e.g., method name); display in standard trace() output too.
+
     const TracingInfo(this.isActive, this.typeName, this.tracePointDesc);
 }
 
@@ -61,19 +62,19 @@ final Map<String, TracingInfo> TracingDefs = const {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 ///Widget-set source-code version label.
-final String Version        = '2012-09-04 : 0.3.3';
+const String DART_SQUID_VERSION = '2012-09-13 : 0.3.4';
 
 ///Used to produce quickly recognizable visual breaks between logical sections of console-logged output and such; likewise for line2, 3, 4, and 5 styles.
-final String SeparatorLine1 = '███████████████████████████████████████████████████████████████████████████████████████████';
-final String SeparatorLine2 = '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
-final String SeparatorLine3 = '▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪';
-final String SeparatorLine4 = '═══════════════════════════════════════════════════════════════════════════════════════════';
-final String SeparatorLine5 = '-------------------------------------------------------------------------------------------';
+const String DIVIDER_LINE_1 = '███████████████████████████████████████████████████████████████████████████████████████████';
+const String DIVIDER_LINE_2 = '■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■';
+const String DIVIDER_LINE_3 = '▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪';
+const String DIVIDER_LINE_4 = '═══════════════════════════════════════════════════════════════════════════════════════════';
+const String DIVIDER_LINE_5 = '-------------------------------------------------------------------------------------------';
 
 
 /*
 ███████████████████████████████████████████████████████████████████████████████████████████
-BEGIN: GLOBAL ("top level") HELPER methods...
+BEGIN: HELPER methods...
 ███████████████████████████████████████████████████████████████████████████████████████████
 */
 
@@ -111,6 +112,8 @@ void setSVGAttributes(SVGElement svgEl, var attributesPairs) {
     });
 }
 
+
+
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
 * Method that allows setting an arbitrary number of attributes on the (HTML) [Element]
@@ -136,6 +139,7 @@ void setElementAttributes(Element element, var attributesPairs) {
  }
 
 
+
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
 * Method to test for the existence of a particular [Widget] instance reference within
@@ -158,6 +162,8 @@ bool isInstanceNameUnique(List<Widget> widgetListRef, String instanceNameToTest)
     return true;
 }
 
+
+
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
 * Method to locate a particular [Widget] instance reference within the list specified
@@ -179,6 +185,7 @@ int indexOfInstanceName(List<Widget> widgetListRef, String instanceNameToTest) {
     return -1;
 }
 
+
 //TODO: Either make Tag truly unique, return a list of matches, or allow starting-index(search) to be passed in
 ///Not used quite yet.
 int indexOfTag(List<Widget> widgetListRef, String tagValueToTest) {
@@ -187,6 +194,7 @@ int indexOfTag(List<Widget> widgetListRef, String tagValueToTest) {
     }
     return -1;
 }
+
 
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -225,126 +233,6 @@ String ensureStandardNoneColor(String colorToStandarize) {
         return colorToStandarize;
     }
 }
-
-
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-/**
-* Simplify and standardize storage of line information Line begin/end (X,Y) pairs
-* (i.e., start/end points). Essentially just a struct at this time, but that could
-* change in the future.
-*/
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class Line {
-    num x1  = 0.0;
-    num y1  = 0.0;
-    num x2  = 0.0;
-    num y2  = 0.0;
-
-    Line.zeros();
-    Line(this.x1, this.y1, this.x2, this.y2);
-}
-
-
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-/**
-* Simplify and standardize storage of RGB Color information used throughout framework.
-* Chose to omit "setters" (and valid range testing) to lighten up the objects slightly.
-*/
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class Color {
-    int R   = 0;
-    int G   = 0;
-    int B   = 0;
-
-    static final int minValue = 0;
-    static final int maxValue = 255;
-
-    ///Returns [true] if all color channel values (R/G/B) are zero valued, else [false].
-    bool isBlack() {
-        return (((R == minValue) && (G == minValue) && (B == minValue)) ? true : false);
-    }
-
-    ///Returns [true] if all color channel values (R/G/B) are "max" valued (i.e., int 255), else [false].
-    bool isWhite() {
-        return ((R == maxValue) && (G == maxValue) && (B == maxValue));
-    }
-
-
-
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    /**
-    * Adjust the [R],[G],[B] color stored herein by the amount of "shifting" (per color channel) as
-    * specified in [shiftColorByInt] parameter, which defaults to a reasonable visual diff.
-    *
-    * Pass a negative value to make a color "darker" and a positive one for "lighter"
-    */
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void shiftColor([int shiftColorByInt=24]) {
-        if (shiftColorByInt > 0) {lightenColor(shiftColorByInt);} else {darkenColor(-shiftColorByInt);}
-    }
-
-    void lightenColor([int shiftColorByInt=24]) {
-        int GetShiftedSubColor(int channelValue) {
-            return Math.min(maxValue, (channelValue + shiftColorByInt));
-        }
-
-        R = GetShiftedSubColor(R);
-        G = GetShiftedSubColor(G);
-        B = GetShiftedSubColor(B);
-    }
-
-    void darkenColor([int shiftColorByInt=24]) {
-        int GetShiftedSubColor(int channelValue) {
-            return Math.max(minValue, (channelValue - shiftColorByInt));
-        }
-
-        R = GetShiftedSubColor(R);
-        G = GetShiftedSubColor(G);
-        B = GetShiftedSubColor(B);
-    }
-
-
-
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    /**
-    * Our off-page CSS style calculations will return colors (in Chrome/Dartium) in the
-    * form: "rgb(255, 255, 255)".
-    * Parse that String and load our Color object [R],[G],[B] values from it.
-    */
-    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void loadFromRGBString(String RGBString) {
-        if (!(RGBString.startsWith('rgb(')) ) return;
-
-        List<String>    colorsSplit    = null;
-
-        //whip string into a tight list of comma-delim values only; e.g.:255,255,255
-        RGBString = RGBString.replaceFirst('rgb(', '');
-        RGBString = RGBString.replaceAll(')', '');
-        RGBString = RGBString.replaceAll(' ', '');
-
-        colorsSplit= RGBString.split(',');
-        R = Math.parseInt(colorsSplit[0]);
-        G = Math.parseInt(colorsSplit[1]);
-        B = Math.parseInt(colorsSplit[2]);
-    }
-
-
-    //return in the same approx format that the browser uses
-    String formattedRGBString() {
-        return 'rgb(${R.toString()}, ${G.toString()}, ${B.toString()})';
-    }
-
-
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    CONSTRUCTORS
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    */
-    Color.empty();
-    Color.fromIntRGB(this.R, this.G, this.B);
-    Color.fromBrowserRBGString(String RGBString) {loadFromRGBString(RGBString);}
-
-} //Color
 
 
 
@@ -406,11 +294,11 @@ void logToConsole(List<Dynamic> itemsToLog) {
     itemsToLog.forEach( (toLog) {
         if (toLog is String) {
             switch(toLog) {
-                case 'LINE1': {toLog = SeparatorLine1; break;}
-                case 'LINE2': {toLog = SeparatorLine2; break;}
-                case 'LINE3': {toLog = SeparatorLine3; break;}
-                case 'LINE4': {toLog = SeparatorLine4; break;}
-                case 'LINE5': {toLog = SeparatorLine5; break;}
+                case 'LINE1': {toLog = DIVIDER_LINE_1; break;}
+                case 'LINE2': {toLog = DIVIDER_LINE_2; break;}
+                case 'LINE3': {toLog = DIVIDER_LINE_3; break;}
+                case 'LINE4': {toLog = DIVIDER_LINE_4; break;}
+                case 'LINE5': {toLog = DIVIDER_LINE_5; break;}
             }
 
             writeLine(toLog);
@@ -424,10 +312,10 @@ void logToConsole(List<Dynamic> itemsToLog) {
             if (toLog is Widget) {
                 insetPretty = spacesConst.substring(1,toLog.typeName.length + 4); //smart indent
 
-                alignT = !((toLog.align.T.objToAlignTo == null) && (toLog.align.T.dimension == eSides.None));
-                alignR = !((toLog.align.R.objToAlignTo == null) && (toLog.align.R.dimension == eSides.None));
-                alignB = !((toLog.align.B.objToAlignTo == null) && (toLog.align.B.dimension == eSides.None));
-                alignL = !((toLog.align.L.objToAlignTo == null) && (toLog.align.L.dimension == eSides.None));
+                alignT = !((toLog.align.T.objToAlignTo == null) && (toLog.align.T.dimension == eSides.NONE));
+                alignR = !((toLog.align.R.objToAlignTo == null) && (toLog.align.R.dimension == eSides.NONE));
+                alignB = !((toLog.align.B.objToAlignTo == null) && (toLog.align.B.dimension == eSides.NONE));
+                alignL = !((toLog.align.L.objToAlignTo == null) && (toLog.align.L.dimension == eSides.NONE));
                 //sizing =
 
                 writeLine ("(${toLog.typeName}) >> instanceName = '${toLog.instanceName}';  HierarchyPath = '${toLog.hierarchyPath}';  Tag = '${toLog.tag}';");
@@ -436,7 +324,7 @@ void logToConsole(List<Dynamic> itemsToLog) {
                 writeLine ("${insetPretty}>> Geometry Translation Data: (translateX, translateY) = (${toLog.translateX}, ${toLog.translateY});  (xAsClientX, yAsClientY) = (${toLog.xAsClientX}, ${toLog.yAsClientY});");
                 writeLine ("${insetPretty}>> Aligned?  Top = ${alignT};  align.Right = ${alignR};  align.Bottom = ${alignB};  align.Left = ${alignL};");
                 writeLine ("${insetPretty}>> sizeRules: (minWidth, MaxWidth) = (${(naForNull(toLog.sizeRules.minWidth))}, ${(naForNull(toLog.sizeRules.maxWidth))});  (minHeight, maxHeight) = (${(naForNull(toLog.sizeRules.minHeight))}, ${(naForNull(toLog.sizeRules.maxHeight))})");
-                writeLine ("${insetPretty}>> Other Contraints: anchors = ${eSides.getCommaDelimNamesInVal(toLog.anchors)};");
+                writeLine ("${insetPretty}>> Other Contraints: anchors = ${eSides.getCommaDelimLongNamesInVal(toLog.anchors)};");
 
                 if (toLog.hasParent) {
                     writeLine ("${insetPretty}>> PARENT Data: Owned Child Count=${toLog.parentWidget.getWidgetCount()}; Index of this object in parent WidgetList: ${toLog.parentWidget.indexOfWidget(toLog)};");

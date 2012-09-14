@@ -136,7 +136,7 @@ class EventsProcessor {
     NotifyEvent         get beforeShow          => (_onBeforeShow == null) ? _nullEvent : _onBeforeShow;
     void set beforeShow(NotifyEvent handler)    {_onBeforeShow = handler;}
 
-    ///Widget-specific event fired toward the end of the [Widget.hide] method, just before [Widget.widgetState] omits [eWidgetState.Showing].
+    ///Widget-specific event fired toward the end of the [Widget.hide] method, just before [Widget.widgetState] omits [eWidgetState.SHOWING].
     NotifyEvent         get hide                => (_onHide == null) ? _nullEvent : _onHide;
     void set hide(NotifyEvent handler)          {_onHide = handler;}
 
@@ -144,7 +144,7 @@ class EventsProcessor {
     MouseNotifyEvent    get move                => (_onMove == null) ? _nullMouseEvent : _onMove;
     void set move(MouseNotifyEvent handler)     {_onMove = handler;}
 
-    ///Widget-specific event fired toward the end of the [Widget.show] method, just before [Widget.widgetState] includes [eWidgetState.Showing].
+    ///Widget-specific event fired toward the end of the [Widget.show] method, just before [Widget.widgetState] includes [eWidgetState.SHOWING].
     NotifyEvent         get show                => (_onShow == null) ? _nullEvent : _onShow;
     void set show(NotifyEvent handler)          {_onShow = handler;}
 

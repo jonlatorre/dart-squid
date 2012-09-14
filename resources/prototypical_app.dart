@@ -17,7 +17,7 @@ Consider prefixing our library references within this application to avoid
 any potential namespace collisions.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
-#import("../lib/dart_squid.dart", prefix:'Tsvg');
+#import("../lib/dart_squid.dart", prefix:'dsvg');
 
 
 //place embedded app-specific class definitions here (if not in external file)
@@ -40,9 +40,9 @@ main() {
     CREATE FORWARD-DECLARATIONS FOR TESTING VARIABLES/OBJECTS
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    Tsvg.Application    globalApplicationObject = null;
+    dsvg.Application    globalApplicationObject = null;
 
-    Tsvg.Widget         testWidget      = null;
+    dsvg.Widget         testWidget      = null;
 
 
     /*
@@ -50,8 +50,8 @@ main() {
     Misc required constants, objects and such...
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    final String applicationCanvasElementID = '#dartsquidAppCanvas';
-    final String applicationName            = 'myPrototypicalApplication';
+    const String APP_CANVAS_ELEMENT_ID  = '#dartsquidAppCanvas';
+    const String APP_NAME               = 'myPrototypicalApplication';
 
 
     /*
@@ -73,7 +73,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void testWidgetOnShowEventCallback(Dynamic eventObj) {
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE3',
             "${eventObj.instanceName} onShow EVENT fired",
             'LINE3'
@@ -105,9 +105,9 @@ main() {
     */
     void runApplication() {
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
-            'Running Application "$applicationName" within ${document.window.location.href} and SVG application canvas element ID=$applicationCanvasElementID',
+            'Running Application "$APP_NAME" within ${document.window.location.href} and SVG application canvas element ID=$APP_CANVAS_ELEMENT_ID',
             'LINE1'
         ]);
 
@@ -126,7 +126,7 @@ main() {
     the callback (to runApplication) where our app really begins
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    globalApplicationObject = new Tsvg.Application(applicationName, document.query(applicationCanvasElementID), runApplication );
+    globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication );
 
 }  //main
 

@@ -217,7 +217,7 @@ class WidgetPosRules {
 *
 *   e.g., Align (to Sibling value(s))...
 *   here we align Right side  of this Widget to Left (per Frame bounds) of Sibling:
-*       Align.R = {objToAlignTo:SiblingWidget1, Part:eWidgetPart.Frame, Dimension:eSides.L}
+*       Align.R = {objToAlignTo:SiblingWidget1, Part:eWidgetPart.FRAME, Dimension:eSides.L}
 *
 * ---
 * When values potentially affecting alignment are set, we fire an optional callback method,
@@ -244,19 +244,19 @@ class WidgetPosRules {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class AlignSpec {
     Widget          _objToAlignTo   = null;
-    int             _part           = eWidgetPart.Margin;    //enumeration eWidgetPart (int); by default, Widget-boundary is the part being aligned to something
-    int             _dimension      = eSides.None;           //enumeration eSides (int); the Side(of objToAlignTo if not null, or container side otherwise) to which we are aligning was Dimension.
+    int             _part           = eWidgetPart.MARGIN;    //enumeration eWidgetPart (int); by default, Widget-boundary is the part being aligned to something
+    int             _dimension      = eSides.NONE;           //enumeration eSides (int); the Side(of objToAlignTo if not null, or container side otherwise) to which we are aligning was Dimension.
     num             dimensionValue  = 0.0;
     ChangeHandler   changeHandler;
 
     AlignSpec() {
     }
 
-    //helper
+    ///Helper method to quickly "reset" fields to their default values.
     void resetAlignSpec() {
         _objToAlignTo   = null;
-        _part           = eWidgetPart.Margin;
-        _dimension      = eSides.None;
+        _part           = eWidgetPart.MARGIN;
+        _dimension      = eSides.NONE;
         dimensionValue  = 0.0;
     }
 

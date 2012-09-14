@@ -67,12 +67,12 @@ See comments on [WidgetBorders] class for how these classes fit together.
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorderSide {
-    int         borderType      = eWidgetPart.None;     //enumeration eWidgetPart (int); use as quick reference to what type of border this group of sides is for
-    int         side            = eSides.None;          //enumeration eSides (int); quick ref so we know which side of border this side is on
+    int         borderType      = eWidgetPart.NONE;     //enumeration eWidgetPart (int); use as quick reference to what type of border this group of sides is for
+    int         side            = eSides.NONE;          //enumeration eSides (int); quick ref so we know which side of border this side is on
     num         _width          = 0.0;
     String      opacity         = '1.0';                //Expects a decimal value between zero (transparent) and one (totally opaque).
     String      color           = 'black';
-    int         _style          = eBorderStyle.None;    //enumeration eBorderStyle (int)
+    int         _style          = eBorderStyle.NONE;    //enumeration eBorderStyle (int)
     SVGElement  lineElement1    = null;                 //reference to SVGLineElement
     SVGElement  lineElement2    = null;                 //reference to [optional] SVGLineElement for double-stroke border-types (effects)
     bool        isSpacingOnly   = false;                //true only for "virtual" borders (margin/padding)
@@ -103,17 +103,17 @@ class WidgetBorderSide {
     *   * 255 = 'white'
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    static final Map<String, Map<String, int>> borderStyleSpecs =
+    static const Map<String, Map<String, int>> borderStyleSpecs =
         const   {
-            'none'      : const {'TLe':0,   'BRe':0,    'TLi':0,    'BRi':0     },
-            'solid'     : const {'TLe':105, 'BRe':105,  'TLi':0,    'BRi':0     },
-            'groove'    : const {'TLe':105, 'BRe':255,  'TLi':255,  'BRi':105   },
-            'ridge'     : const {'TLe':255, 'BRe':105,  'TLi':105,  'BRi':255   },
-            'outset'    : const {'TLe':255, 'BRe':105,  'TLi':0,    'BRi':0     },
-            'inset'     : const {'TLe':105, 'BRe':255,  'TLi':0,    'BRi':0     },
-            'double'    : const {'TLe':105, 'BRe':105,  'TLi':105,  'BRi':105   },
-            'raised'    : const {'TLe':128, 'BRe':0,    'TLi':255,  'BRi':105   },
-            'lowered'   : const {'TLe':105, 'BRe':255,  'TLi':0,    'BRi':128   }
+            'NONE'      : const {'TLe':0,   'BRe':0,    'TLi':0,    'BRi':0     },
+            'SOLID'     : const {'TLe':105, 'BRe':105,  'TLi':0,    'BRi':0     },
+            'GROOVE'    : const {'TLe':105, 'BRe':255,  'TLi':255,  'BRi':105   },
+            'RIDGE'     : const {'TLe':255, 'BRe':105,  'TLi':105,  'BRi':255   },
+            'OUTSET'    : const {'TLe':255, 'BRe':105,  'TLi':0,    'BRi':0     },
+            'INSET'     : const {'TLe':105, 'BRe':255,  'TLi':0,    'BRi':0     },
+            'DOUBLE'    : const {'TLe':105, 'BRe':105,  'TLi':105,  'BRi':105   },
+            'RAISED'    : const {'TLe':128, 'BRe':0,    'TLi':255,  'BRi':105   },
+            'LOWERED'   : const {'TLe':105, 'BRe':255,  'TLi':0,    'BRi':128   }
         };
 
 
@@ -135,26 +135,22 @@ class WidgetBorderSide {
 
     int     get style   => _style;  //enumeration eBorderStyle (int)
     void    setStyle(String newStyle) {
-        if ( (borderType == eWidgetPart.Margin) || (borderType == eWidgetPart.Padding)) return; //default of none is only possible value
+        if ( (borderType == eWidgetPart.MARGIN) || (borderType == eWidgetPart.PADDING)) return; //default of NONE is only possible value, ever
 
-        if ( (newStyle == null) || (newStyle == 'none') || (newStyle == '')) {
-            _style = eBorderStyle.None;
+        if ( (newStyle == null) || (newStyle == 'NONE') || (newStyle == '')) {
+            _style = eBorderStyle.NONE;
             return;
         }
 
         //only valid styles for frame are solid or none; we eliminated none-condition already.
-        if (borderType == eWidgetPart.Frame) {_style = eBorderStyle.Solid;}
-
-        //we are working with (outer/inner); these are potentially double-lined-borders
-        if (eBorderStyle.Names.indexOf(newStyle) > -1) {
-           //set if we find in our enum
-           _style = eBorderStyle.Names.indexOf(newStyle);
-
-           return;
+        if (borderType == eWidgetPart.FRAME) {
+            _style = eBorderStyle.SOLID;
+            return;
         }
 
-        //any other untrapped border-style condition
-        _style = eBorderStyle.None;
+        //we are working with (outer/inner); these are potentially double-lined-borders
+        _style = eBorderStyle.getEnumValueDefaultNone(newStyle);
+
     } //setStyle
 
 
@@ -183,31 +179,31 @@ class WidgetBorderSide {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void updateBorderLineElements() {
-        String displayAttrValLine1  = ( ((_width != 0.0) && (opacity != '0.0') && (_style > eBorderStyle.None)) ? 'inherit' : 'none');
+        String displayAttrValLine1  = ( ((_width != 0.0) && (opacity != '0.0') && (_style > eBorderStyle.NONE)) ? 'inherit' : 'none');
         String displayAttrValLine2  = ( ((_width != 0.0) && (opacity != '0.0') && (eBorderStyle.EffectsLineCount[_style] == 2)) ? 'inherit' : 'none');
-        String colorValue1 = color;
-        String colorValue2 = color;
-        String sStyleName  = eBorderStyle.Names[_style];
+        String colorValue1  = color;
+        String colorValue2  = color;
+        String styleName    = eBorderStyle.Names[_style];
 
         Color lineColor;
         lineColor = new Color.fromBrowserRBGString(colorValue1);
 
         //TODO: TRACING: print ("BorderType =${eWidgetPart.Names[BorderType]} Style=${eBorderStyle.Names[_Style]} RGB=${LineColor.FormattedRGBString()} Width=${_Width} EffectsLineCount=${eBorderStyle.EffectsLineCount[_Style]} SplitWidth=${_Width / eBorderStyle.EffectsLineCount[_Style]}")  ;
-        //any style other than "solid" indicates use of our predefined borderspecs (vs. color-coordinated-shifting-attempt); use BLACK color to obtain typical grey-scale Windows-like effects.
-        if (_style > eBorderStyle.Solid) {
+        //any style other than "solid" indicates use of our predefined borderStyleSpecs (color-coordinated-shifting-attempt); use BLACK color to obtain typical grey-scale Windows-like effects.
+        if (_style > eBorderStyle.SOLID) {
             if (eBorderStyle.EffectsLineCount[_style] == 2) {
                 switch (side) {
                     case eSides.L   :
-                    case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['TLe'] : borderStyleSpecs[sStyleName]['TLi'])); break;}
+                    case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['TLe'] : borderStyleSpecs[styleName]['TLi'])); break;}
                     case eSides.R   :
-                    case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['BRe'] : borderStyleSpecs[sStyleName]['BRi'])); break;}
+                    case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['BRe'] : borderStyleSpecs[styleName]['BRi'])); break;}
                 }
             } else {
                 switch (side) {
                     case eSides.L   :
-                    case eSides.T   : {lineColor.shiftColor(borderStyleSpecs[sStyleName]['TLe']); break;}
+                    case eSides.T   : {lineColor.shiftColor(borderStyleSpecs[styleName]['TLe']); break;}
                     case eSides.R   :
-                    case eSides.B   : {lineColor.shiftColor(borderStyleSpecs[sStyleName]['BRe']); break;}
+                    case eSides.B   : {lineColor.shiftColor(borderStyleSpecs[styleName]['BRe']); break;}
                 }
             }
             colorValue1 = lineColor.formattedRGBString();
@@ -238,7 +234,7 @@ class WidgetBorderSide {
 
         if (eBorderStyle.EffectsLineCount[_style] < 2 ) {
             //We take time to set the display attribute only because there is a slight chance a style-change has occurred where we went from line2 showing to not.
-            if ( (borderType == eWidgetPart.Inner) || (borderType == eWidgetPart.Outer) ) {
+            if ( (borderType == eWidgetPart.INNER) || (borderType == eWidgetPart.OUTER) ) {
                 lineElement2.attributes['display'] = displayAttrValLine2;
             }
             return;
@@ -247,12 +243,12 @@ class WidgetBorderSide {
         //restore color to original state prior to potential color-shifting.
         lineColor.loadFromRGBString(colorValue2);
 
-        if (_style > eBorderStyle.Solid) {
+        if (_style > eBorderStyle.SOLID) {
             switch (side) {
                 case eSides.L   :
-                case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['TLi'] : borderStyleSpecs[sStyleName]['TLe'])); break;}
+                case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['TLi'] : borderStyleSpecs[styleName]['TLe'])); break;}
                 case eSides.R   :
-                case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.Inner) ? borderStyleSpecs[sStyleName]['BRi'] : borderStyleSpecs[sStyleName]['BRe'])); break;}
+                case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['BRi'] : borderStyleSpecs[styleName]['BRe'])); break;}
             }
             colorValue2 = lineColor.formattedRGBString();
         }
@@ -323,7 +319,7 @@ class WidgetBorderSide {
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorder {
-    int                 borderType  = eWidgetPart.None;     //enumeration eWidgetPart (int); quick reference to what type of border this group of sides is for
+    int                 borderType  = eWidgetPart.NONE;     //enumeration eWidgetPart (int); quick reference to what type of border this group of sides is for
     SVGElement          borderGroupElementRef   = null;     //the SVG Group hierarchically above the group of lines comprising all side(s) of a border
     WidgetBorderSide    T   = null;
     WidgetBorderSide    R   = null;
@@ -332,7 +328,7 @@ class WidgetBorder {
 
     //denormalized from constructor scope for convenience
     String              _instanceNameAndType   = '';
-    int                 _part   = eWidgetPart.None;         //enumeration eWidgetPart (int)
+    int                 _part   = eWidgetPart.NONE;         //enumeration eWidgetPart (int)
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -343,7 +339,7 @@ class WidgetBorder {
     */
     void _setLineID(SVGElement LineElement, int side, [strokeNumSuffix = '']) {
         LineElement.attributes = {
-            'id'        : "${_instanceNameAndType}_Border_${eWidgetPart.Names[_part]}_${eSides.Names[side.toString()]}${strokeNumSuffix}",
+            'id'        : "${_instanceNameAndType}_Border_${eWidgetPart.Names[_part]}_${eSides.ShortNames[side.toString()]}${strokeNumSuffix}",
             'display'   : 'inherit'
         };
     }
@@ -381,25 +377,25 @@ class WidgetBorder {
             tStrokeMidY =   bounds.T + T.getStrokeInset(2.0);
         } else {
             //two-line border; must be either Inner or Outer border since only those types have double-line option
-            tStrokeMidY =   bounds.T + ((borderType == eWidgetPart.Inner) ? T.getStrokeInset(1.0) : T.getStrokeInset(3.0));
+            tStrokeMidY =   bounds.T + ((borderType == eWidgetPart.INNER) ? T.getStrokeInset(1.0) : T.getStrokeInset(3.0));
         }
 
         if (eBorderStyle.EffectsLineCount[R.style] <= 1) {
             rStrokeMidX =   bounds.R - R.getStrokeInset(2.0);
         } else {
-            rStrokeMidX =   bounds.R - ((borderType == eWidgetPart.Inner) ? R.getStrokeInset(1.0) : R.getStrokeInset(3.0));
+            rStrokeMidX =   bounds.R - ((borderType == eWidgetPart.INNER) ? R.getStrokeInset(1.0) : R.getStrokeInset(3.0));
         }
 
         if (eBorderStyle.EffectsLineCount[B.style] <= 1) {
             bStrokeMidY =   bounds.B - B.getStrokeInset(2.0);
         } else {
-            bStrokeMidY =   bounds.B - ((borderType == eWidgetPart.Inner) ? B.getStrokeInset(1.0) : B.getStrokeInset(3.0));
+            bStrokeMidY =   bounds.B - ((borderType == eWidgetPart.INNER) ? B.getStrokeInset(1.0) : B.getStrokeInset(3.0));
         }
 
         if (eBorderStyle.EffectsLineCount[L.style] <= 1) {
             lStrokeMidX =   bounds.L + L.getStrokeInset(2.0);
         } else {
-            lStrokeMidX =   bounds.L + ((borderType == eWidgetPart.Inner) ? L.getStrokeInset(1.0) : L.getStrokeInset(3.0));
+            lStrokeMidX =   bounds.L + ((borderType == eWidgetPart.INNER) ? L.getStrokeInset(1.0) : L.getStrokeInset(3.0));
         }
 
         //if Top side exists
@@ -438,10 +434,10 @@ class WidgetBorder {
 
         //two-line border; must be either Inner or Outer border since only those types have double-line option
         //NOTICE: This second line has the opposite offset adjustment as the first line
-        tStrokeMidY =   bounds.T + ((borderType == eWidgetPart.Inner) ? T.getStrokeInset(3.0) : T.getStrokeInset(1.0));
-        rStrokeMidX =   bounds.R - ((borderType == eWidgetPart.Inner) ? R.getStrokeInset(3.0) : R.getStrokeInset(1.0));
-        bStrokeMidY =   bounds.B - ((borderType == eWidgetPart.Inner) ? B.getStrokeInset(3.0) : B.getStrokeInset(1.0));
-        lStrokeMidX =   bounds.L + ((borderType == eWidgetPart.Inner) ? L.getStrokeInset(3.0) : L.getStrokeInset(1.0));
+        tStrokeMidY =   bounds.T + ((borderType == eWidgetPart.INNER) ? T.getStrokeInset(3.0) : T.getStrokeInset(1.0));
+        rStrokeMidX =   bounds.R - ((borderType == eWidgetPart.INNER) ? R.getStrokeInset(3.0) : R.getStrokeInset(1.0));
+        bStrokeMidY =   bounds.B - ((borderType == eWidgetPart.INNER) ? B.getStrokeInset(3.0) : B.getStrokeInset(1.0));
+        lStrokeMidX =   bounds.L + ((borderType == eWidgetPart.INNER) ? L.getStrokeInset(3.0) : L.getStrokeInset(1.0));
 
         //if Top side exists
         if (T.width > 0.0 ) {
@@ -688,11 +684,11 @@ class WidgetBorders {
         //AllBordersSVGGroupElement   = new SVGElement.svg('<g id="${InstanceNameAndType}_Borders" display="inherit"></g>'),
 
         allBordersSVGGroupElement   = new SVGElement.tag('g'),
-        Margin      = new WidgetBorder.spacing(eWidgetPart.Margin),
-        Outer       = new WidgetBorder.line2(instanceNameAndType, eWidgetPart.Outer),
-        Frame       = new WidgetBorder.line1(instanceNameAndType, eWidgetPart.Frame),
-        Inner       = new WidgetBorder.line2(instanceNameAndType, eWidgetPart.Inner),
-        Padding     = new WidgetBorder.spacing(eWidgetPart.Padding)
+        Margin      = new WidgetBorder.spacing(eWidgetPart.MARGIN),
+        Outer       = new WidgetBorder.line2(instanceNameAndType, eWidgetPart.OUTER),
+        Frame       = new WidgetBorder.line1(instanceNameAndType, eWidgetPart.FRAME),
+        Inner       = new WidgetBorder.line2(instanceNameAndType, eWidgetPart.INNER),
+        Padding     = new WidgetBorder.spacing(eWidgetPart.PADDING)
     {
         allBordersSVGGroupElement.attributes = {
             'id'        : "${instanceNameAndType}_Borders",
@@ -715,11 +711,11 @@ class WidgetBorders {
 
     WidgetBorder _getPart(int part) {
         switch (part) {
-            case eWidgetPart.Margin     : return Margin ;
-            case eWidgetPart.Outer      : return Outer  ;
-            case eWidgetPart.Frame      : return Frame  ;
-            case eWidgetPart.Inner      : return Inner  ;
-            case eWidgetPart.Padding    : return Padding;
+            case eWidgetPart.MARGIN     : return Margin ;
+            case eWidgetPart.OUTER      : return Outer  ;
+            case eWidgetPart.FRAME      : return Frame  ;
+            case eWidgetPart.INNER      : return Inner  ;
+            case eWidgetPart.PADDING    : return Padding;
             default                     : return null;      //fall-through means invalid specification: throw??
         }
     }

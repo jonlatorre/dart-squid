@@ -17,7 +17,7 @@ Furthermore, we prefix all our library references within this test application t
 any potential namespace collisions.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
-#import("../../lib/dart_squid.dart", prefix:'Tsvg');
+#import("../../lib/dart_squid.dart", prefix:'dsvg');
 
 
 
@@ -37,27 +37,26 @@ BEGIN: main() is Entry point from SVG/HTML
 */
 main() {
 
-
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     CREATE FORWARD-DECLARATIONS FOR TESTING VARIABLES/OBJECTS
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    Tsvg.Application    globalApplicationObject = null;
+    dsvg.Application    globalApplicationObject = null;
 
-    Tsvg.Widget         testWidget1      = null;
-    Tsvg.Widget         testWidget2     = null;
-    Tsvg.Widget         testWidget3     = null;
+    dsvg.Widget         testWidget1     = null;
+    dsvg.Widget         testWidget2     = null;
+    dsvg.Widget         testWidget3     = null;
 
-    Tsvg.Widget         menuButtonsContainer    = null;
-    List<Tsvg.HtmlWidget> menuButtons   = null;
+    dsvg.Widget         menuButtonsContainer    = null;
+    List<dsvg.HtmlWidget> menuButtons   = null;
 
-    Tsvg.HtmlWidget     embeddedWebPage = null;
-    Tsvg.HtmlWidget     notesPage       = null;
-    Tsvg.IFrameWidget   webIFrame       = null;
-    Tsvg.HtmlWidget     foRepaintTests  = null;
+    dsvg.HtmlWidget     embeddedWebPage = null;
+    dsvg.HtmlWidget     notesPage       = null;
+    dsvg.IFrameWidget   webIFrame       = null;
+    dsvg.HtmlWidget     foRepaintTests  = null;
 
-    Tsvg.HtmlWidget     btnLog      = null;
+    dsvg.HtmlWidget     btnLog      = null;
 
     //This group is for when we are testing within HTML
     Element divInner    = null;
@@ -70,8 +69,8 @@ main() {
     Misc required constants, objects and such...
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    final String applicationCanvasElementID = '#dartsquidAppCanvas';
-    final String applicationName            = 'mySampleApplication';
+    const String APP_CANVAS_ELEMENT_ID  = '#dartsquidAppCanvas';
+    const String APP_NAME               = 'mySampleApplication';
 
     //Use this to initialize our "menu buttons" at top of page
     final List<ButtonDef> ButtonDefs = const [
@@ -99,36 +98,19 @@ main() {
     }
 
 
-    void testEnumerations() {
-        Tsvg.logToConsole([
-            '',
-            'LINE1',
-            'Various enumeration tests...',
-            'LINE2',
-            "Tsvg.eSides.Left: ${Tsvg.eSides.Left} with Name of: ${testStringCondition( Tsvg.eSides.Names[Tsvg.eSides.Left.toString()], 'L' )}",
-            "Tsvg.eSides.Names: ${Tsvg.eSides.Names} (EXPECTED: list of all names)",
-            "eSides ADDITIVE test: ${testStringCondition( Tsvg.eSides.Names[(Tsvg.eSides.Left + Tsvg.eSides.Left).toString()], 'CX' )}",
-            'LINE3',
-            "Tsvg.eWidgetPart.Names=${Tsvg.eWidgetPart.Names}",
-            'LINE1'
-        ]);
-    }
-
-
-
     void testWidgetMetrics() {
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             '',
             'LINE1',
-            'Tsvg.WidgetMetrics tests',
+            'dsvg.WidgetMetrics tests',
             'LINE2',
             'Instantiating and setting Margin.R value...'
         ]);
 
-        var testWidgetMetrics = new Tsvg.WidgetMetrics();
+        var testWidgetMetrics = new dsvg.WidgetMetrics();
         testWidgetMetrics.Margin.R = 222.2;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             testWidgetMetrics,
             "testWidgetMetrics.Margin(aka,WidgetBounds).CX: ${testStringCondition( testWidgetMetrics.Margin.CX.toString(), '111.1' )}",
             'LINE1'
@@ -137,21 +119,21 @@ main() {
 
 
     void testObjectBounds() {
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             '',
             'LINE1',
-            'Tsvg.ObjectBounds tests',
+            'dsvg.ObjectBounds tests',
             'LINE2',
             'Instantiating...'
         ]);
 
-        Tsvg.ObjectBounds testBounds = new Tsvg.ObjectBounds();
+        dsvg.ObjectBounds testBounds = new dsvg.ObjectBounds();
         testBounds.L = 10.0;
         testBounds.R = 110.0;
         testBounds.T = 20.0;
         testBounds.B = 170.0;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             testBounds,
             "testBounds.L:      ${testStringCondition( testBounds['L'].toString(),     '10.0' )}",
             "testBounds.R:      ${testStringCondition( testBounds['R'].toString(),     '110.0' )}",
@@ -168,24 +150,24 @@ main() {
 
 
     void testAlignSpec() {
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             '',
             'LINE1',
-            'Tsvg.AlignSpec tests',
+            'dsvg.AlignSpec tests',
             'LINE2',
             'Instantiating...'
         ]);
 
-        Tsvg.AlignSpec testAlignSpec = new Tsvg.AlignSpec();
+        dsvg.AlignSpec testAlignSpec = new dsvg.AlignSpec();
 
         testAlignSpec.dimensionValue = 123.45;
         testAlignSpec.resetAlignSpec();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             testAlignSpec,
             "testAlignSpec.dimensionValue: ${testStringCondition( testAlignSpec.dimensionValue.toString(), '0.0' )}",
             'LINE3',
-            "TODO: a thorough Tsvg.AlignSpec test requires more scenarios.",
+            "TODO: a thorough dsvg.AlignSpec test requires more scenarios.",
             'LINE1'
         ]);
 
@@ -193,23 +175,23 @@ main() {
 
 
     void testAlign() {
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             '',
             'LINE1',
-            'Tsvg.WidgetAlignment tests',
+            'dsvg.WidgetAlignment tests',
             'LINE2',
             'Instantiating...'
         ]);
 
-        Tsvg.WidgetAlignment testAlign = new Tsvg.WidgetAlignment();
+        dsvg.WidgetAlignment testAlign = new dsvg.WidgetAlignment();
         testAlign['T'].dimensionValue = 112.12;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             testAlign,
             "testAlign.T:      ${testAlign.T}",
             "testAlign['T'].dimensionValue:      ${testStringCondition( testAlign['T'].dimensionValue.toString(),       '112.12' )}",
             'LINE3',
-            "TODO: a thorough Tsvg.WidgetAlignment test require creation of a Widget to align to, canvas align test, and much more.",
+            "TODO: a thorough dsvg.WidgetAlignment test require creation of a Widget to align to, canvas align test, and much more.",
             'LINE1'
         ]);
 
@@ -228,7 +210,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void testWidgetOnShowEventCallback(Dynamic eventObj) {
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE3',
             "${eventObj.instanceName} onShow EVENT fired"
         ]);
@@ -241,12 +223,12 @@ main() {
     EXAMPLE CALLBACK F(X) of MouseNotifyEventObject Type..
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void btnDeleteWidgetMouseClick(Tsvg.MouseNotifyEventObject eventObj) {
-        Tsvg.HtmlWidget widget = eventObj.sender;
+    void btnDeleteWidgetMouseClick(dsvg.MouseNotifyEventObject eventObj) {
+        dsvg.HtmlWidget widget = eventObj.sender;
 
         widget.caption = 'Deleted 1';
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE2',
             "${widget.instanceName} btnTextMouseClick EVENT fired at coordinates (${eventObj.eventInfo.clientX},${eventObj.eventInfo.clientY})",
             'LINE3',
@@ -259,7 +241,7 @@ main() {
 
 
         if (testWidget1 != null) {
-            Tsvg.logToConsole([
+            dsvg.logToConsole([
                 'LINE4',
                 '${testWidget1.instanceName} Destroy() being executed; next btn-click should show list less this InstanceName'
             ]);
@@ -268,16 +250,16 @@ main() {
             testWidget1 = null;
         }
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE2'
         ]);
     }
 
 
-    void btnTestOnMouseDown(Tsvg.MouseNotifyEventObject eventObj) {
-        Tsvg.HtmlWidget widget = eventObj.sender;
+    void btnTestOnMouseDown(dsvg.MouseNotifyEventObject eventObj) {
+        dsvg.HtmlWidget widget = eventObj.sender;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE2',
             "${widget.instanceName} btnTestOnMouseDown EVENT fired at coordinates (${eventObj.eventInfo.clientX},${eventObj.eventInfo.clientY})"
         ]);
@@ -294,11 +276,11 @@ main() {
     between red/green background respectively to visually reflect [Widget.visible] status.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void menuButtonsClickHandler(Tsvg.MouseNotifyEventObject eventObj) {
+    void menuButtonsClickHandler(dsvg.MouseNotifyEventObject eventObj) {
         var sender = eventObj.sender;
-        Tsvg.Widget _targetWidget = null;
+        dsvg.Widget _targetWidget = null;
 
-        int indexTest = Tsvg.indexOfInstanceName(globalApplicationObject.widgetsList, eventObj.sender.tag);
+        int indexTest = dsvg.indexOfInstanceName(globalApplicationObject.widgetsList, eventObj.sender.tag);
 
         if (indexTest > -1) {
             _targetWidget    = globalApplicationObject.getWidgetByIndex(indexTest);
@@ -323,10 +305,10 @@ main() {
     TODO: EventsProcessor needs extended to do type checking yet.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void IncorrectMouseEventSignatureTest(Tsvg.NotifyEventObject eventObj) {
-        Tsvg.Widget widget = eventObj.sender;
+    void IncorrectMouseEventSignatureTest(dsvg.NotifyEventObject eventObj) {
+        dsvg.Widget widget = eventObj.sender;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE2',
             "${widget.instanceName} IncorrectMouseEventSignatureTest EVENT -- this will never be reached",
             'LINE2'
@@ -355,7 +337,7 @@ main() {
 
         var a = {'class':'BoldRed', 'style': 'border:2px solid black; background-color:yellow; text-align:center;'};
         divHeader.innerHTML = "DART RUN STARTED &mdash; see console for tracing information.";
-        Tsvg.setElementAttributes(divHeader, a);
+        dsvg.setElementAttributes(divHeader, a);
 
         timeElement.innerHTML = "Preparing time loop... ";
         window.setInterval(() {myHandler(timeElement);}, 1000);
@@ -376,14 +358,14 @@ main() {
     */
     void createTestWidget1() {
         //create a widget on the canvas
-        testWidget1  = new Tsvg.Widget('myWidget1', globalApplicationObject);
+        testWidget1  = new dsvg.Widget('myWidget1', globalApplicationObject);
         //set bounds via the "long way" (one at a time) vs. SetBounds()
         testWidget1.x        = 100.0;
         testWidget1.y        = 100;
         testWidget1.width    = 200;
         testWidget1.height   = 100;
-        testWidget1.align.R.dimension = Tsvg.eSides.R;
-        testWidget1.align.B.dimension = Tsvg.eSides.B;
+        testWidget1.align.R.dimension = dsvg.eSides.R;
+        testWidget1.align.B.dimension = dsvg.eSides.B;
 
         //testWidget.onAlign = btnMenuOnAlign;
 
@@ -400,9 +382,9 @@ main() {
         testWidget1.isMovable.y = true;
         testWidget1.isSizable.x = true;
         testWidget1.isSizable.y = true;
-        testWidget1.anchors = Tsvg.eSides.R;
+        testWidget1.anchors = dsvg.eSides.R;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createTestWidget1 method finished; object created:',
             testWidget1
@@ -417,15 +399,15 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createTestWidget2() {
-        testWidget2 = new Tsvg.Widget('myWidget2', globalApplicationObject);
+        testWidget2 = new dsvg.Widget('myWidget2', globalApplicationObject);
         testWidget2.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'TanFill');
         testWidget2.setBounds(100,100,400,400);
         testWidget2.isMovable.x = true;
         testWidget2.align.R.objToAlignTo = testWidget1;
-        testWidget2.align.R.dimension = Tsvg.eSides.L;
+        testWidget2.align.R.dimension = dsvg.eSides.L;
         testWidget2.show();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createTestWidget2 method finished; object created:',
             testWidget2
@@ -442,19 +424,19 @@ main() {
     */
     void createTestWidget3() {
 
-        //setting a constraint "= testConstraint" would be equiv to setting it inline to: "= num (Tsvg.MouseNotifyEventObject objInitiator) {return -100; }"
+        //setting a constraint "= testConstraint" would be equiv to setting it inline to: "= num (dsvg.MouseNotifyEventObject objInitiator) {return -100; }"
         num testConstraint() {
             return -100.0;
         }
 
-        testWidget3 = new Tsvg.Widget('myWidget3', globalApplicationObject, testWidget2);
+        testWidget3 = new dsvg.Widget('myWidget3', globalApplicationObject, testWidget2);
         testWidget3.setBounds(100,100,100,100);
         testWidget3.show();
 
         //test "costly change" inside begin/endUpdate block...
         testWidget3.beginUpdate();
         testWidget3.setBounds(120,120,110,150);
-        testWidget3.align.CX.dimension = Tsvg.eSides.R;
+        testWidget3.align.CX.dimension = dsvg.eSides.R;
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill');
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder');      //Test "outset" ==> "raised" (virtual border style)
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder');  //Test "outset" ==> "raised" (virtual border style)
@@ -466,14 +448,14 @@ main() {
         testWidget3.sizeRules.minWidth = 50;
         testWidget3.sizeRules.maxHeight = 200;
         testWidget3.sizeRules.minHeight = 50;
-        testWidget3.posRules.minX = (Tsvg.MouseNotifyEventObject objInitiator) {return -300; };
-        testWidget3.posRules.maxX = (Tsvg.MouseNotifyEventObject objInitiator) {return 100; };
-        testWidget3.posRules.minY = (Tsvg.MouseNotifyEventObject objInitiator) {return -100; };
-        testWidget3.posRules.maxY = (Tsvg.MouseNotifyEventObject objInitiator) {return 420; };
-//        testWidget3.PosRules.MinX = (Tsvg.MouseNotifyEventObject objInitiator) {return textButton.x; };  //TODO: Test more substantial ideas..
+        testWidget3.posRules.minX = (dsvg.MouseNotifyEventObject objInitiator) {return -300; };
+        testWidget3.posRules.maxX = (dsvg.MouseNotifyEventObject objInitiator) {return 100; };
+        testWidget3.posRules.minY = (dsvg.MouseNotifyEventObject objInitiator) {return -100; };
+        testWidget3.posRules.maxY = (dsvg.MouseNotifyEventObject objInitiator) {return 420; };
+//        testWidget3.PosRules.MinX = (dsvg.MouseNotifyEventObject objInitiator) {return textButton.x; };  //TODO: Test more substantial ideas..
         testWidget3.endUpdate();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createTestWidget3 method finished; object created:',
             testWidget3
@@ -499,11 +481,11 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createMenuButtonsContainer() {
-        menuButtonsContainer = new Tsvg.Widget('MenuButtonsContainer', globalApplicationObject);
+        menuButtonsContainer = new dsvg.Widget('MenuButtonsContainer', globalApplicationObject);
         menuButtonsContainer.height = 50;
-        menuButtonsContainer.align.T.dimension = Tsvg.eSides.T;
-        menuButtonsContainer.align.R.dimension = Tsvg.eSides.R;
-        menuButtonsContainer.align.L.dimension = Tsvg.eSides.L;
+        menuButtonsContainer.align.T.dimension = dsvg.eSides.T;
+        menuButtonsContainer.align.R.dimension = dsvg.eSides.R;
+        menuButtonsContainer.align.L.dimension = dsvg.eSides.L;
         menuButtonsContainer.sizeRules.minWidth = 500;
 
         //Style it
@@ -513,7 +495,7 @@ main() {
         menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner',  'GrooveBorder');
         menuButtonsContainer.show();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createMenuButtonsContainer method finished; object created:',
             menuButtonsContainer
@@ -522,15 +504,15 @@ main() {
 
 
     void createMenuButtons() {
-        Tsvg.HtmlWidget tempMenuButton = null;
-        menuButtons =  new List<Tsvg.HtmlWidget>();
+        dsvg.HtmlWidget tempMenuButton = null;
+        menuButtons =  new List<dsvg.HtmlWidget>();
 
         num currentLeft = 10;
         ButtonDefs.forEach( (buttonInList) {
-            tempMenuButton = new Tsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, menuButtonsContainer);
+            tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, menuButtonsContainer);
             tempMenuButton.setBounds((currentLeft), 10, buttonInList.width, 35);
             currentLeft = currentLeft + buttonInList.width;
-            tempMenuButton.align.CY.dimension = Tsvg.eSides.CY;
+            tempMenuButton.align.CY.dimension = dsvg.eSides.CY;
 
 
             //create a "button" on the canvas; the click event is what makes it behave like a button.
@@ -549,7 +531,7 @@ main() {
 
         }); //...forEach
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createMenuButtons method has finished; all buttons have been created.'
         ]);
@@ -564,10 +546,10 @@ main() {
     debugging purposes.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void btnLogAppWidgetsDataToConsoleClick(Tsvg.MouseNotifyEventObject eventObj) {
+    void btnLogAppWidgetsDataToConsoleClick(dsvg.MouseNotifyEventObject eventObj) {
 
         //TODO: make generic -- loop through App-object instead.
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'btnLogWidgetsDataToConsole (VIA CLICK EVENT) Executed',
             'LINE2',
@@ -575,7 +557,7 @@ main() {
         ]);
 
         globalApplicationObject.widgetsList.forEach( (widgetInList) {
-          Tsvg.logToConsole([
+          dsvg.logToConsole([
               'LINE3',
               widgetInList
           ]);
@@ -592,7 +574,7 @@ main() {
     */
     void createLogAppWidgetsDataToConsoleButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
-        btnLog  = new Tsvg.HtmlWidget('myTextButton', globalApplicationObject);
+        btnLog  = new dsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog.setBounds(20,50,225,35);
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
@@ -602,7 +584,7 @@ main() {
         btnLog.caption = "Log App's Widgets' Info Now";
         btnLog.show();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'btnLogAppWidgetsDataToConsole method finished; object created:',
             btnLog
@@ -619,7 +601,7 @@ main() {
     */
     void createDeleteWidgetButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
-        btnLog  = new Tsvg.HtmlWidget('myTextButton', globalApplicationObject);
+        btnLog  = new dsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog.setBounds(20,70,95,35);
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
         btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
@@ -629,7 +611,7 @@ main() {
         btnLog.caption = 'DELETE-1-ABCDEF-GHI-JKL-MNO-PQR-STUVWXY-Z';  //here to test clipping of overflow
         btnLog.show();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createDeleteWidgetButton method finished; object created:',
             btnLog
@@ -646,7 +628,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createWebPageInWidget() {
-        embeddedWebPage = new Tsvg.HtmlWidget('EmbedWebPage', globalApplicationObject);
+        embeddedWebPage = new dsvg.HtmlWidget('EmbedWebPage', globalApplicationObject);
         embeddedWebPage.setBounds(50,50,800,600);
         embeddedWebPage.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base'       ,'Widget_Base_White');
         embeddedWebPage.embeddedFO.scrollOverflow = true;
@@ -675,7 +657,7 @@ main() {
             getWebPageContent("dart_squid_SVG_UI_Widgets_Documentation.html", onSuccess);
         }
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createWebPageInWidget method finished (isRunningOnServer=${globalApplicationObject.isRunningOnServer}); object created:',
             embeddedWebPage
@@ -692,7 +674,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createNotesWidget() {
-        notesPage  = new Tsvg.HtmlWidget('WidgetNotesWebPage', globalApplicationObject);
+        notesPage  = new dsvg.HtmlWidget('WidgetNotesWebPage', globalApplicationObject);
         notesPage.setBounds(100,85,650,550);
         notesPage.isMovable.x = true;
         notesPage.isMovable.y = true;
@@ -740,7 +722,7 @@ main() {
         ''';
         notesPage.show();
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createNotesWidget method finished; object created:',
             notesPage
@@ -792,7 +774,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createFoRepaintTestWidget() {
-        foRepaintTests  = new Tsvg.HtmlWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
+        foRepaintTests  = new dsvg.HtmlWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
         foRepaintTests.tag = 'FOR1';
         foRepaintTests.setBounds(300,150,800,500);
         foRepaintTests.isMovable.x = true;
@@ -846,7 +828,7 @@ main() {
             </div>
         ''';
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createFoRepaintTestWidget method finished; object created:',
             foRepaintTests
@@ -881,7 +863,7 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createWebPageIFrameWidget() {
-        webIFrame  = new Tsvg.IFrameWidget('EmbedWebPageInIFrame', globalApplicationObject);
+        webIFrame  = new dsvg.IFrameWidget('EmbedWebPageInIFrame', globalApplicationObject);
         webIFrame.setBounds(10,60,700,600);
 
         //Some tests that make use of the setURL method...
@@ -894,7 +876,7 @@ main() {
         webIFrame.isSizable.x = true;
         webIFrame.isSizable.y = true;
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'createWebPageIFrameWidget method finished; object created:',
             webIFrame
@@ -925,14 +907,13 @@ main() {
     */
     void runApplication() {
 
-        Tsvg.logToConsole([
+        dsvg.logToConsole([
             'LINE1',
             'runApplication() Entry (via Application object onReady callback)...'
         ]);
 
 
         //Misc non-visual test setups
-        testEnumerations();
         testWidgetMetrics();
         testObjectBounds();
         testAlignSpec();
@@ -976,7 +957,7 @@ main() {
     the callback (to runApplication) where our app really begins
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    globalApplicationObject = new Tsvg.Application(applicationName, document.query(applicationCanvasElementID), runApplication );
+    globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication );
 
     globalApplicationObject.tracingEnabled = true; //change to false if ALL tracing is to be off.
 

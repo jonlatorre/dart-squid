@@ -41,22 +41,22 @@ centralization of common constants and their associated "names".
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eWidgetState {
-    static final int Unknown  = 0;
-    static final int Normal   = 1;
-    static final int Loading  = 2;
-    static final int Showing  = 4;
-    static final int Moving   = 8;
-    static final int Sizing   = 16;
-    static final int Updating = 32;
+    static const int UNKNOWN  = 0;
+    static const int NORMAL   = 1;
+    static const int LOADING  = 2;
+    static const int SHOWING  = 4;
+    static const int MOVING   = 8;
+    static const int SIZING   = 16;
+    static const int UPDATING = 32;
 
-    static final Map Names = const {
-        '0':'Unknown',
-        '1':'Normal',
-        '2':'Loading',
-        '4':'Showing',
-        '8':'Moving',
-        '16':'Sizing',
-        '32':'Updating'
+    static const Map Names = const {
+        '0':    'UNKNOWN',
+        '1':    'NORMAL',
+        '2':    'LOADING',
+        '4':    'SHOWING',
+        '8':    'MOVING',
+        '16':   'SIZING',
+        '32':   'UPDATING'
     };
 
 
@@ -76,32 +76,32 @@ class eWidgetState {
 
     ///Convenience method: test for  existence of Normal state within combined states.
     static bool isNormal(int statesToTest) {
-        return ( (statesToTest & Normal) == Normal);
+        return ( (statesToTest & NORMAL) == NORMAL);
     }
 
     ///Convenience method: test for  existence of Loading state within combined states.
     static bool isLoading(int statesToTest) {
-        return ( (statesToTest & Loading) == Loading);
+        return ( (statesToTest & LOADING) == LOADING);
     }
 
     ///Convenience method: test for existence of Showing state within combined states.
     static bool isShowing(int statesToTest) {
-        return ( (statesToTest & Showing) == Showing);
+        return ( (statesToTest & SHOWING) == SHOWING);
     }
 
     ///Convenience method: test for existence of Moving state within combined states.
     static bool isMoving(int statesToTest) {
-        return ( (statesToTest & Moving) == Moving);
+        return ( (statesToTest & MOVING) == MOVING);
     }
 
     ///Convenience method: test for existence of Sizing state within combined states.
     static bool isSizing(int statesToTest) {
-        return ( (statesToTest & Sizing) == Sizing);
+        return ( (statesToTest & SIZING) == SIZING);
     }
 
     ///Convenience method: test for existence of Updating state within combined states.
     static bool isUpdating(int statesToTest) {
-        return ( (statesToTest & Updating) == Updating);
+        return ( (statesToTest & UPDATING) == UPDATING);
     }
 
     ///Convenience method: remove state specified in [stateToRemove] from [combinedState] *if* it exists within combined state; return resulting [combinedState].
@@ -137,47 +137,54 @@ class eWidgetState {
 * **TODO**: a Sides may also be discussed as Dimension for alignment; perhaps rename,
 * since eSide not best for "CX", etc?
 *
-* Furthermore, at this time, the [Names] map does not include the verbose form of each enum.
-* The jury is still out on whether to include them in the map and/or remove the individual
-* variables to resolve this.  User-preferences for side-naming??  Input welcome.
-*
 * ---
 *
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eSides {
-    static final int None     = 0;
-    static final int Top      = 1;
-    static final int Right    = 2;
-    static final int Bottom   = 4;
-    static final int Left     = 8;
-    static final int All      = 15;  //not valid for Dimension usage (i.e., alignTo dimension)
-    static final int CenterX  = 16;
-    static final int CenterY  = 32;
-    static final int T        = 1;
-    static final int R        = 2;
-    static final int B        = 4;
-    static final int L        = 8;
-    static final int CX       = 16;
-    static final int CY       = 32;
+    static const int NONE     = 0;
+    static const int TOP      = 1;
+    static const int RIGHT    = 2;
+    static const int BOTTOM   = 4;
+    static const int LEFT     = 8;
+    static const int ALL      = 15;  //not valid for Dimension usage (i.e., alignTo dimension)
+    static const int CENTER_X = 16;
+    static const int CENTER_Y = 32;
+    static const int T        = 1;
+    static const int R        = 2;
+    static const int B        = 4;
+    static const int L        = 8;
+    static const int CX       = 16;
+    static const int CY       = 32;
 
-    static final Map Names = const {
-        '0':'None',
-        '1':'T',
-        '2':'R',
-        '4':'B',
-        '8':'L',
-        '15':'ALL',
-        '16':'CX',
-        '32':'CY'
+    static const Map ShortNames = const {
+        '0':    'NONE',
+        '1':    'T',
+        '2':    'R',
+        '4':    'B',
+        '8':    'L',
+        '15':   'ALL',
+        '16':   'CX',
+        '32':   'CY'
     };
 
-    static getCommaDelimNamesInVal(int intSides) {
+    static const Map LongNames = const {
+        '0':    'NONE',
+        '1':    'TOP',
+        '2':    'RIGHT',
+        '4':    'BOTTOM',
+        '8':    'LEFT',
+        '15':   'ALL',
+        '16':   'CENTER_X',
+        '32':   'CENTER_Y'
+    };
+
+    static String getCommaDelimLongNamesInVal(int intSides) {
         String _includedNames = '';
 
-        Names.forEach( (nameItemKey, nameItemValue) {
+        LongNames.forEach( (nameItemKey, nameItemValue) {
             if ( (Math.parseInt(nameItemKey) & intSides) == Math.parseInt(nameItemKey))  {
-                _includedNames = ((_includedNames == Names['0']) ? '' : _includedNames);  //Remove 'None" if it is NOT the *only* "match"
+                _includedNames = ((_includedNames == LongNames['0']) ? '' : _includedNames);  //Remove 'NONE" if it is NOT the *only* "match"
                 _includedNames = "${_includedNames}${(_includedNames.length > 0 ? ',' : '')}${nameItemValue}";
             }
         }); //...forEach
@@ -224,7 +231,7 @@ class eSides {
 * ## Alignment-related usage notes:
 *
 * Alignment will be immediately to the *outside* of specified Part.Side; i.e., if the left side
-* of a Widget's ClientBounds rect is at position 100 and we align another widget's right side
+* of a Widget's MARGIN rect is at position 100 and we align another widget's right side
 * to that part, the right (aka, 'x2') coordinate of the aligned widget's WidgetBounds is to be 99.
 *
 *      pseudo-code example usage: Widget.Right(side).AlignTo(WidgetInstanceRef.WidgetPart.Side)
@@ -234,27 +241,27 @@ class eSides {
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eWidgetPart {
-    static final int None           = 0;
-    static final int Margin         = 1;  //i.e., WidgetBounds from the perspective of Metrics
-    static final int Outer          = 2;
-    static final int Frame          = 3;
-    static final int Inner          = 4;
-    static final int Padding        = 5;
-    static final int ClientBounds   = 6;
+    static const int NONE       = 0;
+    static const int MARGIN     = 1;  //i.e., WidgetBounds from the perspective of Metrics
+    static const int OUTER      = 2;
+    static const int FRAME      = 3;
+    static const int INNER      = 4;
+    static const int PADDING    = 5;
+    static const int CLIENT     = 6;
 
     //eWidgetPartNames : could cause "fragile" code... consider string uses elsewhere in code if changing these.
-    static final List<String> Names = const [
-        'None',
-        'Margin',
-        'Outer',
-        'Frame',
-        'Inner',
-        'Padding',
-        'ClientBounds'
+    static const List<String>   Names = const [
+        'NONE',
+        'MARGIN',
+        'OUTER',
+        'FRAME',
+        'INNER',
+        'PADDING',
+        'CLIENT'
     ];
 
     //the max# of SVG Line Element(s) used to draw a given part of widget
-    static final List<int>    LineCount = const [0, 0, 2, 1, 2, 0, 0 ];
+    static const List<int>      LineCount = const [0, 0, 2, 1, 2, 0, 0 ];
 
 } //eWidgetPart
 
@@ -280,18 +287,34 @@ class eWidgetPart {
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class eBorderStyle {
-    static final int None     = 0;
-    static final int Solid    = 1;
-    static final int Groove   = 2;
-    static final int Ridge    = 3;
-    static final int Outset   = 4;
-    static final int Inset    = 5;
-    static final int Double   = 6;  //a bit meaningless to us -- Solid with > 1px width achieves same thing essentially
-    static final int Raised   = 7;  //virtual (non-CSS type)
-    static final int Lowered  = 8;  //virtual (non-CSS type)
+    static const int NONE     = 0;
+    static const int SOLID    = 1;
+    static const int GROOVE   = 2;
+    static const int RIDGE    = 3;
+    static const int OUTSET   = 4;
+    static const int INSET    = 5;
+    static const int DOUBLE   = 6;  //a bit meaningless to us -- Solid with > 1px width achieves same thing essentially
+    static const int RAISED   = 7;  //virtual (non-CSS type)
+    static const int LOWERED  = 8;  //virtual (non-CSS type)
 
-    static final List<String> Names = const ['none', 'solid', 'groove', 'ridge', 'outset', 'inset', 'double', 'raised', 'lowered' ];
-    static final List<int>    EffectsLineCount = const [0, 1, 2, 2, 1, 1, 1, 2, 2 ];
+    static const List<String> Names = const ['NONE', 'SOLID', 'GROOVE', 'RIDGE', 'OUTSET', 'INSET', 'DOUBLE', 'RAISED', 'LOWERED' ];
+    static const List<int>    EffectsLineCount = const [0, 1, 2, 2, 1, 1, 1, 2, 2 ];
+
+
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Gets the integer value associated with given String (name); if string does not exist
+    * in Names list, return NONE value.
+    *
+    * ### Parameters
+    * [styleName] : expects a valid String value within this enumeration's Names<> list.
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    static int getEnumValueDefaultNone(String styleName) {
+        int indexOfName = -1;
+        indexOfName = Names.indexOf(styleName);
+        return (indexOfName == -1 ? NONE : indexOfName);
+    }
 
 } //eBorderStyle
 

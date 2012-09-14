@@ -62,13 +62,13 @@ class WidgetMetrics {
 
     ObjectBounds _getPart(int part) {
         switch (part) {
-            case eWidgetPart.Margin         : return Margin      ;
-            case eWidgetPart.Outer          : return Outer       ;
-            case eWidgetPart.Frame          : return Frame       ;
-            case eWidgetPart.Inner          : return Inner       ;
-            case eWidgetPart.Padding        : return Padding     ;
-            case eWidgetPart.ClientBounds   : return ClientBounds;
-            default                         : return null;          //fall-through means invalid specification: throw??
+            case eWidgetPart.MARGIN   : return Margin;
+            case eWidgetPart.OUTER    : return Outer;
+            case eWidgetPart.FRAME    : return Frame;
+            case eWidgetPart.INNER    : return Inner;
+            case eWidgetPart.PADDING  : return Padding;
+            case eWidgetPart.CLIENT   : return ClientBounds;
+            default                   : return null;          //fall-through means invalid specification: throw??
         }
     }
 
