@@ -31,25 +31,19 @@
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetMetrics {
-    ObjectBounds Margin         = null;
-    ObjectBounds Outer          = null;
-    ObjectBounds Frame          = null;
-    ObjectBounds Inner          = null;
-    ObjectBounds Padding        = null;
-    ObjectBounds ClientBounds   = null;
+    ObjectBounds Margin         = new ObjectBounds();
+    ObjectBounds Outer          = new ObjectBounds();
+    ObjectBounds Frame          = new ObjectBounds();
+    ObjectBounds Inner          = new ObjectBounds();
+    ObjectBounds Padding        = new ObjectBounds();
+    ObjectBounds ClientBounds   = new ObjectBounds();
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     CONSTRUCTOR
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    WidgetMetrics() :
-        Margin          = new ObjectBounds(),
-        Outer           = new ObjectBounds(),
-        Frame           = new ObjectBounds(),
-        Inner           = new ObjectBounds(),
-        Padding         = new ObjectBounds(),
-        ClientBounds    = new ObjectBounds();
+    WidgetMetrics() {}
 
 
     /*

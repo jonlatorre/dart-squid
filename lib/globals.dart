@@ -241,6 +241,8 @@ String ensureStandardNoneColor(String colorToStandarize) {
 getBrowserType
 
 Determine what type of browser this app is running within at a VERY high level.
+Only real type that matters at THIS time is *Chromium/Dartium* ("chrome" detects these);
+others like FF have isues that prevent certain features from working.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
 String getBrowserType() {

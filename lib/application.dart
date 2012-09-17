@@ -141,7 +141,7 @@ class Application {
     SVGElement     _cssTestingRect  = null;
     SVGSVGElement  _canvas          = null;
     String         _classesCSS      = 'ApplicationCanvas';
-    ObjectBounds   _canvasBounds    = null;
+    ObjectBounds   _canvasBounds    = new ObjectBounds();
     num            _marginLeft      = 0.0;
     num            _marginTop       = 0.0;
     bool           _isStandaloneSVG = true;
@@ -170,7 +170,7 @@ class Application {
     bool            _isAppReady     = false;
 
 
-    List<Widget>    _widgetsList    = null;
+    List<Widget>    _widgetsList    = new List<Widget>();
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * List of [Widget] references (i.e., object pointers to Widgets) used throughout our application.
@@ -195,7 +195,7 @@ class Application {
     //(appropriate) widgets within that box for some type of further manipulation
     //(be it movement/sizing, or otherwise)
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    List<Widget>    selectedWidgetsList = null;
+    List<Widget>    selectedWidgetsList = new List<Widget>();
 
 
     /*
@@ -306,7 +306,7 @@ class Application {
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: PRIVATE MEMBERS 
+    BEGIN: PRIVATE METHODS
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
 
@@ -471,12 +471,14 @@ class Application {
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     When the canvas is resized (by shrinking or expanding the browser application's Window),
-    any widgets that are aligned to the right and/or bottom bounds of the canvas will have
-    their bounds and/or position affected.
+    any widgets that are aligned to the right and/or bottom (visible-region in browser
+    window/tab) *canvas* bounds, per a [Widget]'s alignment specs, will have their bounds
+    and/or position affected.
 
-    Here we loop through the application's widgets only looking at "top" (parent-less) widgets
-    since it is only that set of widgets that can be aligned to the canvas (their "container");
-    furthermore, since the upper-left corner always remains position (0,0) for the canvas's
+    This method loops through the application's widgets only looking at "top" (parent-less)
+    widgets since it is only that set of widgets that can be aligned to the canvas
+    (their "container").
+    Furthermore, since the upper-left corner always remains position (0,0) for the canvas's
     SVG coordinate space, it is only any Widgets that align right and/or bottom that must
     be realigned when the canvas size is altered
 
@@ -540,6 +542,8 @@ class Application {
         logToConsole(['LINE1', TracingDefs[tracePoint.toString()].tracePointDesc, objInitiatingTrace, 'LINE4']);
         return true;
     }
+
+
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -922,7 +926,7 @@ class Application {
     * Constructs an Application object, initializes various properties, and once the
     * _updateCanvasBounds private method completes its [Future] operations, returns control
     * to the caller by way of executing the callback handler (method) specified in the
-    * constructor parameter _onAppReady.
+    * constructor parameter [_onAppReady].
     *
     * ### Parameters (required)
     *   * [String] _name: whatever name you wish to give your application — simply notational.
@@ -930,25 +934,18 @@ class Application {
     *   * [ChangeHandler] _onAppReady: method called when this application is "ready" to start
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    Application(this._name, SVGSVGElement canvasElement, this._onAppReady) :
-        //Create list to track Widgets owned by this application
-        _widgetsList        = new List<Widget>(),
-        selectedWidgetsList = new List<Widget>()
-    {
+    Application(this._name, SVGSVGElement canvasElement, this._onAppReady) {
+
         if (canvasElement is! SVGSVGElement) {
             throw new InvalidTypeException('$_name (Application Object) Constructor : canvasElement is not an instance of SVGSVGElement.',  'SVGSVGElement', canvasElement);
         }
 
         _canvas = canvasElement;
-
-        //Determine what type of browser this app is running within
         _browserType = getBrowserType();
 
-        _isStandaloneSVG    = document.window.location.href.toLowerCase().endsWith('.svg');
-        _isRunningOnServer  = document.window.location.href.toLowerCase().startsWith('http');
-
-        //a brute-force way to see if we are dealing with a .svg file (vs. .html, etc)
-        _isStandaloneSVG    = (window.location.pathname.toLowerCase().endsWith(".svg") );
+        //Test for our "app" being within an .svg file (vs. .html, etc); iFrame-held would still show .SVG as "standalone" unless we look Window.top.loc...
+        _isStandaloneSVG    = window.location.href.toLowerCase().endsWith('.svg');
+        _isRunningOnServer  = window.location.href.toLowerCase().startsWith('http');
 
         _updateCanvasAttributes();
 
@@ -956,27 +953,23 @@ class Application {
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         Essentially, an "_addCanvasResizeWatcher()" bit of functionality.
-
-        In order to align to the right and/or bottom of browser's current (visible region)
-        window bounds, we need to be able to detect Canvas resize events and handle appropriately.
-        So, we specify a callback to our _resize() method that will update this bounds
-        information when the window.on.resize event is triggered by user resizing
-        browser-window or such.
+        See [_resize] method docs for more details.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
         window.on.resize.add( (event) => _resize(event) );
 
-        //Make sure our testing objects are available once canvas is ready
+
+        //Make sure our off-screen testing objects are available once canvas is ready
         _createMetricsTestingObjects();
+
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
-        Create our initial bounds object and update its values.
-        NOTE: This also "completes" the app-load when _UpdateCanvasBounds fires the callback
-        specified in constructor, which transfers control back to method in main()
+        IMPORTANT NOTE: This final construction step also "completes" the app-load when
+        _UpdateCanvasBounds fires the callback specified in constructor -- which will transfer
+        control back to specified method in main()
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        _canvasBounds = new ObjectBounds();
         _updateCanvasBounds();
 
     } //constructor

@@ -168,23 +168,16 @@ class CSSTargetsMap {
     * and other information that applies to target.
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
-    Map<String, CssTargetAndSelectorData> _targetObjectsAndSelectors = null;
+    Map<String, CssTargetAndSelectorData> _targetObjectsAndSelectors = new  Map();
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
-    * Handles creation of internal (private) Map.
-    *
-    * ## Parameters
-    *    * [Application] _applicationObject : a reference to the [Application] object
-    *     to use for CSS calc calls (to [Application.getCSSPropertyValuesForClassNames]).
-    *
     * NOTE: **must call** [setStylablePropertiesListRef] in addition to this constructor
-    * prior to this object being used.
+    * prior to an instance of this object being first used.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    CSSTargetsMap(this._applicationObject) :
-        _targetObjectsAndSelectors = new  Map()
+    CSSTargetsMap()
     {}
 
 
@@ -192,11 +185,16 @@ class CSSTargetsMap {
     /**
     * See constructor note. This must be called (by Widget) within Widget constructor prior
     * to any operations that could use this object!
-    *    * [List<StyleTarget>] _listStylableProperties : reference to [Widget] instance's
+    *
+    * ## Parameters
+    *    * [appRef] : a reference to the [Application] object
+    *     to use for CSS calc calls (to [Application.getCSSPropertyValuesForClassNames]).
+    *    * [listRef] : reference to [Widget] instance's [List<StyleTarget>]
     *    CSS-stylable-targetObjectName/Properties where CSS calculations will be stored.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void setStylablePropertiesListRef(List<StyleTarget> listRef) {
+    void setStylablePropertiesListRef(Application appRef, List<StyleTarget> listRef) {
+        _applicationObject = appRef;
         _stylablePropertiesList  = listRef;
     }
 

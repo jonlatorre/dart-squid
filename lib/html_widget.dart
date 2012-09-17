@@ -215,7 +215,7 @@ class HtmlWidget extends Widget {
     Variables, setters/getters
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    HtmlFO  _embeddedFO                 = null;
+    HtmlFO  _embeddedFO                 = new HtmlFO();
     HtmlFO  get embeddedFO              => _embeddedFO;
 
     ///HTML that will appear within the embedded [HtmlFO.htmlDiv] to form our "text".
@@ -288,10 +288,8 @@ class HtmlWidget extends Widget {
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     HtmlWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'HtmlWidget', String initialCaption='']) :
-        //CREATE EMBEDDED CLASSES we use...
-        _embeddedFO = new HtmlFO(),
 
-        //call super's constructor
+        //Base class [Widget] constructor provides the substance we need
         super(instanceName, appInstance, parentInstance, typeName)
 
     /*

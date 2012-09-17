@@ -306,13 +306,13 @@ class AlignSpec {
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetAlignment {
-    List<AlignSpec> alignSpecs;
-    AlignSpec T     = null;
-    AlignSpec R     = null;
-    AlignSpec B     = null;
-    AlignSpec L     = null;
-    AlignSpec CX    = null;
-    AlignSpec CY    = null;
+    List<AlignSpec> alignSpecs  = new List<AlignSpec>();
+    AlignSpec T     = new AlignSpec();
+    AlignSpec R     = new AlignSpec();
+    AlignSpec B     = new AlignSpec();
+    AlignSpec L     = new AlignSpec();
+    AlignSpec CX    = new AlignSpec();
+    AlignSpec CY    = new AlignSpec();
 
     void clearAlignsOnAxisX() {
         R.resetAlignSpec();
@@ -331,14 +331,7 @@ class WidgetAlignment {
     CONSTRUCTOR
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    WidgetAlignment() :
-        alignSpecs  = new List<AlignSpec>(),
-        T   = new AlignSpec(),
-        R   = new AlignSpec(),
-        B   = new AlignSpec(),
-        L   = new AlignSpec(),
-        CX  = new AlignSpec(),
-        CY  = new AlignSpec()
+    WidgetAlignment()
     {
         //Place references to our align specs into a list for easy iteration
         alignSpecs.add(T );

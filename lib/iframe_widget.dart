@@ -163,8 +163,8 @@ class IFrameWidget extends Widget {
     Variables, setters/getters
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    IFrameFO    _embeddedFO     = null;
-    IFrameFO    get embeddedFO  => _embeddedFO;     //TODO: Expose all, or just part?
+    IFrameFO    _embeddedFO     = new IFrameFO();
+    IFrameFO    get embeddedFO  => _embeddedFO;
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -235,10 +235,8 @@ class IFrameWidget extends Widget {
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     IFrameWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'IFrameWidget', String initialURL='']) :
-        //CREATE EMBEDDED CLASSES we need...
-        _embeddedFO = new IFrameFO(),
 
-        //call super's constructor
+        //Base class [Widget] constructor provides the substance we need
         super(instanceName, appInstance, parentInstance, typeName)
 
     /*

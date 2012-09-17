@@ -104,24 +104,35 @@ This is the primary UI Component in this framework.  The "base" control.
 class Widget {
 
     /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: Private variables
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    This group of variables obtains/requires values directly from constructor parameters...
+    ═══════════════════════════════════════════════════════════════════════════════════════
     */
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    MISC INTERNAL-ONLY FULLY PRIVATE VARIABLES
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-
     //reference to Application instance (set in Constructor)
     Application         _applicationObject  = null;
 
+    //Object is created in constructor due to need to pass this's intancename along
     WidgetBorders       _borders            = null;
 
-    //working variable object for outer bounds; instance created in constructor
-    ObjectBounds        _containerBounds    = null;
+    String              _instanceName       = '';       //must be Unique to entire application
+    String              _typeName           = 'Widget'; //set in constructor; sub-classes pass as constructor parm.
+
+    //IF exists, _ParentWidget holds a reference to our ParentWidget (must be a Widget or subclass of)
+    //that "owns" this one, if any. "Owner" in implementation hierarchy. Otherwise null
+    Widget              _parentWidget           = null;
+
+
+    /*
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    And now, everything else...
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    */
+
+    bool                _hasParent          = false;
+    String              _hierarchyPath      = '';       //Unique throughout application. "(0:n)[ParentInstanceName,]InstanceName"
+
+    //working variable object for outer bounds
+    ObjectBounds        _containerBounds    = new ObjectBounds();
 
     //track whether this widget is "selected"; made class-wide variable in case we want to examine elsewhere than mouse-down
     bool                _isSelected         = false;
@@ -168,34 +179,18 @@ class Widget {
     condition has to have been met already.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    List<Widget>        _widgetsList    = null;
+    List<Widget>        _widgetsList    = new List<Widget>();
 
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    This group of variables gets their values from CSS Styling applied to the Widget.
-    These are essentially just quick-accessors.
+    This group of variables gets their values from CSS Styling applied to the Widget, but
+    may be manipulated outside of CSS to indicate movement, selection, or such.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
     String              _fillColor              = 'none';   //'none', 'transparent', '' each indicate no-fill
     String              _fillOpacity            = '0.0';    //fill not showing by default
 
-
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: Protected variables - interaction with private vars are through accessor methods
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    */
-
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Variables exposed as READ-ONLY properties via "getters"
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    String              _instanceName           = '';       //must be Unique to entire application
-    String              _typeName               = 'Widget'; //set in constructor; sub-classes pass as constructor parm.
-    bool                _hasParent              = false;
-    String              _hierarchyPath          = '';       //Unique throughout application. "(0:n)[ParentInstanceName,]InstanceName"
 
     //Widget's inner rect/bounding-box available to CHILD objects x1,y1,x2,y2 (i.e., this Widget's Bounds less space for margin, border(s), padding)
     //This is an object-reference to the SVGElement we created during the Widget initialization process
@@ -203,10 +198,6 @@ class Widget {
 
     //Widget's placeholder selection-rect; hidden unless "selected"
     SVGElement          _selectionRect          = null;
-
-    //IF exists, _ParentWidget holds a reference to our ParentWidget (must be a Widget or subclass of)
-    //that "owns" this one, if any. "Owner" in implementation hierarchy. Otherwise null
-    Widget              _parentWidget           = null;
 
     //IF exists, stores quick reference to SVGElement in which this Widget's generated-SVG element(s) reside (i.e., hierarchically embedded)
     //Default SVG-materialization target-element shall be our [Application] object's canvas, unless we have a parent widget (see Create method)
@@ -223,20 +214,28 @@ class Widget {
     SVGRectElement      _bgRectSVGElement       = null;
 
 
-    //Event handler...
-    EventsProcessor     _on     = null;
+    EventsProcessor     _on     = new EventsProcessor();
+    ///Event handler...
     EventsProcessor get on      => _on;
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    IsMovable/IsSizable properties: simply expose a reference to our embedded DynamicsConstraint.
+    IsMovable/IsSizable properties: via embedded DynamicsConstraint object.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
+
+    //Can this item be moved with the mouse? (via mousedown/mousemove/mouseup)?
+    //TODO: MoveTarget (what group in widget) to detect moves on?  Also, should Alignment be cleared if moved?
+    DynamicsConstraint  _isMovable      = new DynamicsConstraint();
+
+    //Can this item be resized with the mouse? (via mousedown/mousemove/mouseup)?
+    DynamicsConstraint  _isSizable      = new DynamicsConstraint();
+
     DynamicsConstraint get isSizable    => _isSizable;
     DynamicsConstraint get isMovable    => _isMovable;
 
     //a shortcut to resulting value for whether ANY "selection"-related action is enabled for this Widget (i.e., movable/sizable);
-    bool                _isSelectable    = true;
+    bool               _isSelectable    = true;
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -257,7 +256,7 @@ class Widget {
     further effect the calculation of these metrics.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    WidgetMetrics       _widgetMetrics      = null;
+    WidgetMetrics       _widgetMetrics      = new WidgetMetrics();
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -265,9 +264,9 @@ class Widget {
     See their respective Class definitions for documentation.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    WidgetAlignment     _align              = null;
-    WidgetSizeRules     _sizeRules          = null;
-    WidgetPosRules      _posRules           = null;
+    WidgetAlignment     _align              = new WidgetAlignment();
+    WidgetSizeRules     _sizeRules          = new WidgetSizeRules();
+    WidgetPosRules      _posRules           = new WidgetPosRules();
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -301,23 +300,9 @@ class Widget {
     bool            _showHint           = false;
     int             _hintPause          = 1000;
 
-
-    //Can this item be moved with the mouse? (via mousedown/mousemove/mouseup)?
-    //TODO: MoveTarget (what group in widget) to detect moves on?  Also, should Alignment be cleared if moved?
-    DynamicsConstraint  _isMovable      = null;
-
-    //Can this item be resized with the mouse? (via mousedown/mousemove/mouseup)?
-    DynamicsConstraint  _isSizable      = null;
-
     //List of StyleTarget instances. These stylable targets can have CSS Class-Selector(s) applied to them via our classesCSS property.
-    List<StyleTarget>   _stylablePropertiesList = null;
+    List<StyleTarget>   _stylablePropertiesList =  new List<StyleTarget>();
 
-
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: Public variables/accessors.
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    */
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -532,8 +517,7 @@ class Widget {
     * ---
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    CSSTargetsMap    classesCSS         = null;
-
+    CSSTargetsMap    classesCSS         = new CSSTargetsMap();
 
 
     /*
@@ -2360,24 +2344,9 @@ class Widget {
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     Widget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Widget']) :
-        //CREATE THE PLETHORA OF EMBEDDED CLASSES A WIDGET USES...
-        _isMovable      = new DynamicsConstraint(),
-        _isSizable      = new DynamicsConstraint(),
-        _sizeRules      = new WidgetSizeRules(),
-        _posRules       = new WidgetPosRules(),
-        _containerBounds= new ObjectBounds(),
-        _borders        = new WidgetBorders("${instanceName}_${typeName}"),
-        _widgetMetrics  = new WidgetMetrics(),
-        _align          = new WidgetAlignment(),
-        _on             = new EventsProcessor(),
 
-        //Create list to track Widgets owned by this Widget
-        _widgetsList    = new List<Widget>(),
-
-        //Create list to hold our CSS-Stylable properties.  Subclasses will add entries to this.
-        _stylablePropertiesList     = new List<StyleTarget>(),
-
-        classesCSS      = new CSSTargetsMap(appInstance)
+        //Create any EMBEDDED CLASSES a widget uses that can NOT be done via Lazy initialization at object-declaration point earlier in code...
+        _borders        = new WidgetBorders("${instanceName}_${typeName}")
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -2394,8 +2363,8 @@ class Widget {
 
         _applicationObject  = appInstance;
 
-        //required setup (not achievable during constructor do to limitations on accessing "this")
-        classesCSS.setStylablePropertiesListRef(_stylablePropertiesList);
+        //required setup (list-assignment not achievable during constructor do to limitations on accessing "this")
+        classesCSS.setStylablePropertiesListRef(_applicationObject, _stylablePropertiesList);
 
 
         /*
