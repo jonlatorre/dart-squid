@@ -271,15 +271,15 @@ class Widget {
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
     Anchors are used to fix edge positions relative to container side(s)
-    This property makes use of the additive nature of eSides (powers-of-two) for bitwise
+    This property makes use of the additive nature of eAspects (powers-of-two) for bitwise
     determination if a particular side is anchored.
-    These are of type enumeration eSides (int); values are additive (combined) for multi-side
+    These are of type enumeration eAspects (int); values are additive (combined) for multi-side
     anchoring abilities with one property.
 
     TODO: implement anchor center(s) ability in alignment code
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    int             _anchors            = eSides.NONE;
+    int             _anchors            = eAspects.NONE;
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -698,7 +698,7 @@ class Widget {
     * and as siblings they are aligned to move or change dimensions.
     *
     * Setting of values is done via [align] sub-properties, each of which is of type
-    * [AlignSpec].  E.g., `myWidget.align.T.dimension = eSides.T;` to indicate that the top
+    * [AlignSpec].  E.g., `myWidget.align.T.aspect = eAspects.T;` to indicate that the top
     * of a Widget is to be aligned to the top of its [parentWidget] during the [reAlign]
     * procedure.
     *
@@ -873,14 +873,14 @@ class Widget {
     * subject to an [align] directive and its *opposite* side is not (that opposite side
     * could be anchored).
     *
-    * Anchors rely on an enumerated type [eSides] whose integer values are additive
+    * Anchors rely on an enumerated type [eAspects] whose integer values are additive
     * in such a way that, within this single integer [anchors] property, it is possible to
     * specify multiple anchor-sides.
     * E.g., both the top *and* left side of the widget could be anchored.
     *
     * ### See Also
     *   * [align] for more about alignment specifications.
-    *   * [eSides] for more information about the additive nature of this type's values.
+    *   * [eAspects] for more information about the additive nature of this type's values.
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
     int get anchors     => _anchors;
@@ -1090,9 +1090,9 @@ class Widget {
             //sibling widgets (earlier in parent's widgets-create-order) can be removed or moved in a way that affects this index.
             int     thisWidgetIndexInParent     = (_hasParent ? _parentWidget.indexOfWidget(this) : _applicationObject.indexOfWidget(this));
             int     siblingWidgetIndexInParent  = -1;
-            bool    goodSibling     = false;
-            String  alignToDimName  = '';
-            num     translationAdj  = 0.0;
+            bool    goodSibling         = false;
+            String  alignToAspectName   = '';
+            num     translationAdj      = 0.0;
 
             //"top level" Widgets reside on our "Canvas".  Use that to get info if no Widget as parent.
             if (_hasParent) {
@@ -1103,7 +1103,7 @@ class Widget {
 
             _align.alignSpecs.forEach( (objAlignPart) {
             
-                if ((objAlignPart.objToAlignTo != null) && (objAlignPart.dimension > eSides.NONE)) {
+                if ((objAlignPart.objToAlignTo != null) && (objAlignPart.aspect > eAspects.NONE)) {
                     //If Aligning to a Sibling presumably... verify validity and acquire value if valid.
 
                     //make sure referenced widget is earlier in SVG node list than THIS widget.
@@ -1118,13 +1118,13 @@ class Widget {
 
                     if (goodSibling) {
                         //Use our convenience arrays to get index into appropriate Part.Dim name
-                        alignToDimName = eSides.ShortNames[objAlignPart.dimension.toString()];
+                        alignToAspectName = eAspects.ShortNames[objAlignPart.aspect.toString()];
 
                         //if sibling being aligned to has had its position translated, we need to take that into account when aligning to it.
-                        translationAdj = ( ('R,L,CX'.contains(alignToDimName)) ? objAlignPart.objToAlignTo.translateX: objAlignPart.objToAlignTo.translateY);
+                        translationAdj = ( ('R,L,CX'.contains(alignToAspectName)) ? objAlignPart.objToAlignTo.translateX: objAlignPart.objToAlignTo.translateY);
 
-                        //our widget part's dimension value depends on the bounds-subcomponent value from the Widget we are aligned to (e.g., it's Margin.Left value)
-                        objAlignPart.dimensionValue = (objAlignPart.objToAlignTo.metrics[objAlignPart.part][alignToDimName]) + translationAdj;
+                        //our widget part's aspect value depends on the bounds-subcomponent value from the Widget we are aligned to (e.g., it's Margin.Left value)
+                        objAlignPart.aspectValue = (objAlignPart.objToAlignTo.metrics[objAlignPart.part][alignToAspectName]) + translationAdj;
 
                         //Trace will include Widget data followed immediately by AlignSpec info
                         if (_applicationObject.trace(2)) {
@@ -1134,7 +1134,7 @@ class Widget {
                                 'LINE3',
                                 this,
                                 'LINE5',
-                                "  (AlignSpec) referenced Widget's dimension = ${alignToDimName}; referenced Widget's part = ${eWidgetPart.Names[objAlignPart.part]}; referenced value = ${objAlignPart.dimensionValue};",
+                                "  (AlignSpec) referenced Widget's aspect = ${alignToAspectName}; referenced Widget's part = ${eWidgetPart.Names[objAlignPart.part]}; referenced value = ${objAlignPart.aspectValue};",
                                 'LINE4',
                                 'Referenced Widget (objToAlignTo) follows:',
                                 objAlignPart.objToAlignTo,
@@ -1146,27 +1146,27 @@ class Widget {
                         throw new Exception('(acquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a Sibling of ${_instanceName} in previous SVG Nodes.' );
                     }
                 } else {
-                    switch (objAlignPart.dimension) {
-                        case eSides.R:
-                            objAlignPart.dimensionValue = _containerBounds.R - _containerBounds.L;
+                    switch (objAlignPart.aspect) {
+                        case eAspects.R:
+                            objAlignPart.aspectValue = _containerBounds.R - _containerBounds.L;
                             break;
-                        case eSides.L:
-                            objAlignPart.dimensionValue = 0;
+                        case eAspects.L:
+                            objAlignPart.aspectValue = 0;
                             break;
-                        case eSides.T:
-                            objAlignPart.dimensionValue = 0;
+                        case eAspects.T:
+                            objAlignPart.aspectValue = 0;
                             break;
-                        case eSides.B:
-                            objAlignPart.dimensionValue = _containerBounds.B - _containerBounds.T;
+                        case eAspects.B:
+                            objAlignPart.aspectValue = _containerBounds.B - _containerBounds.T;
                             break;
-                        case eSides.CX:
-                            objAlignPart.dimensionValue = _containerBounds.CX;
+                        case eAspects.CX:
+                            objAlignPart.aspectValue = _containerBounds.CX;
                             break;
-                        case eSides.CY:
-                            objAlignPart.dimensionValue = _containerBounds.CY;
+                        case eAspects.CY:
+                            objAlignPart.aspectValue = _containerBounds.CY;
                             break;
                         default:
-                            objAlignPart.dimensionValue = 0;
+                            objAlignPart.aspectValue = 0;
                     }
                 }
             }); //...forEach
@@ -1218,37 +1218,37 @@ class Widget {
         E.g., if aligned to center of X (CX), any alignment of right/left are ignored as this centering overrides.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        if (_align.CX.dimension != eSides.NONE) {
-            ptrWidgetBounds.L   = _align.CX.dimensionValue - mTempAdjCX;
-            ptrWidgetBounds.R   = _align.CX.dimensionValue + mTempAdjCX;
+        if (_align.CX.aspect != eAspects.NONE) {
+            ptrWidgetBounds.L   = _align.CX.aspectValue - mTempAdjCX;
+            ptrWidgetBounds.R   = _align.CX.aspectValue + mTempAdjCX;
         } else {
             //handle right/left alignment:
             //are both sides NOT aligned to anything?
-            if ((_align.L.dimension == eSides.NONE) && (_align.R.dimension == eSides.NONE)) {
+            if ((_align.L.aspect == eAspects.NONE) && (_align.R.aspect == eAspects.NONE)) {
                 ptrWidgetBounds.L = _x;
                 ptrWidgetBounds.R = mTempR;
             } else {
-                if (_align.L.dimension != eSides.NONE) {
+                if (_align.L.aspect != eAspects.NONE) {
                     //Left align specified (right may be too...)
-                    ptrWidgetBounds.L = _align.L.dimensionValue;
+                    ptrWidgetBounds.L = _align.L.aspectValue;
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
-                    if ( (_anchors & eSides.R) == eSides.R) {
+                    if ( (_anchors & eAspects.R) == eAspects.R) {
                         ptrWidgetBounds.R = Math.max((ptrWidgetBounds.L + _width + 1), mTempR);  //prevent negative width
                     } else {
                         //see if Right align exists (since it is not mutually exclusive of Left align decision tree we are in)...
-                        if (_align.R.dimension != eSides.NONE) {
-                            ptrWidgetBounds.R = _align.R.dimensionValue;
+                        if (_align.R.aspect != eAspects.NONE) {
+                            ptrWidgetBounds.R = _align.R.aspectValue;
                         } else {
                             ptrWidgetBounds.R = ptrWidgetBounds.L + _width;
                         }
                     }
                 } else {
                     //some right alignment without any left alignment...
-                    ptrWidgetBounds.R = _align.R.dimensionValue;
+                    ptrWidgetBounds.R = _align.R.aspectValue;
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
-                    if ( (_anchors & eSides.L) == eSides.L) {
+                    if ( (_anchors & eAspects.L) == eAspects.L) {
                         ptrWidgetBounds.L = Math.min((ptrWidgetBounds.R - _width - 1), _x);  //prevent negative width
                     } else {
                         ptrWidgetBounds.L = ptrWidgetBounds.R - _width;
@@ -1260,37 +1260,37 @@ class Widget {
 
 
         //Y-Axis alignment code...
-        if (_align.CY.dimension != eSides.NONE) {
-            ptrWidgetBounds.T   = _align.CY.dimensionValue - mTempAdjCY;
-            ptrWidgetBounds.B   = _align.CY.dimensionValue + mTempAdjCY;
+        if (_align.CY.aspect != eAspects.NONE) {
+            ptrWidgetBounds.T   = _align.CY.aspectValue - mTempAdjCY;
+            ptrWidgetBounds.B   = _align.CY.aspectValue + mTempAdjCY;
         } else {
             //handle top/bottom alignment
             //are both sides NOT aligned to anything?
-            if ((_align.T.dimension == eSides.NONE) && (_align.B.dimension == eSides.NONE)) {
+            if ((_align.T.aspect == eAspects.NONE) && (_align.B.aspect == eAspects.NONE)) {
                 ptrWidgetBounds.T = _y;
                 ptrWidgetBounds.B = mTempB;
             } else {
-                if (_align.T.dimension != eSides.NONE) {
+                if (_align.T.aspect != eAspects.NONE) {
                     //Top align specified (bottom may be too...)
-                    ptrWidgetBounds.T = _align.T.dimensionValue;
+                    ptrWidgetBounds.T = _align.T.aspectValue;
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
-                    if ( (_anchors & eSides.B) == eSides.B) {
+                    if ( (_anchors & eAspects.B) == eAspects.B) {
                         ptrWidgetBounds.B = Math.max((ptrWidgetBounds.T + _height + 1), mTempB);  //prevent negative Height
                     } else {
                         //see if Bottom align exists (since it is not mutually exclusive of Top align decision tree we are in)...
-                        if (_align.B.dimension != eSides.NONE) {
-                            ptrWidgetBounds.B = _align.B.dimensionValue;
+                        if (_align.B.aspect != eAspects.NONE) {
+                            ptrWidgetBounds.B = _align.B.aspectValue;
                         } else {
                             ptrWidgetBounds.B = ptrWidgetBounds.T + _height;
                         }
                     }
                 } else {
                     //some Bottom alignment without any Top alignment...
-                    ptrWidgetBounds.B = _align.B.dimensionValue;
+                    ptrWidgetBounds.B = _align.B.aspectValue;
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
-                    if ( (_anchors & eSides.T) == eSides.T) {
+                    if ( (_anchors & eAspects.T) == eAspects.T) {
                         ptrWidgetBounds.T = Math.min((ptrWidgetBounds.B - _height - 1), _y);  //prevent negative Height
                     } else {
                         ptrWidgetBounds.T = ptrWidgetBounds.B - _height;

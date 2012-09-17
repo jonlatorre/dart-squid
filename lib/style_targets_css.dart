@@ -82,8 +82,6 @@ class StyleTarget {
 * Values in these objects are transferred to "full" (non constant-only) [StyleTarget]
 * object instances elsewhere.
 *
-* TODO: Will lazy-initializer feature remove the need for this class somehow?
-*
 * ## See Also
 * [Widget.InitialStylableWidgetProperties] creates a constant list of these objects.
 *

@@ -501,8 +501,8 @@ class Application {
             ptrChildWidget = _widgetsList[i];
             if (!ptrChildWidget.hasParent) {
                 ptrChildWidgetAlignObj = ptrChildWidget.align;
-                if (((ptrChildWidgetAlignObj.R.objToAlignTo == null) && (ptrChildWidgetAlignObj.R.dimension > eSides.NONE)) ||
-                    ((ptrChildWidgetAlignObj.B.objToAlignTo == null) && (ptrChildWidgetAlignObj.B.dimension > eSides.NONE)))
+                if (((ptrChildWidgetAlignObj.R.objToAlignTo == null) && (ptrChildWidgetAlignObj.R.aspect > eAspects.NONE)) ||
+                    ((ptrChildWidgetAlignObj.B.objToAlignTo == null) && (ptrChildWidgetAlignObj.B.aspect > eAspects.NONE)))
                 {
                     ptrChildWidget.reAlign();
                     ptrChildWidget.reAlignSiblings();  //since other top-level widgets could align to the re-aligned widget
@@ -833,7 +833,6 @@ class Application {
         bool            alreadySelected = false;
         List<String>    hierTest        = null;
         List<String>    addPathSplit    = null;
-        SVGElement      _animation      = null;  //TODO: Testing
 
         //test for this instance-name already in our list; if so, exit while indicating it is selected already.
         indexTest = indexOfInstanceName(selectedWidgetsList, widgetToAdd.instanceName);
@@ -887,7 +886,7 @@ class Application {
         //the new one passed all the tests... must be a valid selection now that we have cleaned up any potential issues.
         selectedWidgetsList.add(widgetToAdd);
 
-        //Now make it visually clear what is selected (TODO: This will be unnecessary in the future additional "box-draw" multi-select version)
+        //Now make it visually clear what is selected (TODO: This will be unnecessary in a future additional "box-draw" multi-select version)
         setSVGAttributes(widgetToAdd.selectionRect, {
             'display'       : 'inherit',
             'visibility'    : 'visible'

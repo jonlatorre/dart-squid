@@ -160,12 +160,12 @@ main() {
 
         dsvg.AlignSpec testAlignSpec = new dsvg.AlignSpec();
 
-        testAlignSpec.dimensionValue = 123.45;
+        testAlignSpec.aspectValue = 123.45;
         testAlignSpec.resetAlignSpec();
 
         dsvg.logToConsole([
             testAlignSpec,
-            "testAlignSpec.dimensionValue: ${testStringCondition( testAlignSpec.dimensionValue.toString(), '0.0' )}",
+            "testAlignSpec.aspectValue: ${testStringCondition( testAlignSpec.aspectValue.toString(), '0.0' )}",
             'LINE3',
             "TODO: a thorough dsvg.AlignSpec test requires more scenarios.",
             'LINE1'
@@ -184,12 +184,12 @@ main() {
         ]);
 
         dsvg.WidgetAlignment testAlign = new dsvg.WidgetAlignment();
-        testAlign['T'].dimensionValue = 112.12;
+        testAlign['T'].aspectValue = 112.12;
 
         dsvg.logToConsole([
             testAlign,
             "testAlign.T:      ${testAlign.T}",
-            "testAlign['T'].dimensionValue:      ${testStringCondition( testAlign['T'].dimensionValue.toString(),       '112.12' )}",
+            "testAlign['T'].aspectValue:      ${testStringCondition( testAlign['T'].aspectValue.toString(),       '112.12' )}",
             'LINE3',
             "TODO: a thorough dsvg.WidgetAlignment test require creation of a Widget to align to, canvas align test, and much more.",
             'LINE1'
@@ -364,8 +364,8 @@ main() {
         testWidget1.y        = 100;
         testWidget1.width    = 200;
         testWidget1.height   = 100;
-        testWidget1.align.R.dimension = dsvg.eSides.R;
-        testWidget1.align.B.dimension = dsvg.eSides.B;
+        testWidget1.align.R.aspect = dsvg.eAspects.R;
+        testWidget1.align.B.aspect = dsvg.eAspects.B;
 
         //testWidget.onAlign = btnMenuOnAlign;
 
@@ -382,7 +382,7 @@ main() {
         testWidget1.isMovable.y = true;
         testWidget1.isSizable.x = true;
         testWidget1.isSizable.y = true;
-        testWidget1.anchors = dsvg.eSides.R;
+        testWidget1.anchors = dsvg.eAspects.R;
 
         dsvg.logToConsole([
             'LINE1',
@@ -404,7 +404,7 @@ main() {
         testWidget2.setBounds(100,100,400,400);
         testWidget2.isMovable.x = true;
         testWidget2.align.R.objToAlignTo = testWidget1;
-        testWidget2.align.R.dimension = dsvg.eSides.L;
+        testWidget2.align.R.aspect = dsvg.eAspects.L;
         testWidget2.show();
 
         dsvg.logToConsole([
@@ -436,7 +436,7 @@ main() {
         //test "costly change" inside begin/endUpdate block...
         testWidget3.beginUpdate();
         testWidget3.setBounds(120,120,110,150);
-        testWidget3.align.CX.dimension = dsvg.eSides.R;
+        testWidget3.align.CX.aspect = dsvg.eAspects.R;
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill');
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder');      //Test "outset" ==> "raised" (virtual border style)
         testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder');  //Test "outset" ==> "raised" (virtual border style)
@@ -477,15 +477,16 @@ main() {
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TODO: DOCUMENT
+    Creates a container for various menu buttons, positions it along the top using only
+    alignment features (vs. setting specific size).
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createMenuButtonsContainer() {
         menuButtonsContainer = new dsvg.Widget('MenuButtonsContainer', globalApplicationObject);
         menuButtonsContainer.height = 50;
-        menuButtonsContainer.align.T.dimension = dsvg.eSides.T;
-        menuButtonsContainer.align.R.dimension = dsvg.eSides.R;
-        menuButtonsContainer.align.L.dimension = dsvg.eSides.L;
+        menuButtonsContainer.align.T.aspect = dsvg.eAspects.T;
+        menuButtonsContainer.align.R.aspect = dsvg.eAspects.R;
+        menuButtonsContainer.align.L.aspect = dsvg.eAspects.L;
         menuButtonsContainer.sizeRules.minWidth = 500;
 
         //Style it
@@ -512,7 +513,7 @@ main() {
             tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, menuButtonsContainer);
             tempMenuButton.setBounds((currentLeft), 10, buttonInList.width, 35);
             currentLeft = currentLeft + buttonInList.width;
-            tempMenuButton.align.CY.dimension = dsvg.eSides.CY;
+            tempMenuButton.align.CY.aspect = dsvg.eAspects.CY;
 
 
             //create a "button" on the canvas; the click event is what makes it behave like a button.

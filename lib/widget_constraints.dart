@@ -163,7 +163,7 @@ class WidgetSizeRules {
 *  1) simply limiting the Top/Left (X/Y) position within a specific fixed numeric range
 *  (relative to its parent)
 *
-*  2) constrain position based on a referenced-object's part/dimension value.
+*  2) constrain position based on a referenced-object's part/aspect value.
 *
 *  3) more complex situations like setting a position relative to another object plus/minus
 * some constant, etc.
@@ -199,25 +199,28 @@ class WidgetPosRules {
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* Each dimension of a [Widget] has an associated Alignment Specification.
+* Each aspect of a [Widget] has an associated Alignment Specification.
 *
-* Alignment takes on one of two distinct variations (for any given side/dimension being aligned):
+* Alignment takes on one of two distinct variations (for any given side/aspect being aligned):
 *
 * 1) by default, if [objToAlignTo] *is not* specified (null), we wish to align a Widget's
-* dimension to its parent Widget's specified ClientBounds (see: [Widget.getClientBounds] method).
-* i.e.,  Widget.metrics.Margin (aka, WidgetBounds) or the bounds of the entire
-* (viewable portion) of our application "canvas" (part showing in browser window).
+* aspect to its parent Widget's specified ClientBounds (see: [Widget.getClientBounds] method).
+* If a Widget resides directly on our application "canvas", a null value for [objToAlignTo]
+* means we wish to align some apsect of our Widget to the bounds of the entire
+* (viewable portion) of this canvas (part showing in browser window).
 *
 *   e.g., Align (to our container's bounds; aka parent-clientwidget-bounds)...
-*   here we align Top of this Widget to Top (per WidgetBounds) of its container:
-*       Align.T = {Dimension:eSides.T}
+*   here we align Top of our Widget to Top (per WidgetBounds) of its container:
+*       ourWidget.align.T = eAspects.T;
 *
 * 2) if [objToAlignTo] *is* specified, we wish to align to a Sibling's Bounds as any of
-* Sibling.Metrics.[eWidgetParts][AlignToPoint; i.e., LTRBCxCy]
+* SiblingWidgetReg.metrics.`[eWidgetParts][alignToAspectName]`
 *
 *   e.g., Align (to Sibling value(s))...
-*   here we align Right side  of this Widget to Left (per Frame bounds) of Sibling:
-*       Align.R = {objToAlignTo:SiblingWidget1, Part:eWidgetPart.FRAME, Dimension:eSides.L}
+*   here we align the Right side of ourWidget to Left (Frame bounds) of a sibling:
+*       ourWidget.align.R.objToAlignTo  = siblingWidget1;
+*       ourWidget.align.R.part          = eWidgetPart.FRAME;
+*       ourWidget.align.R.aspect        = eAspects.L;
 *
 * ---
 * When values potentially affecting alignment are set, we fire an optional callback method,
@@ -231,22 +234,23 @@ class WidgetPosRules {
 * (and thus, earlier in SVG nodelist)!
 *
 * ### Note 2: Default Values Discussion
-* * objToAlignTo: null, which indicates use of a Widget's container for alignment.
-* * widgetpart: Margin (aka, Widgetbounds).
-* * dimension: none, which indicates no specific alignment to perform.
+* * [objToAlignTo]: null, which indicates use of a Widget's container for alignment.
+* * [part]: Margin (aka, Widgetbounds).
+* * [aspect]: none, which indicates no specific alignment to perform.
 *
 * ### Note 3:
-* DimensionValue is *internal to object* only. This is a storage variable for holding
-* calculated value, once obtained after computations, per Alignment specs.
+* [aspectValue] is a storage variable that should only be updated by components that
+* perform calculations and obtain resulting value per [Widget] Alignment specs. This
+* could be made read-only outside of the dart-squid Library (TODO: after testing done)
 *
 * ---
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class AlignSpec {
     Widget          _objToAlignTo   = null;
-    int             _part           = eWidgetPart.MARGIN;    //enumeration eWidgetPart (int); by default, Widget-boundary is the part being aligned to something
-    int             _dimension      = eSides.NONE;           //enumeration eSides (int); the Side(of objToAlignTo if not null, or container side otherwise) to which we are aligning was Dimension.
-    num             dimensionValue  = 0.0;
+    int             _part           = eWidgetPart.MARGIN;   //enumeration eWidgetPart (int); by default, Widget-boundary is the part being aligned to something
+    int             _aspect         = eAspects.NONE;        //enumeration eAspects (int); the Side(of objToAlignTo if not null, or container side otherwise) to which we are aligning.
+    num             aspectValue     = 0.0;
     ChangeHandler   changeHandler;
 
     AlignSpec() {
@@ -256,8 +260,8 @@ class AlignSpec {
     void resetAlignSpec() {
         _objToAlignTo   = null;
         _part           = eWidgetPart.MARGIN;
-        _dimension      = eSides.NONE;
-        dimensionValue  = 0.0;
+        _aspect         = eAspects.NONE;
+        aspectValue     = 0.0;
     }
 
     Widget get objToAlignTo => _objToAlignTo;
@@ -269,7 +273,7 @@ class AlignSpec {
         if ((newObj != null) && (_objToAlignTo != null) && (newObj.InstanceName == _objToAlignTo.instanceName)) return; //no change
 
         _objToAlignTo   = newObj;
-        dimensionValue  = 0.0;
+        aspectValue  = 0.0;
         if (changeHandler != null) {changeHandler();}
     }
 
@@ -278,21 +282,20 @@ class AlignSpec {
     void set part(int newPart) {
         if (newPart != _part) {
             _part           = newPart;
-            dimensionValue  = 0.0;
+            aspectValue  = 0.0;
             if (changeHandler != null) {changeHandler();}
         }
     }
 
-    //Dimension : expects a valid value from the enumeration eSides (int)
-    int  get dimension  => _dimension;
-    void set dimension(int newDimension) {
-        if (newDimension != _dimension) {
-            _dimension      = newDimension;
-            dimensionValue  = 0.0;
+    ///Aspect : expects a valid [int] value from the enumeration [eAspects]
+    int  get aspect  => _aspect;
+    void set aspect(int newAspect) {
+        if (newAspect != _aspect) {
+            _aspect      = newAspect;
+            aspectValue  = 0.0;
             if (changeHandler != null) {changeHandler();}
         }
     }
-
 
 } //class AlignSpec
 
@@ -300,7 +303,7 @@ class AlignSpec {
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* This class simply wraps up one [AlignSpec] object per align-able Dimension available
+* This class simply wraps up one [AlignSpec] object per align-able [eAspects] available
 * to each [Widget].  The [Widget] exposes this as [Widget.align].  There should not be
 * any need to instantiate this class outside of the Widget.
 */

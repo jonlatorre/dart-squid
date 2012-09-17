@@ -68,7 +68,7 @@ See comments on [WidgetBorders] class for how these classes fit together.
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorderSide {
     int         borderType      = eWidgetPart.NONE;     //enumeration eWidgetPart (int); use as quick reference to what type of border this group of sides is for
-    int         side            = eSides.NONE;          //enumeration eSides (int); quick ref so we know which side of border this side is on
+    int         side            = eAspects.NONE;        //enumeration eAspects (int); quick ref so we know which side of border this side is on
     num         _width          = 0.0;
     String      opacity         = '1.0';                //Expects a decimal value between zero (transparent) and one (totally opaque).
     String      color           = 'black';
@@ -193,17 +193,17 @@ class WidgetBorderSide {
         if (_style > eBorderStyle.SOLID) {
             if (eBorderStyle.EffectsLineCount[_style] == 2) {
                 switch (side) {
-                    case eSides.L   :
-                    case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['TLe'] : borderStyleSpecs[styleName]['TLi'])); break;}
-                    case eSides.R   :
-                    case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['BRe'] : borderStyleSpecs[styleName]['BRi'])); break;}
+                    case eAspects.L   :
+                    case eAspects.T   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['TLe'] : borderStyleSpecs[styleName]['TLi'])); break;}
+                    case eAspects.R   :
+                    case eAspects.B   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['BRe'] : borderStyleSpecs[styleName]['BRi'])); break;}
                 }
             } else {
                 switch (side) {
-                    case eSides.L   :
-                    case eSides.T   : {lineColor.shiftColor(borderStyleSpecs[styleName]['TLe']); break;}
-                    case eSides.R   :
-                    case eSides.B   : {lineColor.shiftColor(borderStyleSpecs[styleName]['BRe']); break;}
+                    case eAspects.L   :
+                    case eAspects.T   : {lineColor.shiftColor(borderStyleSpecs[styleName]['TLe']); break;}
+                    case eAspects.R   :
+                    case eAspects.B   : {lineColor.shiftColor(borderStyleSpecs[styleName]['BRe']); break;}
                 }
             }
             colorValue1 = lineColor.formattedRGBString();
@@ -245,10 +245,10 @@ class WidgetBorderSide {
 
         if (_style > eBorderStyle.SOLID) {
             switch (side) {
-                case eSides.L   :
-                case eSides.T   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['TLi'] : borderStyleSpecs[styleName]['TLe'])); break;}
-                case eSides.R   :
-                case eSides.B   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['BRi'] : borderStyleSpecs[styleName]['BRe'])); break;}
+                case eAspects.L   :
+                case eAspects.T   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['TLi'] : borderStyleSpecs[styleName]['TLe'])); break;}
+                case eAspects.R   :
+                case eAspects.B   : {lineColor.shiftColor(((borderType == eWidgetPart.INNER) ? borderStyleSpecs[styleName]['BRi'] : borderStyleSpecs[styleName]['BRe'])); break;}
             }
             colorValue2 = lineColor.formattedRGBString();
         }
@@ -284,7 +284,7 @@ class WidgetBorderSide {
     *
     * ### Parameters
     *   * [eWidgetPart] borderType: denormalized information for convenience; enumeration value as [:int:].
-    *   * [eSides] side: denormalized info; enumeration value as [:int:] indicating T/R/B/L.
+    *   * [eAspects] side: denormalized info; enumeration value as [:int:] indicating T/R/B/L.
     *   * [SVGElement] lineElement1: the SVG line element this side renders into.
     *   * (optional) [SVGElement] lineElement2: the SVG line element available to dual-line borders (inner/outer);
     *   optional parm on .line() constructor since frame only ever uses single line.
@@ -334,12 +334,12 @@ class WidgetBorder {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     Helper method with obvious intent
     Parameters:
-    - side : expects a valid value from the enumeration eSides (int)
+    - side : expects a valid value from the enumeration eAspects (int)
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void _setLineID(SVGElement LineElement, int side, [strokeNumSuffix = '']) {
         LineElement.attributes = {
-            'id'        : "${_instanceNameAndType}_Border_${eWidgetPart.Names[_part]}_${eSides.ShortNames[side.toString()]}${strokeNumSuffix}",
+            'id'        : "${_instanceNameAndType}_Border_${eWidgetPart.Names[_part]}_${eAspects.ShortNames[side.toString()]}${strokeNumSuffix}",
             'display'   : 'inherit'
         };
     }
@@ -490,10 +490,10 @@ class WidgetBorder {
     */
     WidgetBorder.line1(String InstanceNameAndType, int part) :
         borderGroupElementRef   = new SVGElement.tag('g'),
-        T   = new WidgetBorderSide.line(part, eSides.T, new SVGElement.tag('line') ),
-        R   = new WidgetBorderSide.line(part, eSides.R, new SVGElement.tag('line') ),
-        B   = new WidgetBorderSide.line(part, eSides.B, new SVGElement.tag('line') ),
-        L   = new WidgetBorderSide.line(part, eSides.L, new SVGElement.tag('line') )
+        T   = new WidgetBorderSide.line(part, eAspects.T, new SVGElement.tag('line') ),
+        R   = new WidgetBorderSide.line(part, eAspects.R, new SVGElement.tag('line') ),
+        B   = new WidgetBorderSide.line(part, eAspects.B, new SVGElement.tag('line') ),
+        L   = new WidgetBorderSide.line(part, eAspects.L, new SVGElement.tag('line') )
     {
         _instanceNameAndType = InstanceNameAndType;
         _part = part;
@@ -504,10 +504,10 @@ class WidgetBorder {
             'display'   : 'inherit'
         });
 
-        _setLineID(T.lineElement1, eSides.T);
-        _setLineID(R.lineElement1, eSides.R);
-        _setLineID(B.lineElement1, eSides.B);
-        _setLineID(L.lineElement1, eSides.L);
+        _setLineID(T.lineElement1, eAspects.T);
+        _setLineID(R.lineElement1, eAspects.R);
+        _setLineID(B.lineElement1, eAspects.B);
+        _setLineID(L.lineElement1, eAspects.L);
 
 
         //Place our lines within our group
@@ -537,10 +537,10 @@ class WidgetBorder {
     */
     WidgetBorder.line2(String InstanceNameAndType, int part) :
         borderGroupElementRef   = new SVGElement.tag('g'),
-        T   = new WidgetBorderSide.line(part, eSides.T, new SVGElement.tag('line'), new SVGElement.tag('line') ),
-        R   = new WidgetBorderSide.line(part, eSides.R, new SVGElement.tag('line'), new SVGElement.tag('line') ),
-        B   = new WidgetBorderSide.line(part, eSides.B, new SVGElement.tag('line'), new SVGElement.tag('line') ),
-        L   = new WidgetBorderSide.line(part, eSides.L, new SVGElement.tag('line'), new SVGElement.tag('line') )
+        T   = new WidgetBorderSide.line(part, eAspects.T, new SVGElement.tag('line'), new SVGElement.tag('line') ),
+        R   = new WidgetBorderSide.line(part, eAspects.R, new SVGElement.tag('line'), new SVGElement.tag('line') ),
+        B   = new WidgetBorderSide.line(part, eAspects.B, new SVGElement.tag('line'), new SVGElement.tag('line') ),
+        L   = new WidgetBorderSide.line(part, eAspects.L, new SVGElement.tag('line'), new SVGElement.tag('line') )
     {
         _instanceNameAndType = InstanceNameAndType;
         _part = part;
@@ -551,14 +551,14 @@ class WidgetBorder {
             'display'   : 'inherit'
         });
 
-        _setLineID(T.lineElement1, eSides.T, '1');
-        _setLineID(R.lineElement1, eSides.R, '1');
-        _setLineID(B.lineElement1, eSides.B, '1');
-        _setLineID(L.lineElement1, eSides.L, '1');
-        _setLineID(T.lineElement2, eSides.T, '2');
-        _setLineID(R.lineElement2, eSides.R, '2');
-        _setLineID(B.lineElement2, eSides.B, '2');
-        _setLineID(L.lineElement2, eSides.L, '2');
+        _setLineID(T.lineElement1, eAspects.T, '1');
+        _setLineID(R.lineElement1, eAspects.R, '1');
+        _setLineID(B.lineElement1, eAspects.B, '1');
+        _setLineID(L.lineElement1, eAspects.L, '1');
+        _setLineID(T.lineElement2, eAspects.T, '2');
+        _setLineID(R.lineElement2, eAspects.R, '2');
+        _setLineID(B.lineElement2, eAspects.B, '2');
+        _setLineID(L.lineElement2, eAspects.L, '2');
 
         //Place our lines within our group
         borderGroupElementRef.nodes.add(T.lineElement1);
@@ -583,10 +583,10 @@ class WidgetBorder {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     WidgetBorder.spacing(int part) :
-        T   = new WidgetBorderSide.spacing(part, eSides.T ),
-        R   = new WidgetBorderSide.spacing(part, eSides.R ),
-        B   = new WidgetBorderSide.spacing(part, eSides.B ),
-        L   = new WidgetBorderSide.spacing(part, eSides.L )
+        T   = new WidgetBorderSide.spacing(part, eAspects.T ),
+        R   = new WidgetBorderSide.spacing(part, eAspects.R ),
+        B   = new WidgetBorderSide.spacing(part, eAspects.B ),
+        L   = new WidgetBorderSide.spacing(part, eAspects.L )
     {
         borderType = part;
     }
@@ -595,17 +595,17 @@ class WidgetBorder {
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     Operator
-        side : expects a valid value from the enumeration eSides (int)
+        side : expects a valid value from the enumeration eAspects (int)
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     WidgetBorderSide operator [] (int side) => _getPart(side);
 
     WidgetBorderSide _getPart(int side) {
         switch (side) {
-            case eSides.T   : return T;
-            case eSides.R   : return R;
-            case eSides.B   : return B;
-            case eSides.L   : return L;
+            case eAspects.T   : return T;
+            case eAspects.R   : return R;
+            case eAspects.B   : return B;
+            case eAspects.L   : return L;
             default         : return null;  //fall-through means invalid specification: throw??
         }
     }
@@ -642,7 +642,7 @@ class WidgetBorder {
 * Here are the Border-buildup classes and how they all fit together to make
 * Widget Borders possible:
 *
-*    1. [WidgetBorderSide]: define aspects of each [eSides] of each border, including
+*    1. [WidgetBorderSide]: define aspects of each [eAspects] of each border, including
 *    the encapsulation of SVG Line element(s) needed to draw any visible borders.
 *    2. [WidgetBorder]: class comprised of four [WidgetBorderSide] objects.
 *    3. [WidgetBorders]: this class that includes all border types (widget-parts)

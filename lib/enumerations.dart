@@ -121,33 +121,26 @@ class eWidgetState {
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* Enumeration of various Sides of a [Widget]. These enumerated values will be used
-* when drawing borders, aligning widgets, and more. Shorthand aliases exist for each
-* value too.
+* Enumeration used when referring to various (dimensional-information) "Aspects" of a widget.
+* Most often, it is the "Sides" of a [Widget] that are referenced (Top, Left, etc.),
+* but Aspects extend to include other dimensional-information ("Dimensions")
+* data like Center(X/Y) -- a point representation (midpoint between L & R or
+* T & B respectively).
+* These enumerated values will be used when drawing borders, aligning widgets, and more.
+* Shorthand aliases exist for each value too.
 *
 * Represent TRBL (Top/Right/Bottom/Left) "sides" of boxes, etc as powers of 2 (0, 1, 2, 4, 8).
-* These values are *additive*, such that if all sides are specified, the value is "All"
-* (all sides aligned to Client-Rect).
-*
-* Center(X/Y) is a "pseudo-side" (really a point representation — midpoint of LR or TB lines
-* that form a side).
-*
-* ---
-* ## Notational Caveats (currently):
-* **TODO**: a Sides may also be discussed as Dimension for alignment; perhaps rename,
-* since eSide not best for "CX", etc?
-*
-* ---
-*
+* These values are *additive*, such that if all sides are specified, the value is [ALL]
+* (e.g., all sides of a Widget aligned to Client-Rect).
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-class eSides {
+class eAspects {
     static const int NONE     = 0;
     static const int TOP      = 1;
     static const int RIGHT    = 2;
     static const int BOTTOM   = 4;
     static const int LEFT     = 8;
-    static const int ALL      = 15;  //not valid for Dimension usage (i.e., alignTo dimension)
+    static const int ALL      = 15;  //not valid for Widget.align.(side) usage.
     static const int CENTER_X = 16;
     static const int CENTER_Y = 32;
     static const int T        = 1;
@@ -192,7 +185,7 @@ class eSides {
         return _includedNames;
     }
 
-} //eSides
+} //eAspects
 
 
 
@@ -224,7 +217,7 @@ class eSides {
 * per side.  The other parts are "virtual" (e.g., margin/padding are just optional spacing
 * per side).
 *
-* We will use the combination of eWidgetPart plus [eSides] (T, R, B, L) when working with
+* We will use the combination of eWidgetPart plus [eAspects] (T, R, B, L) when working with
 * objects and operations requiring such per-side granularity, e.g., Margin.Right, etc
 *
 * ---

@@ -314,10 +314,10 @@ void logToConsole(List<Dynamic> itemsToLog) {
             if (toLog is Widget) {
                 insetPretty = spacesConst.substring(1,toLog.typeName.length + 4); //smart indent
 
-                alignT = !((toLog.align.T.objToAlignTo == null) && (toLog.align.T.dimension == eSides.NONE));
-                alignR = !((toLog.align.R.objToAlignTo == null) && (toLog.align.R.dimension == eSides.NONE));
-                alignB = !((toLog.align.B.objToAlignTo == null) && (toLog.align.B.dimension == eSides.NONE));
-                alignL = !((toLog.align.L.objToAlignTo == null) && (toLog.align.L.dimension == eSides.NONE));
+                alignT = !((toLog.align.T.objToAlignTo == null) && (toLog.align.T.aspect == eAspects.NONE));
+                alignR = !((toLog.align.R.objToAlignTo == null) && (toLog.align.R.aspect == eAspects.NONE));
+                alignB = !((toLog.align.B.objToAlignTo == null) && (toLog.align.B.aspect == eAspects.NONE));
+                alignL = !((toLog.align.L.objToAlignTo == null) && (toLog.align.L.aspect == eAspects.NONE));
                 //sizing =
 
                 writeLine ("(${toLog.typeName}) >> instanceName = '${toLog.instanceName}';  HierarchyPath = '${toLog.hierarchyPath}';  Tag = '${toLog.tag}';");
@@ -326,7 +326,7 @@ void logToConsole(List<Dynamic> itemsToLog) {
                 writeLine ("${insetPretty}>> Geometry Translation Data: (translateX, translateY) = (${toLog.translateX}, ${toLog.translateY});  (xAsClientX, yAsClientY) = (${toLog.xAsClientX}, ${toLog.yAsClientY});");
                 writeLine ("${insetPretty}>> Aligned?  Top = ${alignT};  align.Right = ${alignR};  align.Bottom = ${alignB};  align.Left = ${alignL};");
                 writeLine ("${insetPretty}>> sizeRules: (minWidth, MaxWidth) = (${(naForNull(toLog.sizeRules.minWidth))}, ${(naForNull(toLog.sizeRules.maxWidth))});  (minHeight, maxHeight) = (${(naForNull(toLog.sizeRules.minHeight))}, ${(naForNull(toLog.sizeRules.maxHeight))})");
-                writeLine ("${insetPretty}>> Other Contraints: anchors = ${eSides.getCommaDelimLongNamesInVal(toLog.anchors)};");
+                writeLine ("${insetPretty}>> Other Contraints: anchors = ${eAspects.getCommaDelimLongNamesInVal(toLog.anchors)};");
 
                 if (toLog.hasParent) {
                     writeLine ("${insetPretty}>> PARENT Data: Owned Child Count=${toLog.parentWidget.getWidgetCount()}; Index of this object in parent WidgetList: ${toLog.parentWidget.indexOfWidget(toLog)};");
