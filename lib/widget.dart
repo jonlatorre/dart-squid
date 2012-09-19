@@ -104,56 +104,83 @@ This is the primary UI Component in this framework.  The "base" control.
 class Widget {
 
     /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     This group of variables obtains/requires values directly from constructor parameters...
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    //reference to Application instance (set in Constructor)
-    Application         _applicationObject  = null;
 
-    //Object is created in constructor due to need to pass this's intancename along
-    WidgetBorders       _borders            = null;
+    String          _instanceName       = '';
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Each Widget must have a unique, across entire [Application] [instanceName].
+    * This value is set inside the constructor; this is read-only accessor.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    String          get instanceName    => _instanceName;
 
-    String              _instanceName       = '';       //must be Unique to entire application
-    String              _typeName           = 'Widget'; //set in constructor; sub-classes pass as constructor parm.
 
-    //IF exists, _ParentWidget holds a reference to our ParentWidget (must be a Widget or subclass of)
-    //that "owns" this one, if any. "Owner" in implementation hierarchy. Otherwise null
-    Widget              _parentWidget           = null;
+    //Setting ApplicationObject post-creation could have really bad implications. Prevented.
+    Application     _applicationObject  = null;
+    ///Reference to [Application] object specified during constructor.
+    Application get applicationObject   => _applicationObject;
+
+
+    Widget          _parentWidget       = null;
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * (optional / null-able) This value is set in the constructor.
+    * IF non-null, this Widget has a [ParentWidget] that is a Widget (or subclass thereof)
+    * that "owns" this one. The Owner's SVG structure appears hiearchically "above", and
+    * contains within it, this Widget's SVG rendering elements.
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    Widget          get parentWidget    => _parentWidget;
+
+
+    String          _typeName           = 'Widget';
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Each Widget must have an appropriate (component) [typeName].
+    * This value is set in the constructor; sub-classes pass via constructor parm.
+    * Along with [instanceName], this value is used to form unique
+    * SVG-element identifiers (i.e., element "id" attribute values).
+    *
+    * TODO: Will "mirrors" typeMirror be available for this? .simpleType or Object.runtimeType (as in dartdocs)?
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    String          get typeName        => _typeName;
+
+    //Object is created in constructor due to need to pass this's [instanceName] along for border-SVG-element "id" attributes.
+    WidgetBorders   _borders            = null;
+
 
 
     /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     And now, everything else...
-    ═══════════════════════════════════════════════════════════════════════════════════════
+
+    Variables exposed as READ-WRITE properties (via "getters" and "setters") are to be set
+    after Widget constructor has finished and prior to Show() when possible (for speed);
+    post-Show() property-changes often trigger visual updates unless noted otherwise.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
 
-    bool                _hasParent          = false;
-    String              _hierarchyPath      = '';       //Unique throughout application. "(0:n)[ParentInstanceName,]InstanceName"
+    bool            _hasParent          = false;    //denormalized result of test for parent
+    ///When [false] this Widget instance resides directly on our [Application.canvas], otherwise it is a child of [parentWidget].
+    bool            get hasParent       => _hasParent;
 
-    //working variable object for outer bounds
-    ObjectBounds        _containerBounds    = new ObjectBounds();
 
-    //track whether this widget is "selected"; made class-wide variable in case we want to examine elsewhere than mouse-down
-    bool                _isSelected         = false;
-
-    //These Translate values track the distance a widget has been translated from their orig position via move() method.
-    num                 _translateX = 0.0;
-    num                 _translateY = 0.0;
-
-    //TODO: for future implementation
-    num                 _scaleX     = 1.0;
-    num                 _scaleY     = 1.0;
-    num                 _rotateDeg  = 0.0;
-
-    //when a dragging-move operation is underway, these variables track starting (mouse) coordinates that offsets are calc'd from
-    //initially set on mousedown, but updated with each subsequently processed mousemove (to be "new" start position before next event)
-    num                 _dragStartX = 0.0;
-    num                 _dragStartY = 0.0;
-
-//TODO: IF we want to "abort" a move... need to implement a two-phase tracking (i.e., have Start values remain ORIG pos until done).
-//    num _DragLastX  = 0;
-//    num _DragLastY  = 0;
+    String          _hierarchyPath      = '';
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * [parentWidget.hierarchyPath] + '_' + this widget's [instanceName].
+    *
+    * So, as widget-nesting-depth grows, this string grows to include all instanceNames
+    * appearing (hierarchically) "above" it. It will be unique throughout application
+    * with a value of: `(0:n)[ParentInstanceName,]InstanceName`
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    String          get hierarchyPath   => _hierarchyPath;
 
 
     /*
@@ -179,84 +206,108 @@ class Widget {
     condition has to have been met already.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    List<Widget>        _widgetsList    = new List<Widget>();
+    List<Widget>    _widgetsList        = new List<Widget>();
 
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    This group of variables gets their values from CSS Styling applied to the Widget, but
-    may be manipulated outside of CSS to indicate movement, selection, or such.
-    ═══════════════════════════════════════════════════════════════════════════════════════
+    SVGElement      _clientSVGElement   = null;
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * Reference to an SVGElement we created during the Widget initialization process that
+    * is available as a container for any hierarchically "owned" (aka, "client") Widgets' SVG.
     */
-    String              _fillColor              = 'none';   //'none', 'transparent', '' each indicate no-fill
-    String              _fillOpacity            = '0.0';    //fill not showing by default
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    SVGElement  get clientSVGElement        => _clientSVGElement;
 
 
-    //Widget's inner rect/bounding-box available to CHILD objects x1,y1,x2,y2 (i.e., this Widget's Bounds less space for margin, border(s), padding)
-    //This is an object-reference to the SVGElement we created during the Widget initialization process
-    SVGElement          _clientSVGElement       = null;
+    SVGElement      _selectionRect      = null;
+    ///Widget's placeholder selection-rect; hidden unless Widget is currently "selected"
+    SVGElement  get selectionRect           => _selectionRect;
 
-    //Widget's placeholder selection-rect; hidden unless "selected"
-    SVGElement          _selectionRect          = null;
 
-    //IF exists, stores quick reference to SVGElement in which this Widget's generated-SVG element(s) reside (i.e., hierarchically embedded)
-    //Default SVG-materialization target-element shall be our [Application] object's canvas, unless we have a parent widget (see Create method)
-    SVGElement          _parentSVGElement       = null;
+    SVGElement      _parentSVGElement   = null;
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    /**
+    * If [hasParent], stores reference to [SVGElement] in which this Widget's generated-SVG
+    * element(s) reside (i.e., hierarchically embedded); otherwise, our
+    * default SVG-materialization target-element will be our [Application.canvas].
+    */
+    //═══════════════════════════════════════════════════════════════════════════════════════
+    SVGElement      get parentSVGElement    => _parentSVGElement;
+
 
     //enumeration eWidgetState (int); additive/multi-state; beginUpdate/endUpdate methods use too.
-    int                 _widgetState            = eWidgetState.LOADING;
+    int             _widgetState            = eWidgetState.LOADING;
+    ///See: [eWidgetState] for details.
+    int             get widgetState         => _widgetState;
 
-    //reference to the group (SVG "g" element) this ENTIRE Widget's SVG will be rendered into; aka 'EntireGroupSVGElement' as public property
-    SVGGElement         _entireGroupSVGElement  = null;
-    String              _entireGroupName        = '';
 
-    //reference to the background (SVG "rect") element used for "fill"
-    SVGRectElement      _bgRectSVGElement       = null;
+    SVGGElement     _entireGroupSVGElement  = null;
+    ///Reference to the group (SVG "g" element) this ENTIRE Widget's SVG will be rendered into.
+    SVGGElement get entireGroupSVGElement   => _entireGroupSVGElement;
+
+    String          _entireGroupName        = '';
+    ///This is the "id" attribute value applied to [entireGroupSVGElement].
+    String          get entireGroupName     => _entireGroupName;
+
+    ///Quick access to the SVG Group element into which *all* border SVG elements are rendered.
+    SVGGElement get bordersSVGGroupElement  => _borders.allBordersSVGGroupElement;
+
+
+    //(private) reference to the background (SVG "rect") element used for "fill"
+    SVGRectElement  _bgRectSVGElement       = null;
 
 
     EventsProcessor     _on     = new EventsProcessor();
-    ///Event handler...
+    ///Event handler.  See [EventsProcessor] for detailed discussion.
     EventsProcessor get on      => _on;
 
+
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    IsMovable/IsSizable properties: via embedded DynamicsConstraint object.
+    IsMovable/IsSizable properties:
+    Can this Widget be moved/sized with the mouse? (via mousedown/mousemove/mouseup)?
+    "Setting" is handled via embedded DynamicsConstraint object.
+
+    TODO: consider the MoveTarget (what group in widget) to detect moves on?
+    Also, should Alignment be cleared if moved?
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-
-    //Can this item be moved with the mouse? (via mousedown/mousemove/mouseup)?
-    //TODO: MoveTarget (what group in widget) to detect moves on?  Also, should Alignment be cleared if moved?
     DynamicsConstraint  _isMovable      = new DynamicsConstraint();
-
-    //Can this item be resized with the mouse? (via mousedown/mousemove/mouseup)?
-    DynamicsConstraint  _isSizable      = new DynamicsConstraint();
-
-    DynamicsConstraint get isSizable    => _isSizable;
     DynamicsConstraint get isMovable    => _isMovable;
 
+    DynamicsConstraint  _isSizable      = new DynamicsConstraint();
+    DynamicsConstraint get isSizable    => _isSizable;
+
     //a shortcut to resulting value for whether ANY "selection"-related action is enabled for this Widget (i.e., movable/sizable);
-    bool               _isSelectable    = true;
+    bool    _isSelectable   = true;
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Variables exposed as READ-WRITE properties via "getters" and "setters"
+    //track whether this widget is "selected"; made class-wide variable in case we want to examine elsewhere than mouse-down
+    bool    _isSelected     = false;
 
-    These properties can generally be set after Constructor (i.e., "Create()" by another name)
-    has run and prior to Show(); post-Show() changes to these values will generally
-    trigger appropriate visual updates unless noted otherwise.
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    _WidgetMetrics : stores bounds information for Widget.
+    num     _translateX = 0.0;
+    ///The X-axis distance a widget has been translated from its original position via move() method.
+    num     get translateX              => _translateX;
 
-    Widget size and position, along with Border(s) specifications, influence these Metrics.
-    Constraints and directives for position, size, alignment, constraints, anchors can
-    further effect the calculation of these metrics.
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-    WidgetMetrics       _widgetMetrics      = new WidgetMetrics();
+    num     _translateY = 0.0;
+    ///The Y-axis distance a widget has been translated from its original position via move() method.
+    num     get translateY              => _translateY;
+
+
+//TODO: for future implementation
+//    num     _scaleX     = 1.0;
+//    num     _scaleY     = 1.0;
+//    num     _rotateDeg  = 0.0;
+
+    //when a dragging-move operation is underway, these variables track starting (mouse) coordinates that offsets are calc'd from
+    //initially set on mousedown, but updated with each subsequently processed mousemove (to be "new" start position before next event)
+    num     _dragStartX = 0.0;
+    num     _dragStartY = 0.0;
+
+//TODO: IF we want to "abort" / "undo" a move... implement a two-phase tracking (i.e., have Start values remain ORIG pos until done).
+//    num     _DragLastX  = 0;
+//    num     _DragLastY  = 0;
+
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
@@ -264,41 +315,16 @@ class Widget {
     See their respective Class definitions for documentation.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    WidgetAlignment     _align              = new WidgetAlignment();
+
     WidgetSizeRules     _sizeRules          = new WidgetSizeRules();
+    ///Widget's Sizing rules / constraints. See [WidgetSizeRules] for details including how changes are intercepted and handled via callback method.
+    WidgetSizeRules get sizeRules           => _sizeRules;
+
+
     WidgetPosRules      _posRules           = new WidgetPosRules();
+    ///Widget's Positioning rules / constraints. See [WidgetPosRules] for details including how changes are intercepted and handled via callback method.
+    WidgetPosRules get posRules             => _posRules;
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Anchors are used to fix edge positions relative to container side(s)
-    This property makes use of the additive nature of eAspects (powers-of-two) for bitwise
-    determination if a particular side is anchored.
-    These are of type enumeration eAspects (int); values are additive (combined) for multi-side
-    anchoring abilities with one property.
-
-    TODO: implement anchor center(s) ability in alignment code
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-    int             _anchors            = eAspects.NONE;
-
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    These further affect visual behavior.
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-
-    num             _y                  = 0.0;
-    num             _x                  = 0.0;
-    num             _width              = 20.0;
-    num             _height             = 20.0;
-    String          _caption            = '';       //Caption will be displayed, where appropriate, on sub-classes that implement this
-    bool            _enabled            = true;
-    bool            _visible            = false;
-    String          _tag                = '';       //Common field for developer convenience.  Delphi developers will be familiar with uses; we extended to String vs just Int.
-    bool            _tabStop            = false;    //Is Widget in the TabOrder (t/f)?
-    num             _tabOrder           = 0;        //Integer makes most sense, but any number will do for <> comparisons
-    bool            _showHint           = false;
-    int             _hintPause          = 1000;
 
     //List of StyleTarget instances. These stylable targets can have CSS Class-Selector(s) applied to them via our classesCSS property.
     List<StyleTarget>   _stylablePropertiesList =  new List<StyleTarget>();
@@ -521,8 +547,18 @@ class Widget {
 
 
     /*
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    "Fill" info is obtained from CSS Styling, but may also be manipulated directly
+    within code to visually indicate movement, selection, etc
+    ═══════════════════════════════════════════════════════════════════════════════════════
+    */
+    String              _fillColor              = 'none';   //'none', 'transparent', '' each indicate no-fill
+    String              _fillOpacity            = '0.0';    //fill not showing by default
+
+
+    /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    TODO-REF#1: THE FOLLOWING VARIABLES ARE HERE TO WORKAROUND AN ISSUE IN DART:
+    TODO: ISSUE 144: THE FOLLOWING VARIABLES ARE HERE TO WORKAROUND AN ISSUE IN DART:
         http://code.google.com/p/dart/issues/detail?id=144
 
     We use the approach from here as a workaround:
@@ -539,94 +575,28 @@ class Widget {
 
 
     /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: PRIVILEGED METHODS (publicly visible accessors to our protected members)
-
-    READ ONLY values will ONLY have "getters" without corresponding "setters";
-    these R/O accessors tend to be grouped toward the top of this region of code.
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    */
-
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    /**
-    * Each Widget must have an appropriate (component) [typeName].
-    * This value is set inside the constructor; this is read-only accessor.
-    * Sub-classes must set set appropriately in constructor (via _typeName parm).
-    * Along with [instanceName], this value is used to form unique
-    * SVG-element identifiers (i.e., "id" attribute values).
-    *
-    * TODO: Will "mirrors" typeMirror be available for this? .simpleType (as in dartdocs)?
-    */
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    String      get instanceName            => _instanceName;
-
-
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    /**
-    * Each Widget must have an appropriate (component) [typeName].
-    * This value is set in the constructor.
-    * Along with [instanceName], this value is used to form unique
-    * SVG-element identifiers (i.e., "id" attribute values).
-    */
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    String      get typeName                => _typeName;
-
-
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    /**
-    * [hierarchyPath] of the [parentWidget] + '_' + this widget's [instanceName].
-    *
-    * So, as widget-nesting-depth grows, this string grows to include all instanceNames
-    * appearing (hierarchically) "above" it.
-    */
-    //═══════════════════════════════════════════════════════════════════════════════════════
-    String      get hierarchyPath           => _hierarchyPath;
-
-    ///When [false] this Widget instance resides directly on our [Application.canvas], otherwise it is a child of [parentWidget]
-    bool        get hasParent               => _hasParent;
-
-    String      get caption                 => _caption  ;
-    bool        get enabled                 => _enabled  ;
-    bool        get showHint                => _showHint ;
-    num         get translateX              => _translateX ;
-    num         get translateY              => _translateY ;
-    SVGElement  get parentSVGElement        => _parentSVGElement;
-    SVGElement  get clientSVGElement        => _clientSVGElement;
-    SVGElement  get selectionRect           => _selectionRect;
-    String      get entireGroupName         => _entireGroupName;
-    SVGGElement get entireGroupSVGElement   => _entireGroupSVGElement;
-    SVGGElement get bordersSVGGroupElement  => _borders.allBordersSVGGroupElement;
-    Widget      get parentWidget            => _parentWidget;
-
-    ///See: [eWidgetState] for details.
-    int         get widgetState             => _widgetState;    //enumeration eWidgetState (int);
-
-
-    //Setting ApplicationObject post-creation could have really bad implications. Prevented.
-    ///Reference to [Application] object specified during constructor.
-    Application get applicationObject       => _applicationObject;
-
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Sizing rules "setting" is handled in SizeRules class and a callback intercepts
-    any changes and fires
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-    WidgetSizeRules get sizeRules           => _sizeRules;
-
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Widget's Positioning rules / constraints...
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-    WidgetPosRules get posRules             => _posRules;
-
-
-    /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    Misc
+    TODO: implement fully.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
+    String      _caption                    = '';
+    ///Caption (text) will be displayed, where appropriate, on sub-classes that implement abstract value.
+    String      get caption                 => _caption;
+
+    bool        _enabled                    = true;
+    ///Not used yet.
+    bool        get enabled                 => _enabled;
+
+    bool        _showHint                   = false;
+    ///Note used yet.
+    bool        get showHint                => _showHint;
+
+
+    int         _hintPause                  = 1000;
+
+
+    String      _tag                        = '';
+    ///Common field available to all widgets for developer convenience and arbitrary use. (a la Delphi)
     String      get tag                     =>  _tag ;
     void        set tag(String newTag)      {_tag = newTag;}
 
@@ -639,6 +609,8 @@ class Widget {
     when either of these properties is altered.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
+    num         _tabOrder                   = 0;
+    ///(not yet used) Is Widget in the TabOrder?
     bool        get tabStop                 => _tabStop;
     void        set tabStop(bool isTabStop) {
         if (_tabStop != isTabStop) {
@@ -646,6 +618,8 @@ class Widget {
         }
     }
 
+    bool        _tabStop                    = false;
+    ///(not yet used) Integer makes most sense, but any number will do for <> comparisons.
     num         get tabOrder                => _tabOrder;
     void        set tabOrder(num tabOrder) {
         if (_tabOrder != tabOrder) {
@@ -654,6 +628,7 @@ class Widget {
     }
 
 
+    bool        _visible                    = false;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * Essentially an alias for testing the state of, or executing, [show] / [hide].
@@ -687,9 +662,9 @@ class Widget {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
 
+    WidgetAlignment     _align              = new WidgetAlignment();
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
-    * Alignment directives are a .
     * Widget alignment (positional-constraint) capabilities are rather substantial,
     * and much widget functionality relies on these values to determine positioning
     * of widgets relative to other widgets and/or relative to the window-bounds, etc.
@@ -713,6 +688,7 @@ class Widget {
     WidgetAlignment     get align           => _align;
 
 
+    WidgetMetrics       _widgetMetrics      = new WidgetMetrics();
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * Return a reference to Widget's Metrics information. This accessor exists primarily
@@ -720,22 +696,16 @@ class Widget {
     * [ObjectBounds] objects contained within [WidgetMetrics], by other widgets or external
     * code that require such information perform alignment tasks or such.
     * E.g., `myWidget.metrics.Margin.L` will return the widget's left margin position.
+    *
+    * Widget size and position, along with Border(s) specifications, influence these Metrics.
+    * Constraints and directives for position, size, alignment, constraints, anchors can
+    * have additional effects on the calculation of these metrics.
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
     WidgetMetrics       get metrics         => _widgetMetrics;
 
 
-    /*
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    Widget's X and Y-axis position within the coordinate space defined by the widget's container
-    (i.e., not *canvas* coordinates, unless widget has no parent)
-
-    We return most up-to-date X and Y value from the Margin(WidgetBounds) L/T respectively,
-    since original "X" and "Y" may not be as relevant
-    (due to effect of align/anchors/posrules/translate/etc.)
-    ═══════════════════════════════════════════════════════════════════════════════════════
-    */
-
+    num     _x          = 0.0;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * X coordinate value in the Cartesian plane and the left-most bounds of Widget.
@@ -762,6 +732,7 @@ class Widget {
 
 
 
+    num     _y          = 0.0;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * Y coordinate value in the Cartesian plane and the Top-most bounds of Widget.
@@ -781,6 +752,7 @@ class Widget {
 
 
 
+    num     _width      = 20.0;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * Width of Widget.
@@ -803,6 +775,7 @@ class Widget {
 
 
 
+    num     _height     = 20.0;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * Height of Widget.
@@ -860,10 +833,10 @@ class Widget {
                             + _y + _translateY + _applicationObject.marginTop     - window.pageYOffset;
 
 
-
+    int _anchors        = eAspects.NONE;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
-    * Anchors are a special type of constraint that is designed to fix Side(s) of a Widget
+    * Anchors are a special type of constraint that is designed to fix side(s) of a Widget
     * in a particular location relative to the [parentWidget.clientSVGElement] bounds
     * (i.e., our container's bounds) when a Widget is resized or otherwise aligned (per
     * [align] specifications).
@@ -877,6 +850,8 @@ class Widget {
     * in such a way that, within this single integer [anchors] property, it is possible to
     * specify multiple anchor-sides.
     * E.g., both the top *and* left side of the widget could be anchored.
+    *
+    * TODO: implement anchor center(s) ability in alignment code.
     *
     * ### See Also
     *   * [align] for more about alignment specifications.
@@ -1090,9 +1065,10 @@ class Widget {
             //sibling widgets (earlier in parent's widgets-create-order) can be removed or moved in a way that affects this index.
             int     thisWidgetIndexInParent     = (_hasParent ? _parentWidget.indexOfWidget(this) : _applicationObject.indexOfWidget(this));
             int     siblingWidgetIndexInParent  = -1;
-            bool    goodSibling         = false;
-            String  alignToAspectName   = '';
-            num     translationAdj      = 0.0;
+            bool    goodSibling                 = false;
+            String  alignToAspectName           = '';
+            num     translationAdj              = 0.0;
+            ObjectBounds    _containerBounds    = null;
 
             //"top level" Widgets reside on our "Canvas".  Use that to get info if no Widget as parent.
             if (_hasParent) {
@@ -2008,6 +1984,9 @@ class Widget {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Convenience method that returns reference to [Widget.metrics.ClientBounds] object.
+    * This provides access to the Widget's inner rect/bounding-box (T,L,B,R coords) that
+    * define the visual region available to CHILD objects (i.e., this Widget's Outer Bounds
+    * less spaced used for any margin, border(s), padding).
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     ObjectBounds getClientBounds() {
@@ -2412,7 +2391,7 @@ class Widget {
 
         /*
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-        TODO-REF#1: SEARCH ABOVE FOR DESCRIPTION; This is dart-issue 144 workaround.
+        TODO: ISSUE 144: FIND "144" (above) for description of this dart-issue-144 workaround.
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         */
         mouseDownHandler    = mouseDown;
