@@ -926,14 +926,14 @@ class Widget {
 
         _fillColor              = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName, 'fill'));
         _fillOpacity            = ((_fillColor == 'none') ? '0.0' : _obtainStyleCalcValue(targetObjectName, 'fill-opacity'));
-        _borders.Margin.T.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-top'    ));
-        _borders.Margin.R.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-right'  ));
-        _borders.Margin.B.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-bottom' ));
-        _borders.Margin.L.width = Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'margin-left'   ));
-        _borders.Padding.T.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-top'   ));
-        _borders.Padding.R.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-right' ));
-        _borders.Padding.B.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-bottom'));
-        _borders.Padding.L.width= Math.parseInt(_obtainStyleCalcValue(targetObjectName, 'padding-left'  ));
+        _borders.Margin.T.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-top'    ));
+        _borders.Margin.R.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-right'  ));
+        _borders.Margin.B.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-bottom' ));
+        _borders.Margin.L.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-left'   ));
+        _borders.Padding.T.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-top'   ));
+        _borders.Padding.R.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-right' ));
+        _borders.Padding.B.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-bottom'));
+        _borders.Padding.L.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-left'  ));
 
         if (_visible) {
              rePaint();
@@ -971,9 +971,9 @@ class Widget {
 
                 if (decIndex > -1) {
                     potentialDecimalWidth = potentialDecimalWidth.substring(0, decIndex);
-                    return Math.parseInt(potentialDecimalWidth) + 1;  //add one for "ceiling" effect
+                    return int.parse(potentialDecimalWidth) + 1;  //add one for "ceiling" effect
                 } else {
-                    return Math.parseInt(potentialDecimalWidth);
+                    return int.parse(potentialDecimalWidth);
                 }
             }
 

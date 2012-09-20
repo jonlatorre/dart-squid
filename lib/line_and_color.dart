@@ -112,9 +112,9 @@ class Color {
         RGBString = RGBString.replaceAll(' ', '');
 
         colorsSplit= RGBString.split(',');
-        R = Math.parseInt(colorsSplit[0]);
-        G = Math.parseInt(colorsSplit[1]);
-        B = Math.parseInt(colorsSplit[2]);
+        R = int.parse(colorsSplit[0]);
+        G = int.parse(colorsSplit[1]);
+        B = int.parse(colorsSplit[2]);
     }
 
 

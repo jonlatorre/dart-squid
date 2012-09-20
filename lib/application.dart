@@ -567,7 +567,9 @@ class Application {
     same INT values, regardless of zoom level, but it does not.  And, this apparently only
     affects *BORDER STYLES* and not margin/padding values.
 
-    This causes Math.parseInt() to fail later when we expect an int all the time.
+    This causes int.parse() to fail later when we expect an int all the time.
+    (see [Widget] _applyStylesToWidgetBorders code, getProperWidthValues contained method for "fix")
+
     The WebKit calculations are just garbage when the result of dividing the zoom-factor into
     a property (like border-width) does not result in a nice even number.
     And, it makes no sense... their "math" is just garbage.  And, there should be no "math"

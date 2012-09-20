@@ -65,7 +65,7 @@ class eWidgetState {
         String _includedNames = '';
 
         Names.forEach( (nameItemKey, nameItemValue) {
-            if ( (Math.parseInt(nameItemKey) & intSides) == Math.parseInt(nameItemKey))  {
+            if ( (int.parse(nameItemKey) & intSides) == int.parse(nameItemKey))  {
                 _includedNames = ((_includedNames == Names['0']) ? '' : _includedNames);  //Remove 'Unknown" if it is NOT the *only* "match"
                 _includedNames = "${_includedNames}${(_includedNames.length > 0 ? ',' : '')}${nameItemValue}";
             }
@@ -176,7 +176,7 @@ class eAspects {
         String _includedNames = '';
 
         LongNames.forEach( (nameItemKey, nameItemValue) {
-            if ( (Math.parseInt(nameItemKey) & intSides) == Math.parseInt(nameItemKey))  {
+            if ( (int.parse(nameItemKey) & intSides) == int.parse(nameItemKey))  {
                 _includedNames = ((_includedNames == LongNames['0']) ? '' : _includedNames);  //Remove 'NONE" if it is NOT the *only* "match"
                 _includedNames = "${_includedNames}${(_includedNames.length > 0 ? ',' : '')}${nameItemValue}";
             }
