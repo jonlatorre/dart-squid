@@ -2356,15 +2356,12 @@ class Widget {
             //set member property before AddWidget, or InstanceName will be non-existence during add!
             _applicationObject.addWidget(this);
         }
+        on UniqueConstraintException catch (e) {
+            throw new Exception('${e} \n Attempt to create new Widget instance (typeName = ${_typeName}; duplicate instanceName = ${_instanceName})');
+        }
         catch (e) {
-            if (e is UniqueConstraintException) {
-                throw new Exception("${e} \n Attempt to create new Widget instance (of Type: ${_typeName} with duplicate InstanceName: ${_instanceName})");
-            }
-            else {
-                print ("${e}");
-                throw new Exception('${_instanceName} Severe error while setting InstanceName');
-            }
-        } //catch
+            throw new Exception('${e} \n Severe error in Widget constructor while attempting to add object instance to Application (object typeName = ${_typeName}; instanceName = ${_instanceName})');
+        }
 
 
         /*
