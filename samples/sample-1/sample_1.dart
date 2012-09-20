@@ -510,7 +510,7 @@ main() {
 
         num currentLeft = 10;
         ButtonDefs.forEach( (buttonInList) {
-            tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, menuButtonsContainer);
+            tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, parentInstance: menuButtonsContainer);
             tempMenuButton.setBounds((currentLeft), 10, buttonInList.width, 35);
             currentLeft = currentLeft + buttonInList.width;
             tempMenuButton.align.CY.aspect = dsvg.eAspects.CY;
@@ -753,8 +753,8 @@ main() {
         frameWidthSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboFrameWidth");
 
         //Gets the "value" portion of first-selected option in select-element. (e.g., "RedColor")
-        selectedColorValue      = colorSelectElement.item(colorSelectElement.selectedIndex).value;
-        selectFrameWidthValue   = frameWidthSelectElement.item(frameWidthSelectElement.selectedIndex).value;
+        selectedColorValue      = colorSelectElement.value;
+        selectFrameWidthValue   = frameWidthSelectElement.value;
 
         //tracing...
         print('Wired FO-Contained-Object Color Value: ${selectedColorValue}');

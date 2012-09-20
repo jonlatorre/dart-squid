@@ -287,7 +287,7 @@ class HtmlWidget extends Widget {
     *    * [String] initialCaption: (optional) the HTML to initially load into our HtmlWidget.
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    HtmlWidget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'HtmlWidget', String initialCaption='']) :
+    HtmlWidget(String instanceName, Application appInstance, {Widget parentInstance, String initialCaption: ' ', String typeName: 'HtmlWidget'}) :
 
         //Base class [Widget] constructor provides the substance we need
         super(instanceName, appInstance, parentInstance, typeName)
