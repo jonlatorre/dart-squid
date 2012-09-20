@@ -106,7 +106,7 @@ typedef num  MouseConstraintEvent(MouseNotifyEventObject objInitiator);     //re
 //typedef void KeypressNotifyEvent(KeyPressEventObject objInitiator);
 
 //TODO: touch-support?
-//typedef void GestureNotifyEvent(Dynamic Object, var GestureInfo??);
+//typedef void GestureNotifyEvent(GestureNotifyEventObject objInitiator);
 
 
 

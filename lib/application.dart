@@ -56,7 +56,7 @@
 * *See note below about browser issues with variable sized SVG docs.*
 *
 * ### Fixed-Value Dimensions
-* Values are specified (in number of pixels) within the opening `<svg` tag
+* Values are specified (in number of pixels) within the opening `<svg>` tag
 * and look like this, e.g.:
 *
 *     width="3000"
@@ -73,7 +73,7 @@
 *
 * ### Variable/Proportional-Value Dimensions
 * (Note: SVG docs using this approach are presenting rendering challenges currently)
-* Values are specified (in percentages; percent of viewable screen area) within the opening `<svg` tag
+* Values are specified (in percentages; percent of viewable screen area) within the opening `<svg>` tag
 * and look like this, e.g.:
 *
 *     width="100%"
@@ -530,12 +530,12 @@ class Application {
     * ### Parameters (required)
     *   * [int] _tracePoint: the String version of this value is used to locate the
     *   matching [TracingDefs] entry, and indicates the tracing-step (tracePoint) encountered.
-    *   * [Dynamic] _objInitiatingTrace: (optional) if provided, contains object to dump
+    *   * [dynamic] _objInitiatingTrace: (optional) if provided, contains object to dump
     *   trace information for (e.g., a [Widget] instance or a subclass thereof); can also
     *   pass a String message-to-log through this parm instead.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    bool trace(int tracePoint, [Dynamic objInitiatingTrace = null]) {
+    bool trace(int tracePoint, [dynamic objInitiatingTrace = null]) {
         if (!tracingEnabled) return false;
         if (!(TracingDefs[tracePoint.toString()].isActive)) return false;
         if (objInitiatingTrace == null) return true;

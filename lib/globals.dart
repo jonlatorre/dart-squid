@@ -272,7 +272,7 @@ Predefined separator lines (Strings of bar-like-chars) are defined for easy form
 See SampleApplication for examples of usage.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
-void logToConsole(List<Dynamic> itemsToLog) {
+void logToConsole(List<dynamic> itemsToLog) {
     final   String spacesConst = "                                 ";
     String  insetPretty = "";
     bool    alignT = false;
@@ -281,7 +281,7 @@ void logToConsole(List<Dynamic> itemsToLog) {
     bool    alignL = false;
     bool    sizing = false;
 
-    Dynamic naForNull(var value) {
+    dynamic naForNull(var value) {
         return (value == null ? 'n/a' : value);
     }
 

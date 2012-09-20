@@ -72,7 +72,7 @@ main() {
     EXAMPLE CALLBACK F(X) of NotifyEvent Type..
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void testWidgetOnShowEventCallback(Dynamic eventObj) {
+    void testWidgetOnShowEventCallback(dynamic eventObj) {
         dsvg.logToConsole([
             'LINE3',
             "${eventObj.instanceName} onShow EVENT fired",

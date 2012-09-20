@@ -55,7 +55,7 @@ class UniqueConstraintException implements Exception {
 class InvalidTypeException implements Exception {
     String  typeErrorDesc;
     String  typeExpected;
-    Dynamic offendingType;
+    dynamic offendingType;
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
@@ -63,7 +63,7 @@ class InvalidTypeException implements Exception {
     *   * [String] typeErrorDesc: whatever descriptive information is helpful, as provided by
     * the code throwing the exception.
     *   * [String] typeExpected: the name of the Type that *should* have been encountered.
-    *   * [Dynamic] offendingType: the encountered Type that violated expectation for another type.
+    *   * [dynamic] offendingType: the encountered Type that violated expectation for another type.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     InvalidTypeException(this.typeErrorDesc, this.typeExpected, this.offendingType);
