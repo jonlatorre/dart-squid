@@ -400,34 +400,38 @@ class WidgetBorder {
 
         //if Top side exists
         if (T.width > 0.0 ) {
-            T.line1.x1 = lStrokeMidX;
-            T.line1.y1 = tStrokeMidY;
-            T.line1.x2 = rStrokeMidX;
-            T.line1.y2 = tStrokeMidY;
+            T.line1
+                ..x1 = lStrokeMidX
+                ..y1 = tStrokeMidY
+                ..x2 = rStrokeMidX
+                ..y2 = tStrokeMidY;
         }
 
         //if Left side exists
         if (L.width > 0.0 ) {
-            L.line1.x1 = lStrokeMidX;
-            L.line1.y1 = tStrokeMidY;
-            L.line1.x2 = lStrokeMidX;
-            L.line1.y2 = bStrokeMidY;
+            L.line1
+                ..x1 = lStrokeMidX
+                ..y1 = tStrokeMidY
+                ..x2 = lStrokeMidX
+                ..y2 = bStrokeMidY;
         }
 
         //if Right side exists
         if (R.width > 0.0 ) {
-            R.line1.x1 = rStrokeMidX;
-            R.line1.y1 = tStrokeMidY;
-            R.line1.x2 = rStrokeMidX;
-            R.line1.y2 = bStrokeMidY;
+            R.line1
+                ..x1 = rStrokeMidX
+                ..y1 = tStrokeMidY
+                ..x2 = rStrokeMidX
+                ..y2 = bStrokeMidY;
         }
 
         //if Bottom side exists
         if (B.width > 0.0 ) {
-            B.line1.x1 = lStrokeMidX;
-            B.line1.y1 = bStrokeMidY;
-            B.line1.x2 = rStrokeMidX;
-            B.line1.y2 = bStrokeMidY;
+            B.line1
+                ..x1 = lStrokeMidX
+                ..y1 = bStrokeMidY
+                ..x2 = rStrokeMidX
+                ..y2 = bStrokeMidY;
         }
 
         if (eWidgetPart.LineCount[borderType] < 2) return;
@@ -441,34 +445,38 @@ class WidgetBorder {
 
         //if Top side exists
         if (T.width > 0.0 ) {
-            T.line2.x1 = lStrokeMidX;
-            T.line2.y1 = tStrokeMidY;
-            T.line2.x2 = rStrokeMidX;
-            T.line2.y2 = tStrokeMidY;
+            T.line2
+                ..x1 = lStrokeMidX
+                ..y1 = tStrokeMidY
+                ..x2 = rStrokeMidX
+                ..y2 = tStrokeMidY;
         }
 
         //if Left side exists
         if (L.width > 0.0 ) {
-            L.line2.x1 = lStrokeMidX;
-            L.line2.y1 = tStrokeMidY;
-            L.line2.x2 = lStrokeMidX;
-            L.line2.y2 = bStrokeMidY;
+            L.line2
+                ..x1 = lStrokeMidX
+                ..y1 = tStrokeMidY
+                ..x2 = lStrokeMidX
+                ..y2 = bStrokeMidY;
         }
 
         //if Right side exists
         if (R.width > 0.0 ) {
-            R.line2.x1 = rStrokeMidX;
-            R.line2.y1 = tStrokeMidY;
-            R.line2.x2 = rStrokeMidX;
-            R.line2.y2 = bStrokeMidY;
+            R.line2
+                ..x1 = rStrokeMidX
+                ..y1 = tStrokeMidY
+                ..x2 = rStrokeMidX
+                ..y2 = bStrokeMidY;
         }
 
         //if Bottom side exists
         if (B.width > 0.0 ) {
-            B.line2.x1 = lStrokeMidX;
-            B.line2.y1 = bStrokeMidY;
-            B.line2.x2 = rStrokeMidX;
-            B.line2.y2 = bStrokeMidY;
+            B.line2
+                ..x1 = lStrokeMidX
+                ..y1 = bStrokeMidY
+                ..x2 = rStrokeMidX
+                ..y2 = bStrokeMidY;
         }
 
     }  //updateBorderSideStrokeCoordinatesFromBounds
@@ -511,10 +519,11 @@ class WidgetBorder {
 
 
         //Place our lines within our group
-        borderGroupElementRef.nodes.add(T.lineElement1);
-        borderGroupElementRef.nodes.add(R.lineElement1);
-        borderGroupElementRef.nodes.add(B.lineElement1);
-        borderGroupElementRef.nodes.add(L.lineElement1);
+        borderGroupElementRef.nodes
+            ..add(T.lineElement1)
+            ..add(R.lineElement1)
+            ..add(B.lineElement1)
+            ..add(L.lineElement1);
         borderType = part;
     }
 
@@ -561,14 +570,15 @@ class WidgetBorder {
         _setLineID(L.lineElement2, eAspects.L, '2');
 
         //Place our lines within our group
-        borderGroupElementRef.nodes.add(T.lineElement1);
-        borderGroupElementRef.nodes.add(T.lineElement2);
-        borderGroupElementRef.nodes.add(R.lineElement1);
-        borderGroupElementRef.nodes.add(R.lineElement2);
-        borderGroupElementRef.nodes.add(B.lineElement1);
-        borderGroupElementRef.nodes.add(B.lineElement2);
-        borderGroupElementRef.nodes.add(L.lineElement1);
-        borderGroupElementRef.nodes.add(L.lineElement2);
+        borderGroupElementRef.nodes
+            ..add(T.lineElement1)
+            ..add(T.lineElement2)
+            ..add(R.lineElement1)
+            ..add(R.lineElement2)
+            ..add(B.lineElement1)
+            ..add(B.lineElement2)
+            ..add(L.lineElement1)
+            ..add(L.lineElement2);
         borderType = part;
     }
 
@@ -696,9 +706,10 @@ class WidgetBorders {
         };
 
         //Place our sub-border groups within our overall borders-group
-        allBordersSVGGroupElement.nodes.add(Outer.borderGroupElementRef);
-        allBordersSVGGroupElement.nodes.add(Frame.borderGroupElementRef);
-        allBordersSVGGroupElement.nodes.add(Inner.borderGroupElementRef);
+        allBordersSVGGroupElement.nodes
+            ..add(Outer.borderGroupElementRef)
+            ..add(Frame.borderGroupElementRef)
+            ..add(Inner.borderGroupElementRef);
     }
 
     /*

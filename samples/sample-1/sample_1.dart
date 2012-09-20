@@ -48,7 +48,7 @@ main() {
     dsvg.Widget         testWidget2     = null;
     dsvg.Widget         testWidget3     = null;
 
-    dsvg.Widget         menuButtonsContainer    = null;
+    dsvg.Widget         topMenuHolder   = null;
     List<dsvg.HtmlWidget> menuButtons   = null;
 
     dsvg.HtmlWidget     embeddedWebPage = null;
@@ -56,7 +56,8 @@ main() {
     dsvg.IFrameWidget   webIFrame       = null;
     dsvg.HtmlWidget     foRepaintTests  = null;
 
-    dsvg.HtmlWidget     btnLog      = null;
+    dsvg.HtmlWidget     btnLog          = null;
+    dsvg.HtmlWidget     btnDel          = null;
 
     //This group is for when we are testing within HTML
     Element divInner    = null;
@@ -128,10 +129,11 @@ main() {
         ]);
 
         dsvg.ObjectBounds testBounds = new dsvg.ObjectBounds();
-        testBounds.L = 10.0;
-        testBounds.R = 110.0;
-        testBounds.T = 20.0;
-        testBounds.B = 170.0;
+        testBounds
+            ..L = 10.0
+            ..R = 110.0
+            ..T = 20.0
+            ..B = 170.0;
 
         dsvg.logToConsole([
             testBounds,
@@ -360,12 +362,13 @@ main() {
         //create a widget on the canvas
         testWidget1  = new dsvg.Widget('myWidget1', globalApplicationObject);
         //set bounds via the "long way" (one at a time) vs. SetBounds()
-        testWidget1.x        = 100.0;
-        testWidget1.y        = 100;
-        testWidget1.width    = 200;
-        testWidget1.height   = 100;
-        testWidget1.align.R.aspect = dsvg.eAspects.R;
-        testWidget1.align.B.aspect = dsvg.eAspects.B;
+        testWidget1
+            ..x        = 100.0
+            ..y        = 100
+            ..width    = 200
+            ..height   = 100
+            ..align.R.aspect = dsvg.eAspects.R
+            ..align.B.aspect = dsvg.eAspects.B;
 
         //testWidget.onAlign = btnMenuOnAlign;
 
@@ -377,12 +380,13 @@ main() {
         //testWidget.on.mouseDown = IncorrectMouseEventSignatureTest;
 
         testWidget1.on.mouseDown = btnTestOnMouseDown;
-        //testWidget.on.mouseDown = null;
-        testWidget1.isMovable.x = true;
-        testWidget1.isMovable.y = true;
-        testWidget1.isSizable.x = true;
-        testWidget1.isSizable.y = true;
-        testWidget1.anchors = dsvg.eAspects.R;
+        
+        testWidget1
+            ..isMovable.x = true
+            ..isMovable.y = true
+            ..isSizable.x = true
+            ..isSizable.y = true
+            ..anchors = dsvg.eAspects.R;
 
         dsvg.logToConsole([
             'LINE1',
@@ -400,12 +404,13 @@ main() {
     */
     void createTestWidget2() {
         testWidget2 = new dsvg.Widget('myWidget2', globalApplicationObject);
-        testWidget2.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'TanFill');
-        testWidget2.setBounds(100,100,400,400);
-        testWidget2.isMovable.x = true;
-        testWidget2.align.R.objToAlignTo = testWidget1;
-        testWidget2.align.R.aspect = dsvg.eAspects.L;
-        testWidget2.show();
+        testWidget2
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'TanFill')
+            ..setBounds(100,100,400,400)
+            ..isMovable.x = true
+            ..align.R.objToAlignTo = testWidget1
+            ..align.R.aspect = dsvg.eAspects.L
+            ..show();
 
         dsvg.logToConsole([
             'LINE1',
@@ -435,23 +440,24 @@ main() {
 
         //test "costly change" inside begin/endUpdate block...
         testWidget3.beginUpdate();
-        testWidget3.setBounds(120,120,110,150);
-        testWidget3.align.CX.aspect = dsvg.eAspects.R;
-        testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill');
-        testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder');      //Test "outset" ==> "raised" (virtual border style)
-        testWidget3.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder');  //Test "outset" ==> "raised" (virtual border style)
-        testWidget3.isMovable.x = true;
-        testWidget3.isMovable.y = true;
-        testWidget3.isSizable.x = true;
-        testWidget3.isSizable.y = true;
-        testWidget3.sizeRules.maxWidth = 200;
-        testWidget3.sizeRules.minWidth = 50;
-        testWidget3.sizeRules.maxHeight = 200;
-        testWidget3.sizeRules.minHeight = 50;
-        testWidget3.posRules.minX = (dsvg.MouseNotifyEventObject objInitiator) {return -300; };
-        testWidget3.posRules.maxX = (dsvg.MouseNotifyEventObject objInitiator) {return 100; };
-        testWidget3.posRules.minY = (dsvg.MouseNotifyEventObject objInitiator) {return -100; };
-        testWidget3.posRules.maxY = (dsvg.MouseNotifyEventObject objInitiator) {return 420; };
+        testWidget3
+            ..setBounds(120,120,110,150)
+            ..align.CX.aspect = dsvg.eAspects.R
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder')      //Test "outset" ==> "raised" (virtual border style)
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder')  //Test "outset" ==> "raised" (virtual border style)
+            ..isMovable.x = true
+            ..isMovable.y = true
+            ..isSizable.x = true
+            ..isSizable.y = true
+            ..sizeRules.maxWidth = 200
+            ..sizeRules.minWidth = 50
+            ..sizeRules.maxHeight = 200
+            ..sizeRules.minHeight = 50
+            ..posRules.minX = (dsvg.MouseNotifyEventObject objInitiator) {return -300; }
+            ..posRules.maxX = (dsvg.MouseNotifyEventObject objInitiator) {return 100; }
+            ..posRules.minY = (dsvg.MouseNotifyEventObject objInitiator) {return -100; }
+            ..posRules.maxY = (dsvg.MouseNotifyEventObject objInitiator) {return 420; };
 //        testWidget3.PosRules.MinX = (dsvg.MouseNotifyEventObject objInitiator) {return textButton.x; };  //TODO: Test more substantial ideas..
         testWidget3.endUpdate();
 
@@ -482,54 +488,57 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void createMenuButtonsContainer() {
-        menuButtonsContainer = new dsvg.Widget('MenuButtonsContainer', globalApplicationObject);
-        menuButtonsContainer.height = 50;
-        menuButtonsContainer.align.T.aspect = dsvg.eAspects.T;
-        menuButtonsContainer.align.R.aspect = dsvg.eAspects.R;
-        menuButtonsContainer.align.L.aspect = dsvg.eAspects.L;
-        menuButtonsContainer.sizeRules.minWidth = 500;
-
-        //Style it
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',         'MenuButtonsContainer');
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',        'MenuButtonsContainerFrame');
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter',  'OutsetBorder');
-        menuButtonsContainer.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner',  'GrooveBorder');
-        menuButtonsContainer.show();
+        topMenuHolder = new dsvg.Widget('MenuButtonsContainer', globalApplicationObject);
+        topMenuHolder
+            ..height = 50
+            ..align.T.aspect = dsvg.eAspects.T
+            ..align.R.aspect = dsvg.eAspects.R
+            ..align.L.aspect = dsvg.eAspects.L
+            ..sizeRules.minWidth = 500
+            //Style it...
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',         'MenuButtonsContainer')
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',        'MenuButtonsContainerFrame')
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter',  'OutsetBorder')
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner',  'GrooveBorder')
+            ..show();
 
         dsvg.logToConsole([
             'LINE1',
             'createMenuButtonsContainer method finished; object created:',
-            menuButtonsContainer
+            topMenuHolder
         ]);
     }
 
 
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    Creates various menu buttons using info fron ButtonDefs (list) to size them, space
+    them, and assign some labels (text); style them to look like buttons. Add click-handler.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
     void createMenuButtons() {
         dsvg.HtmlWidget tempMenuButton = null;
-        menuButtons =  new List<dsvg.HtmlWidget>();
-
+        menuButtons     =  new List<dsvg.HtmlWidget>();
         num currentLeft = 10;
+        
         ButtonDefs.forEach( (buttonInList) {
-            tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, parentInstance: menuButtonsContainer);
-            tempMenuButton.setBounds((currentLeft), 10, buttonInList.width, 35);
-            currentLeft = currentLeft + buttonInList.width;
-            tempMenuButton.align.CY.aspect = dsvg.eAspects.CY;
-
-
-            //create a "button" on the canvas; the click event is what makes it behave like a button.
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(buttonInList.isActive ? "LightGreenFill" : "LightPinkFill")}');
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder');
-            tempMenuButton.classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner');
-            tempMenuButton.caption = buttonInList.caption;
-            tempMenuButton.tag = buttonInList.tag;
-
-            tempMenuButton.on.mouseClick = menuButtonsClickHandler;
+            tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, parentInstance: topMenuHolder);
+            tempMenuButton
+                ..setBounds((currentLeft), 10, buttonInList.width, 35)
+                ..align.CY.aspect = dsvg.eAspects.CY
+                ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(buttonInList.isActive ? "LightGreenFill" : "LightPinkFill")}')
+                ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
+                ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder')
+                ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner')
+                ..caption = buttonInList.caption
+                ..tag = buttonInList.tag
+                ..on.mouseClick = menuButtonsClickHandler;  
 
             //add to our container list and show it
             menuButtons.add(tempMenuButton);
             tempMenuButton.show();
-
+            
+            currentLeft = currentLeft + buttonInList.width;
         }); //...forEach
 
         dsvg.logToConsole([
@@ -576,14 +585,15 @@ main() {
     void createLogAppWidgetsDataToConsoleButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
         btnLog  = new dsvg.HtmlWidget('myTextButton', globalApplicationObject);
-        btnLog.setBounds(20,50,225,35);
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner');
-        btnLog.on.mouseClick = btnLogAppWidgetsDataToConsoleClick;
-        btnLog.caption = "Log App's Widgets' Info Now";
-        btnLog.show();
+        btnLog
+            ..setBounds(20,50,225,35)
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner')
+            ..on.mouseClick = btnLogAppWidgetsDataToConsoleClick
+            ..caption = "Log App's Widgets' Info Now"
+            ..show();
 
         dsvg.logToConsole([
             'LINE1',
@@ -602,20 +612,21 @@ main() {
     */
     void createDeleteWidgetButton() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
-        btnLog  = new dsvg.HtmlWidget('myTextButton', globalApplicationObject);
-        btnLog.setBounds(20,70,95,35);
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder');
-        btnLog.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner');
-        btnLog.on.mouseClick = btnDeleteWidgetMouseClick;
-        btnLog.caption = 'DELETE-1-ABCDEF-GHI-JKL-MNO-PQR-STUVWXY-Z';  //here to test clipping of overflow
-        btnLog.show();
+        btnDel  = new dsvg.HtmlWidget('myTextButton', globalApplicationObject);
+        btnDel
+            ..setBounds(20,70,95,35)
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner')
+            ..on.mouseClick = btnDeleteWidgetMouseClick
+            ..caption = 'DELETE-1-ABCDEF-GHI-JKL-MNO-PQR-STUVWXY-Z'  //here to test clipping of overflow
+            ..show();
 
         dsvg.logToConsole([
             'LINE1',
             'createDeleteWidgetButton method finished; object created:',
-            btnLog
+            btnDel
         ]);
     } //CreateTextButton1
 
@@ -676,15 +687,16 @@ main() {
     */
     void createNotesWidget() {
         notesPage  = new dsvg.HtmlWidget('WidgetNotesWebPage', globalApplicationObject);
-        notesPage.setBounds(100,85,650,550);
-        notesPage.isMovable.x = true;
-        notesPage.isMovable.y = true;
-        notesPage.isSizable.x = false;
-        notesPage.isSizable.y = true;
-        notesPage.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'Notes_Base');
-        notesPage.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','RaisedOutsetComponent, UseVirtualBorder');
-        notesPage.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','LoweredInsetComponent, UseVirtualBorder');
-        notesPage.embeddedFO.scrollOverflow = true;
+        notesPage
+            ..setBounds(100,85,650,550)
+            ..isMovable.x = true
+            ..isMovable.y = true
+            ..isSizable.x = false
+            ..isSizable.y = true
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'Notes_Base')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','RaisedOutsetComponent, UseVirtualBorder')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','LoweredInsetComponent, UseVirtualBorder')
+            ..embeddedFO.scrollOverflow = true;
 
         notesPage.caption = '''
             <div class="FOBackground">
@@ -776,17 +788,19 @@ main() {
     */
     void createFoRepaintTestWidget() {
         foRepaintTests  = new dsvg.HtmlWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
-        foRepaintTests.tag = 'FOR1';
-        foRepaintTests.setBounds(300,150,800,500);
-        foRepaintTests.isMovable.x = true;
-        foRepaintTests.isMovable.y = true;
-        foRepaintTests.isSizable.x = true;
-        foRepaintTests.isSizable.y = true;
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base');
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame');
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','foRepaintTestsOuterBorder');
-        foRepaintTests.classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','foRepaintTestsInnerBorder');
-        foRepaintTests.embeddedFO.scrollOverflow = true;
+        foRepaintTests
+            ..tag = 'FOR1'
+            ..setBounds(300,150,800,500)
+            ..isMovable.x = true
+            ..isMovable.y = true
+            ..isSizable.x = true
+            ..isSizable.y = true
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','foRepaintTestsOuterBorder')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','foRepaintTestsInnerBorder')
+            ..embeddedFO.scrollOverflow = true;
+        
         foRepaintTests.caption = '''
             <div class="FORepaintTest" style="background-color: #fff8dc; " >
             <span class="BoldRed" >SVG Components FO Repaint Tests</span>

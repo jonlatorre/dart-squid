@@ -337,12 +337,13 @@ class WidgetAlignment {
     WidgetAlignment()
     {
         //Place references to our align specs into a list for easy iteration
-        alignSpecs.add(T );
-        alignSpecs.add(R );
-        alignSpecs.add(B );
-        alignSpecs.add(L );
-        alignSpecs.add(CX);
-        alignSpecs.add(CY);
+        alignSpecs
+            ..add(T )
+            ..add(R )
+            ..add(B )
+            ..add(L )
+            ..add(CX)
+            ..add(CY);
     }
 
     AlignSpec operator [] (String part) => _getPart(part);
