@@ -28,6 +28,7 @@ BEGIN: EVENT-RELATED TYPEDEFS AND ASSOCIATED OBJECTS
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 typedef void ChangeHandler();
+typedef void ChangeHandlerCssClassSelectors(String targetName);
 
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

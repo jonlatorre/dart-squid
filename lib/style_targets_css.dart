@@ -122,7 +122,7 @@ class CssTargetAndSelectorData {
     bool    isStyledDirectly;
 
     ///(optional) a callback method available to perform functionality when appliedCssSelectors change
-    ChangeHandler  changeHandler;
+    ChangeHandlerCssClassSelectors  changeHandler;
 
 
     CssTargetAndSelectorData (this.targetObjectName, this.appliedCssSelectors, this.isStyledDirectly, this.changeHandler);
