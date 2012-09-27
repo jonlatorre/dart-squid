@@ -157,7 +157,7 @@ border          : BORDER width AND color AND style.
 
 .Widget_BorderInner {
     border: 2px inset black;
-    stroke-opacity:   1;    /* FRAME opacity */
+    stroke-opacity:   1;    /* BORDER opacity */
 }
 
 
@@ -247,6 +247,34 @@ Currently used in sample-app non-fully-native-SVG buttons (i.e., using Html_Widg
     stroke-opacity:   1;
 }
 
+
+/*
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+Provide some standard selectors for "Checkbox" Widget styling.
+▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+*/
+.CheckboxWidget_Base {
+    margin: 2px;
+    padding: 2px;
+    fill: white;
+    fill-opacity: 1;
+}
+
+.CheckboxWidget_Frame {
+    border: 2px #333333;
+    border-style: solid;
+    stroke-opacity:   1;
+}
+
+.CheckboxWidget_BorderOuter {
+    border: 0px none black;
+    stroke-opacity:   1;
+}
+
+.CheckboxWidget_BorderInner {
+    border: 0px solid black;
+    stroke-opacity:   1;
+}
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
