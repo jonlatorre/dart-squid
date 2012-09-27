@@ -1728,8 +1728,8 @@ class Widget {
             }
         } else {
             //Adjust Width/Heigh via "setter" so as to enforce our SizeRules and force repaint
-            width    = _width   + offsetX;
-            height   = _height  + offsetY;
+            if ((_isSizable.x) && (offsetX != 0.0)) {width    = _width   + offsetX;}
+            if ((_isSizable.y) && (offsetY != 0.0)) {height   = _height  + offsetY;}
         }
 
         //Process any potential user-assigned event code to run on ANY mousemove (not just a Widget "move")
