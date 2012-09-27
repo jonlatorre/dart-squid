@@ -15,14 +15,17 @@
      -->
     <svg    xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
-            id="Sample1_AppContainer"
+            id="svgRoot"
             width="3000"
             height="2000"
             xml:space="preserve"
             >
+
+        <!-- PLACEHOLDER FOR "defs" that enable re-use of ImageList items, filters, and such: populated at runtime -->
+        <defs id="rootDefs"></defs>
+
         <!-- PLACEHOLDER FOR OUR APPLICATION CANVAS; the ID of this SVG object is required by Application (class) constructor -->
-        <svg id="dartsquidAppCanvas" width="100%" height="100%">
-        </svg>
+        <svg id="dartsquidAppCanvas" width="100%" height="100%"></svg>
     </svg>
     <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
     <script type="application/dart" src="sample_1.dart"/>

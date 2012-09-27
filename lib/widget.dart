@@ -1198,7 +1198,7 @@ class Widget {
             ptrWidgetBounds.L   = _align.CX.aspectValue - mTempAdjCX;
             ptrWidgetBounds.R   = _align.CX.aspectValue + mTempAdjCX;
         } else {
-            //handle right/left alignment:
+            //right/left alignment:
             //are both sides NOT aligned to anything?
             if ((_align.L.aspect == eAspects.NONE) && (_align.R.aspect == eAspects.NONE)) {
                 ptrWidgetBounds.L = _x;
@@ -1240,7 +1240,7 @@ class Widget {
             ptrWidgetBounds.T   = _align.CY.aspectValue - mTempAdjCY;
             ptrWidgetBounds.B   = _align.CY.aspectValue + mTempAdjCY;
         } else {
-            //handle top/bottom alignment
+            //top/bottom alignment:
             //are both sides NOT aligned to anything?
             if ((_align.T.aspect == eAspects.NONE) && (_align.B.aspect == eAspects.NONE)) {
                 ptrWidgetBounds.T = _y;

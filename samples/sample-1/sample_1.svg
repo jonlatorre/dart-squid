@@ -8,7 +8,7 @@ SEE APPLICATION OBJECT (dartdoc) DOCUMENTATION FOR DISCUSSION ABOUT SVG PROPERTI
  -->
 <svg    xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
-        id="Sample1_AppContainer"
+        id="svgRoot"
         width="3000"
         height="2000"
         xml:space="preserve"
@@ -17,7 +17,9 @@ SEE APPLICATION OBJECT (dartdoc) DOCUMENTATION FOR DISCUSSION ABOUT SVG PROPERTI
     <script type="application/javascript" xlink:href="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"/>
     <script type="application/dart" xlink:href="sample_1.dart"/>
 
+    <!-- PLACEHOLDER FOR "defs" that enable re-use of ImageList items, filters, and such: populated at runtime -->
+    <defs id="rootDefs"></defs>
+
     <!-- PLACEHOLDER FOR OUR APPLICATION CANVAS; the ID of this SVG object is required by Application (class) constructor -->
-    <svg id="dartsquidAppCanvas">
-    </svg>
+    <svg id="dartsquidAppCanvas" width="100%" height="100%"></svg>
 </svg>
