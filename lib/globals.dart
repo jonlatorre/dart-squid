@@ -62,7 +62,7 @@ final Map<String, TracingInfo> TracingDefs = const {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 ///Widget-set source-code version label.
-const String DART_SQUID_VERSION = '2012-09-13 : 0.3.4';
+const String DART_SQUID_VERSION = '2012-10-01 : 0.3.5';
 
 ///Used to produce quickly recognizable visual breaks between logical sections of console-logged output and such; likewise for line2, 3, 4, and 5 styles.
 const String DIVIDER_LINE_1 = '███████████████████████████████████████████████████████████████████████████████████████████';
