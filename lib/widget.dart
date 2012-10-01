@@ -1550,7 +1550,7 @@ class Widget {
 
     Any changes to sizing specification MAY imply a need to perform realignments and
     update visuals. Although the code at first glance may appear to do nothing,
-    we are using Width/Height "setters" to catch catch any changes to Sizing constraints.
+    we are using Width/Height "setters" to catch any changes to Sizing constraints.
     See set Width and set Height methods; this should all make sense then.
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
