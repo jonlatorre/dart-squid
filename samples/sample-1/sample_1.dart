@@ -20,14 +20,36 @@ any potential namespace collisions.
 #import("../../lib/dart_squid.dart", prefix:'dsvg');
 
 
+class DemoItemDef {
+    final num       x;
+    final num       y;
+    final num       width;
+    final num       height;
+    final bool      isShowing;
+    final bool      isMovableX;
+    final bool      isMovableY;
+    final bool      isSizableX;
+    final bool      isSizableY;
+    final String    menuButtonCaption;
+    final num       menuButtonWidth;
+    final String    descriptionText;
 
-class ButtonDef {
-  final String      caption;
-  final String      tag;
-  final num         width;
-  final bool        isActive;
-  const ButtonDef(this.caption, this.tag, this.width, this.isActive);
-}
+    const DemoItemDef(
+        this.x,
+        this.y,
+        this.width,
+        this.height,
+        this.isShowing,
+        this.isMovableX,
+        this.isMovableY,
+        this.isSizableX,
+        this.isSizableY,
+        this.menuButtonCaption,
+        this.menuButtonWidth,
+        this.descriptionText
+    );
+
+} //DemoItemDef class
 
 
 /*
@@ -59,6 +81,8 @@ main() {
     dsvg.HtmlWidget     btnLog          = null;
     dsvg.HtmlWidget     btnDel          = null;
 
+    dsvg.TriStateOptionWidget    checkboxTest1  = null;
+
     //This group is for when we are testing within HTML
     Element divInner    = null;
     Element timeElement = null;
@@ -73,16 +97,31 @@ main() {
     const String APP_CANVAS_ELEMENT_ID  = '#dartsquidAppCanvas';
     const String APP_NAME               = 'mySampleApplication';
 
-    //Use this to initialize our "menu buttons" at top of page
-    final List<ButtonDef> ButtonDefs = const [
-        const ButtonDef('Widget1',          'myWidget1',            80  , true ),
-        const ButtonDef('Widget2',          'myWidget2',            80  , true ),
-        const ButtonDef('Widget3',          'myWidget3',            80  , true ),
-        const ButtonDef('Features & Notes', 'WidgetNotesWebPage',   140 , true ),
-        const ButtonDef('README (via XHR)', 'EmbedWebPage',         160 , false),
-        const ButtonDef('FO Repaint Tests', 'FORepaintTestsPage',   140 , true ),
-        const ButtonDef('IFrameWidget',     'EmbedWebPageInIFrame', 120 , false)
-    ];
+    //Use this to initialize our "menu buttons" at top of page; indexed by instanceName
+    final Map<String, DemoItemDef> DemoItemDefs = const {
+        //instanceName                              x   , y     , width , height,showing, movex , movey , sizex , sizey , btnCaption                , btnWid, Description
+        'myWidget1'             : const DemoItemDef(100 , 100   , 200   , 100   , true  , true  , true  , true  , true  , 'Widget1'                 , 80    , 'This widget is aligned to bottom/right corner of page.'    ),
+        'myWidget2'             : const DemoItemDef(100 , 100   , 400   , 400   , true  , true  , false , false , false , 'Widget2'                 , 80    , 'Container for smaller widget. Limitted to X-axis Moves.'    ),
+        'myWidget3'             : const DemoItemDef(100 , 100   , 100   , 100   , true  , true  , true  , true  , true  , 'Widget3'                 , 80    , ''    ),
+        'WidgetNotesWebPage'    : const DemoItemDef(100 , 85    , 650   , 550   , false , true  , true  , false , true  , 'Features & Notes'        , 140   , ''    ),
+        'EmbedWebPage'          : const DemoItemDef(0   , 0     , 100   , 100   , false , true  , true  , true  , true  , 'README (via XHR)'        , 160   , ''    ),
+        'FORepaintTestsPage'    : const DemoItemDef(300 , 150   , 800   , 500   , false , true  , true  , true  , true  , 'FO Repaint Tests'        , 140   , ''    ),
+        'checkboxTest'          : const DemoItemDef(220 , 250   , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Image control test - checkbox Image or such.'    ),
+        'EmbedWebPageInIFrame'  : const DemoItemDef(10  , 60    , 700   , 600   , false , true  , true  , true  , true  , 'IFrameWidget'            , 120   , ''    )
+    };
+
+
+    final List<dsvg.ConstSvgDefsItem>  InitialImageListItems = const [
+        const dsvg.ConstSvgDefsItem('checkMarkOn'  , defURL: '../../resources/graphics/blue_check_symbol.svg' ),
+        const dsvg.ConstSvgDefsItem('checkMarkNull', defURL: '../../resources/graphics/gray_check_symbol.svg' ),
+        const dsvg.ConstSvgDefsItem('filter3D'  , defURL: '../../resources/filters/standard_filters.svg' ),
+        const dsvg.ConstSvgDefsItem('ferrari'  , defURL: 'Ferrari.svg' ),
+//        const dsvg.ConstSvgDefsItem('failtest1'  , defURL: 'missing-file-here.svg' ),
+//        const dsvg.ConstSvgDefsItem('failtest2-no-valid-parms' ),
+//        const dsvg.ConstSvgDefsItem('failtest3' , defText: '<svg id="missing-attr-end-quote-here><g></g></svg>' ),
+        const dsvg.ConstSvgDefsItem('textTest'  , defText: '<svg id="via_Text"><g></g></svg>' )
+     ]; //InitialImageListItems
+
 
 
     /*
@@ -211,7 +250,7 @@ main() {
     EXAMPLE CALLBACK F(X) of NotifyEvent Type..
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void testWidgetOnShowEventCallback(dynamic eventObj) {
+    void testWidgetOnShowEventCallback(Dynamic eventObj) {
         dsvg.logToConsole([
             'LINE3',
             "${eventObj.instanceName} onShow EVENT fired"
@@ -348,9 +387,32 @@ main() {
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    Create various widgets
+    Methods used to create various widgets
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
+
+    ///Some common widget-initialization using Map (allows quickly changing tests)
+    void initializeTestWidget(dsvg.Widget newWidgetRef) {
+        DemoItemDef def = DemoItemDefs[newWidgetRef.instanceName];
+        if (def == null) return; //TODO: THROW ERROR
+
+        newWidgetRef
+            ..setBounds(def.x, def.y, def.width, def.height)
+            ..isMovable.x = def.isMovableX
+            ..isMovable.y = def.isMovableY
+            ..isSizable.x = def.isSizableX
+            ..isSizable.y = def.isSizableY;
+
+    } //initializeTestWidget
+
+
+    ///Like initializeTestWidget idea, but show() does not always immediately follow the parameters set in initializeTestWidget.
+    void showOrNot(dsvg.Widget newWidgetRef) {
+        DemoItemDef def = DemoItemDefs[newWidgetRef.instanceName];
+        newWidgetRef.visible = def.isShowing;
+    }
+
+
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -361,12 +423,10 @@ main() {
     void createTestWidget1() {
         //create a widget on the canvas
         testWidget1  = new dsvg.Widget('myWidget1', globalApplicationObject);
+        initializeTestWidget(testWidget1);
+
         //set bounds via the "long way" (one at a time) vs. SetBounds()
         testWidget1
-            ..x        = 100.0
-            ..y        = 100
-            ..width    = 200
-            ..height   = 100
             ..align.R.aspect = dsvg.eAspects.R
             ..align.B.aspect = dsvg.eAspects.B;
 
@@ -374,19 +434,15 @@ main() {
 
         //TODO: Next line works as desired, but DART EDITOR (through build 11702 so far) throws warning: "expression does not yield a value"
         testWidget1.on.show = testWidgetOnShowEventCallback(testWidget1);
-        testWidget1.show();
 
         //test incorrect callback signature traps...
         //testWidget.on.mouseDown = IncorrectMouseEventSignatureTest;
 
         testWidget1.on.mouseDown = btnTestOnMouseDown;
         
-        testWidget1
-            ..isMovable.x = true
-            ..isMovable.y = true
-            ..isSizable.x = true
-            ..isSizable.y = true
-            ..anchors = dsvg.eAspects.R;
+        testWidget1.anchors = dsvg.eAspects.R;
+
+        showOrNot(testWidget1);
 
         dsvg.logToConsole([
             'LINE1',
@@ -404,13 +460,14 @@ main() {
     */
     void createTestWidget2() {
         testWidget2 = new dsvg.Widget('myWidget2', globalApplicationObject);
+        initializeTestWidget(testWidget2);
+
         testWidget2
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'TanFill')
-            ..setBounds(100,100,400,400)
-            ..isMovable.x = true
             ..align.R.objToAlignTo = testWidget1
-            ..align.R.aspect = dsvg.eAspects.L
-            ..show();
+            ..align.R.aspect = dsvg.eAspects.L;
+
+        showOrNot(testWidget2);
 
         dsvg.logToConsole([
             'LINE1',
@@ -435,8 +492,8 @@ main() {
         }
 
         testWidget3 = new dsvg.Widget('myWidget3', globalApplicationObject, testWidget2);
-        testWidget3.setBounds(100,100,100,100);
-        testWidget3.show();
+        initializeTestWidget(testWidget3);
+        showOrNot(testWidget3);
 
         //test "costly change" inside begin/endUpdate block...
         testWidget3.beginUpdate();
@@ -446,10 +503,6 @@ main() {
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder')      //Test "outset" ==> "raised" (virtual border style)
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder')  //Test "outset" ==> "raised" (virtual border style)
-            ..isMovable.x = true
-            ..isMovable.y = true
-            ..isSizable.x = true
-            ..isSizable.y = true
             ..sizeRules.maxWidth = 200
             ..sizeRules.minWidth = 50
             ..sizeRules.maxHeight = 200
@@ -521,24 +574,24 @@ main() {
         menuButtons     =  new List<dsvg.HtmlWidget>();
         num currentLeft = 10;
         
-        ButtonDefs.forEach( (buttonInList) {
-            tempMenuButton = new dsvg.HtmlWidget('MenuButton${buttonInList.tag}', globalApplicationObject, parentInstance: topMenuHolder);
+        DemoItemDefs.forEach( (String key, DemoItemDef itemInList) {
+            tempMenuButton = new dsvg.HtmlWidget('MenuButton${key}', globalApplicationObject, parentInstance: topMenuHolder);
             tempMenuButton
-                ..setBounds((currentLeft), 10, buttonInList.width, 35)
+                ..setBounds((currentLeft), 10, itemInList.menuButtonWidth, 35)
                 ..align.CY.aspect = dsvg.eAspects.CY
-                ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(buttonInList.isActive ? "LightGreenFill" : "LightPinkFill")}')
+                ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(itemInList.isShowing ? "LightGreenFill" : "LightPinkFill")}')
                 ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
                 ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder')
                 ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner')
-                ..caption = buttonInList.caption
-                ..tag = buttonInList.tag
+                ..caption = itemInList.menuButtonCaption
+                ..tag = key
                 ..on.mouseClick = menuButtonsClickHandler;  
 
             //add to our container list and show it
             menuButtons.add(tempMenuButton);
             tempMenuButton.show();
             
-            currentLeft = currentLeft + buttonInList.width;
+            currentLeft = currentLeft + itemInList.menuButtonWidth;
         }); //...forEach
 
         dsvg.logToConsole([
@@ -558,7 +611,6 @@ main() {
     */
     void btnLogAppWidgetsDataToConsoleClick(dsvg.MouseNotifyEventObject eventObj) {
 
-        //TODO: make generic -- loop through App-object instead.
         dsvg.logToConsole([
             'LINE1',
             'btnLogWidgetsDataToConsole (VIA CLICK EVENT) Executed',
@@ -573,6 +625,8 @@ main() {
           ]);
         }); //...forEach
 
+        //TODO: move to Sample_2: checkboxTest1.isNullable = !(checkboxTest1.isNullable);
+
     }
 
 
@@ -586,7 +640,7 @@ main() {
         //create a "button" on the canvas; the click event is what makes it behave like a button.
         btnLog  = new dsvg.HtmlWidget('myTextButton', globalApplicationObject);
         btnLog
-            ..setBounds(20,50,225,35)
+            ..setBounds(520,50,225,35)
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','ButtonWidget_BorderOuter, UseVirtualBorder')
@@ -655,7 +709,7 @@ main() {
         //ONLY POSSIBLE WHEN ACCESSING VIA HTTP..., otherwise, we will get hit with:
         //HttpRequest cannot load file:///drive:/path_to_file/readme.html. Cross origin requests are only supported for HTTP.
         //Exception: Error: NETWORK_ERR: HttpRequest Exception 101
-        if (globalApplicationObject.isRunningOnServer) {
+        if (dsvg.isRunningOnServer()) {
             getWebPageContent(String url, onSuccess(HttpRequest req)) {
               // call the web server asynchronously
               var request = new HttpRequest.get(url, onSuccess);
@@ -671,7 +725,7 @@ main() {
 
         dsvg.logToConsole([
             'LINE1',
-            'createWebPageInWidget method finished (isRunningOnServer=${globalApplicationObject.isRunningOnServer}); object created:',
+            'createWebPageInWidget method finished (isRunningOnServer=${dsvg.isRunningOnServer()}); object created:',
             embeddedWebPage
         ]);
 
@@ -687,12 +741,9 @@ main() {
     */
     void createNotesWidget() {
         notesPage  = new dsvg.HtmlWidget('WidgetNotesWebPage', globalApplicationObject);
+        initializeTestWidget(notesPage);
+
         notesPage
-            ..setBounds(100,85,650,550)
-            ..isMovable.x = true
-            ..isMovable.y = true
-            ..isSizable.x = false
-            ..isSizable.y = true
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'Notes_Base')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','RaisedOutsetComponent, UseVirtualBorder')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','LoweredInsetComponent, UseVirtualBorder')
@@ -733,7 +784,8 @@ main() {
             </div>
             </div>
         ''';
-        notesPage.show();
+
+        showOrNot(notesPage);
 
         dsvg.logToConsole([
             'LINE1',
@@ -752,8 +804,8 @@ main() {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void foRepaint_HtmlContolsChangeHandler (event) {
-            event.stopPropagation();
-            event.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
 
         SelectElement   colorSelectElement      = null;
         SelectElement   frameWidthSelectElement = null;
@@ -788,19 +840,17 @@ main() {
     */
     void createFoRepaintTestWidget() {
         foRepaintTests  = new dsvg.HtmlWidget('FORepaintTestsPage', globalApplicationObject, initialCaption:'testInitialCaption');
+        initializeTestWidget(foRepaintTests);
+
         foRepaintTests
             ..tag = 'FOR1'
-            ..setBounds(300,150,800,500)
-            ..isMovable.x = true
-            ..isMovable.y = true
-            ..isSizable.x = true
-            ..isSizable.y = true
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter','foRepaintTestsOuterBorder')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderInner','foRepaintTestsInnerBorder')
             ..embeddedFO.scrollOverflow = true;
-        
+
+
         foRepaintTests.caption = '''
             <div class="FORepaintTest" style="background-color: #fff8dc; " >
             <span class="BoldRed" >SVG Components FO Repaint Tests</span>
@@ -849,7 +899,7 @@ main() {
             foRepaintTests
         ]);
 
-        foRepaintTests.show();
+        showOrNot(foRepaintTests);
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -879,17 +929,14 @@ main() {
     */
     void createWebPageIFrameWidget() {
         webIFrame  = new dsvg.IFrameWidget('EmbedWebPageInIFrame', globalApplicationObject);
-        webIFrame.setBounds(10,60,700,600);
+        initializeTestWidget(webIFrame);
 
         //Some tests that make use of the setURL method...
-        webIFrame.setURL('http://www.intersoftdevelopment.com');
         //webIFrame.setURL('.');            //display local file directory tree from where we run
         //webIFrame.setURL('README.html');  //display local file in that directory
+        webIFrame.setURL('http://www.intersoftdevelopment.com');
 
-        webIFrame.isMovable.x = true;
-        webIFrame.isMovable.y = true;
-        webIFrame.isSizable.x = true;
-        webIFrame.isSizable.y = true;
+        showOrNot(webIFrame);
 
         dsvg.logToConsole([
             'LINE1',
@@ -897,6 +944,61 @@ main() {
             webIFrame
         ]);
     }
+
+
+
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    This method is called our "Log to Console" button is clicked.
+    Provides a way to dump info about various Widgets in this sample for inspection and
+    debugging purposes.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+    void triStateItemClick(dsvg.MouseNotifyEventObject eventObj) {
+        dsvg.TriStateOptionWidget triStateWidget = eventObj.sender;
+
+        dsvg.logToConsole([
+            'LINE1',
+            'triStateItemClick (VIA CLICK EVENT) Executed on ${triStateWidget.instanceName} object.',
+            'LINE2',
+            'Current "checkState" = ${dsvg.eCheckState.Names[triStateWidget.checkState]}'
+        ]);
+    }
+
+
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    HtmlWidget being used as a "button" with a click event.
+    This particular one is wired to a routine that logs Application's widget data to console.
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+    void createTriStateItem() {
+        //create a "button" on the canvas; the click event is what makes it behave like a button.
+        checkboxTest1  = new dsvg.TriStateOptionWidget('checkboxTest',
+        globalApplicationObject,
+        const [null, 'checkMarkOn','checkMarkNull']
+        );
+
+        initializeTestWidget(checkboxTest1);
+        checkboxTest1
+            ..checkState = dsvg.eCheckState.CHECKED
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base'         , 'CheckboxWidget_Base')
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame'        , 'CheckboxWidget_Frame')
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter'  , 'CheckboxWidget_BorderOuter')
+            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner'  , 'CheckboxWidget_BorderInner')
+            ..classesCSS.setClassSelectorsForTargetObjectName('ImageCSSStyle'       , 'filter:url(#Effect_3D);')
+            ..on.mouseClick = triStateItemClick;
+
+        showOrNot(checkboxTest1);
+
+        dsvg.logToConsole([
+            'LINE1',
+            'createTriStateItem method finished; object created:',
+            checkboxTest1
+        ]);
+
+    } //createTriStateItem
+
 
 
     /*
@@ -939,11 +1041,10 @@ main() {
         createTestWidget2();
         createTestWidget3();
 
-
         createWebPageIFrameWidget();
 
         //Due to BUG with ElementImplementation InnerHtml (Dart issue# 2977), these currently do not work in standalone SVG document.
-        if (!globalApplicationObject.isStandaloneSVG) {
+        if (!dsvg.isStandaloneSVG()) {
             //createDeleteWidgetButton();
 
             createLogAppWidgetsDataToConsoleButton();
@@ -953,6 +1054,8 @@ main() {
             createWebPageInWidget();
 
             createFoRepaintTestWidget();
+
+            createTriStateItem();
         }
 
         //Note: these buttons refer to previously-created objects; be careful moving this
@@ -972,7 +1075,10 @@ main() {
     the callback (to runApplication) where our app really begins
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication );
+    //Setup image list used by other controls
+    dsvg.SvgDefs ourImageList = new dsvg.SvgDefs(InitialImageListItems);
+
+    globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication, ourImageList );
 
     globalApplicationObject.tracingEnabled = true; //change to false if ALL tracing is to be off.
 
@@ -981,7 +1087,7 @@ main() {
     BEGIN: HTML-DOC TESTING...
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    if (!globalApplicationObject.isStandaloneSVG) {
+    if (!dsvg.isStandaloneSVG()) {
         createHTMLTestObjects();
     }
 
