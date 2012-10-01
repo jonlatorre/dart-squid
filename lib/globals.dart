@@ -258,6 +258,18 @@ String getBrowserType() {
 }
 
 
+/// Are we serving this [Application] from an http server?
+bool isRunningOnServer() => window.location.href.toLowerCase().startsWith('http');
+
+
+///Is this [Application] running within an SVG document [:true:] or is it an SVG embedded in HTML [:false:].; iFrame-held would still show .SVG as "standalone" unless we look Window.top.loc...
+bool isStandaloneSVG()   => window.location.href.toLowerCase().endsWith('.svg');
+
+
+///Convenience method to get reference to the SVG <defs> tag where we maintain an Application's re-usable SVG objects.  See [SvgDefs] for more.
+SVGElement getSvgRootDefsElement({String rootDefsId: "rootDefs"}) => document.query("#${rootDefsId}");
+
+
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -336,7 +348,7 @@ void logToConsole(List<Dynamic> itemsToLog) {
             if (toLog is Application) {
                 insetPretty =   '              >>';
                 writeLine ("(Application) >> name = '${toLog.name}';  Application URL = ${document.window.location.href};  Canvas SVG Element.id = ${toLog.canvas.id};");
-                writeLine ("(Application) >> Environment:  browserType = ${toLog.browserType}; isStandaloneSVG = ${toLog.isStandaloneSVG};  isRunningOnServer = ${toLog.isRunningOnServer};");
+                writeLine ("(Application) >> Environment:  browserType = ${toLog.browserType}; isStandaloneSVG = ${isStandaloneSVG()};  isRunningOnServer = ${isRunningOnServer()};");
                 writeLine ("${insetPretty} Geometry Data: (marginLeft, marginTop) = (${toLog.marginLeft}, ${toLog.marginTop});  canvasBounds(L, T, R, B) = (${toLog.canvasBounds.L}, ${toLog.canvasBounds.T}, ${toLog.canvasBounds.R}, ${toLog.canvasBounds.B}); canvasBounds(width,height) = (${toLog.canvasBounds.Width}, ${toLog.canvasBounds.Height});");
                 writeLine ("${insetPretty} App. Background Style: classesCSS = ${toLog.classesCSS};");
             }
