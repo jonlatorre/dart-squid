@@ -1,0 +1,11 @@
+<svg
+    xmlns:svg="http://www.w3.org/2000/svg" 
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    id="svgGrayCheckMark"
+    width="64" height="64" >
+    <g id="checkMark_state_2">
+        <path id="checkOutline_2" style="stroke:#EEEEEE; stroke-width:1.5; fill:none;" d="m 12,26 10,10 30,-30 10,10 -40,40 -20,-20 z" />
+        <path id="checkFill_2" d="m 12,26 10,10 30,-30 10,10 -40,40 -20,-20 z" style="fill:#EEEEEE;fill-opacity:.5;stroke:none"/>
+    </g>
+</svg>

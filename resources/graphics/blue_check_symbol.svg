@@ -1,0 +1,18 @@
+<svg
+    xmlns:svg="http://www.w3.org/2000/svg" 
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" 
+    id="svgBlueCheckMark"
+    width="64" height="64" >
+    <defs>
+        <linearGradient id="linearGradient1">
+            <stop style="stop-color:#4682b4;stop-opacity:1;" offset="0" id="stopLight"/>
+            <stop style="stop-color:#483d8b;stop-opacity:1;" offset="1" id="stopDark"/>
+        </linearGradient>
+        <linearGradient xlink:href="#linearGradient1" id="linearGradient2" gradientUnits="userSpaceOnUse" x1="20" y1="40" x2="40" y2="0"/>
+    </defs>
+    <g id="checkMark_state_1">
+        <path id="checkOutline_1" style="stroke:#333333; stroke-width:1.5; fill:none;" d="m 12,26 10,10 30,-30 10,10 -40,40 -20,-20 z" />
+        <path id="checkFill_1" d="m 12,26 10,10 30,-30 10,10 -40,40 -20,-20 z" style="fill:url(#linearGradient2);fill-opacity:1;stroke:none"/>
+    </g>
+</svg>
