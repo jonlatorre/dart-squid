@@ -115,12 +115,8 @@
 //
 //Help dispatcher
 //
-//Exceptions handler -- setup standard exceptions also here in Core
-//
 //mainForm - so we know where to set focus when an application starts up; a bit overkill, or
 //necessary for restoring saved state?
-//
-//▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 //
 //includeCanvasNavigation/Sizing? T/F -- does main canvas need to stretch beyond view bounds?
 //includeCanvasNavigationPanel (true/false) - zoom/pan,etc
@@ -129,24 +125,16 @@ class Application {
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: Private variables
+    BEGIN: Misc private variables
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-    String         _name            = 'SVGApplication';
 
     /// The SVG 'rect' element that exists as the first element on our canvas solely
     /// for allowing an easy way to style our application canvas fill-color, etc.
     SVGRectElement _backgroundRect  = null;
 
+    ///Off-screen CSS calcs element to have available at all times.
     SVGElement     _cssTestingRect  = null;
-    SVGSVGElement  _canvas          = null;
-    String         _classesCSS      = 'ApplicationCanvas';
-    ObjectBounds   _canvasBounds    = new ObjectBounds();
-    num            _marginLeft      = 0.0;
-    num            _marginTop       = 0.0;
-    bool           _isStandaloneSVG = true;
-    bool           _isRunningOnServer   = false;
-    String         _browserType     = null;
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -205,8 +193,9 @@ class Application {
     */
 
     //Implement Hint processing in Widgets; this is to be app-wide default value //TODO - ALLOW CHANGES
-    const bool  showHint        = true;
-    const int   hintPause       = 1000;
+    const bool  showHint            = true;
+    const int   hintPause           = 1000;
+
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
@@ -216,15 +205,37 @@ class Application {
     * trace point(s) that are encountered during execution.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    bool    tracingEnabled   = false;
+    bool    tracingEnabled          = false;
 
 
-    /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: PRIVILEGED METHODS (publicly visible accessors to our protected members)
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * Provides reference to re-usable SVG <defs> content in an [SvgDefs] structure; these
+    * include images, filters, and so forth.
+    * Widgets that rely on application-wide availability of such reusable content require
+    * that this value be set via the Application constructor parameter or directly, at any
+    * time prior to using a Widget that requires this (e.g., a [TriStateOptionWidget]).
     */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    SvgDefs _imageList              = null;
+    SvgDefs get imageList           => _imageList;
 
+
+    SVGSVGElement  _svgRoot         = null;
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    /**
+    * The SVG object (of element type 'svg') that is outermost to the application.
+    * This is where any "defs" will be placed.
+    *
+    * ## See also
+    * [canvas] - contained directly within this "root" SVG element..
+    */
+    //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    SVGSVGElement  get  svgRoot     => _svgRoot;
+
+
+
+    SVGSVGElement  _canvas          = null;
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * The SVG object (of element type 'svg') that will act as an application's "canvas"
@@ -237,25 +248,23 @@ class Application {
     * container HTML or SVG doc.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    SVGSVGElement get canvas    => _canvas;
+    SVGSVGElement get canvas        => _canvas;
 
+
+    String  _name                   = 'SVGApplication';
     /**
     * Application Name; notational only, though perhaps useful when setting a page
     * title / caption or including in debug / tracing / testing output.
     */
     String  get name                => _name;
 
-    /// Is this application running within an SVG document [:true:] or is it an SVG embedded in HTML [:false:].
-    bool    get isStandaloneSVG     => _isStandaloneSVG;
 
-    /// Are we serving this app from an http server?
-    bool    get isRunningOnServer   => _isRunningOnServer;
-
+    String  _browserType            = null;
     /// Detect Chromium vs. any other type (for now, only concerned with FireFox potentially).
     String  get browserType         => _browserType;
 
 
-
+    String _classesCSS              = 'ApplicationCanvas';
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Comma-delimited list of Class Names that CSS *selectors* will be able to target
@@ -289,6 +298,7 @@ class Application {
     }
 
 
+    ObjectBounds _canvasBounds      = new ObjectBounds();
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Returns an [ObjectBounds] object that provides quick-access to our
@@ -298,9 +308,13 @@ class Application {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     ObjectBounds get canvasBounds   => _canvasBounds;
 
+
+    num _marginLeft                 = 0.0;
     ///The [canvas] SVG element's left-inset within HTML doc, when applicable.
     num get marginLeft              => _marginLeft;
 
+
+    num _marginTop                  = 0.0;
     ///The [canvas] SVG element's right-inset within HTML doc, when applicable.
     num get marginTop               => _marginTop;
 
@@ -402,7 +416,7 @@ class Application {
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         NOTES:
-        We use the _Canvas.viewportElement.rect future to get access to the "bounding"
+        We use the _canvas.viewportElement.rect future to get access to the "bounding"
         rect that returns the ENTIRE SVG Element size (vs. viewport), BUT it is needed
         in the case where our SVG is embedded inside an HTML document, since the top and left
         values reflect the proper inset (in browser window) of margin width and/or other HTML
@@ -412,8 +426,8 @@ class Application {
         rect information that includes proper browser-view-region (including consideration for
         scrollbar(s) if present) for the right and bottom values.
 
-        Using these two, we can compute our real working-region for any align-to-viewable-area
-        situations.
+        Using these two "rects", we can compute our real working-region for any
+        align-to-viewable-area situations.
 
         ALSO IMPORTANT:
         This Future-based approach produces correct value, but but takes forever to return value!
@@ -432,7 +446,7 @@ class Application {
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
         Future<ElementRect> _viewportRect;
-        _viewportRect = _canvas.viewportElement.rect;   //_Canvas.viewportElement.rect returns size of entire SVG
+        _viewportRect = _canvas.viewportElement.rect;   //returns size of *entire* SVG
 
         //note: within ".then", the future's return value is accessible as either _viewportRect.value (i.e., future-var-name.value) or "rect" (parm name)
         _viewportRect.then((rect) {
@@ -440,7 +454,7 @@ class Application {
             _marginTop  = rect.bounding.top;    //top inset
 
             Future<ElementRect> _docRect;
-            _docRect = document.documentElement.rect;   //_Canvas.viewportElement.rect *should* have worked too, but it returns size of entire SVG
+            _docRect = document.documentElement.rect;   //returns the actual *viewable* (on screen) portion
             _docRect.then((rect2) {
                 _canvasBounds.L     = rect2.client.left;
                 _canvasBounds.T     = rect2.client.top;
@@ -530,12 +544,12 @@ class Application {
     * ### Parameters (required)
     *   * [int] _tracePoint: the String version of this value is used to locate the
     *   matching [TracingDefs] entry, and indicates the tracing-step (tracePoint) encountered.
-    *   * [dynamic] _objInitiatingTrace: (optional) if provided, contains object to dump
+    *   * [Dynamic] _objInitiatingTrace: (optional) if provided, contains object to dump
     *   trace information for (e.g., a [Widget] instance or a subclass thereof); can also
     *   pass a String message-to-log through this parm instead.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    bool trace(int tracePoint, [dynamic objInitiatingTrace = null]) {
+    bool trace(int tracePoint, [Dynamic objInitiatingTrace = null]) {
         if (!tracingEnabled) return false;
         if (!(TracingDefs[tracePoint.toString()].isActive)) return false;
         if (objInitiatingTrace == null) return true;
@@ -921,7 +935,6 @@ class Application {
 
 
 
-
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     /**
     * Constructs an Application object, initializes various properties, and once the
@@ -935,18 +948,15 @@ class Application {
     *   * [ChangeHandler] _onAppReady: method called when this application is "ready" to start
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    Application(this._name, SVGSVGElement canvasElement, this._onAppReady) {
+    Application(this._name, SVGSVGElement canvasElement, this._onAppReady, [this._imageList]) {
 
         if (canvasElement is! SVGSVGElement) {
             throw new InvalidTypeException('$_name (Application Object) Constructor : canvasElement is not an instance of SVGSVGElement.',  'SVGSVGElement', canvasElement);
         }
 
         _canvas = canvasElement;
+        _svgRoot = canvasElement.ownerSVGElement;
         _browserType = getBrowserType();
-
-        //Test for our "app" being within an .svg file (vs. .html, etc); iFrame-held would still show .SVG as "standalone" unless we look Window.top.loc...
-        _isStandaloneSVG    = window.location.href.toLowerCase().endsWith('.svg');
-        _isRunningOnServer  = window.location.href.toLowerCase().startsWith('http');
 
         _updateCanvasAttributes();
 
