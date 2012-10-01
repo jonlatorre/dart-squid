@@ -129,6 +129,7 @@
 #source("exception_types.dart");
 #source("object_bounds.dart");
 #source("style_targets_css.dart");
+#source('svg_defs.dart');                       //i.e., for image-lists, filters, etc.
 #source("application.dart");
 #source("line_and_color.dart");
 #source("widget_borders.dart");
@@ -138,11 +139,12 @@
 #source("globals.dart");
 #source("iframe_widget.dart");
 #source("html_widget.dart");
+#source('tri_state_option_widget.dart');        //i.e., for checkboxes_and_radios
 
 //---------------------------------------------------------------------------------------
 // BELOW are IN-PROGRESS (do not push to github yet)
 //---------------------------------------------------------------------------------------
-//#source("text.dart");
+//#source("text_widget.dart");
+//#source("text_widget.dart");
 //#source("buttons.dart");
 //#source("sliders.dart");
-//#source("checkboxes_and_radios.dart");
