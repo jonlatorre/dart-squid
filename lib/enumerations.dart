@@ -313,3 +313,32 @@ class eBorderStyle {
 
 
 
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+/**
+* The available CheckStates pertain to the state of a Widget, such as a "check box",
+* that can be checked, unchecked, or set to an indeterminate state. If a checkbox is
+* "nullable", the third state will be available, otherwise only on/off make sense.
+*
+* See also: [TriStateOptionWidget] class.
+*/
+//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class eCheckState {
+    static const int UNCHECKED      = 0;
+    static const int CHECKED        = 1;
+    static const int INDETERMINATE  = 2;
+
+    static const List<String> Names = const ['UNCHECKED', 'CHECKED', 'INDETERMINATE' ];
+
+    /* TESTS FOR FOLLOWING FUNCTION:
+    print("NULLABLE-UNCHECKED       >> ${dsvg.eCheckState.Names[(dsvg.eCheckState.getNextCheckState(0, true ))] }");
+    print("NULLABLE-CHECKED         >> ${dsvg.eCheckState.Names[(dsvg.eCheckState.getNextCheckState(1, true ))] }");
+    print("NULLABLE-INDETERMINATE   >> ${dsvg.eCheckState.Names[(dsvg.eCheckState.getNextCheckState(2, true ))] }");
+    print("NON-NULLABLE-UNCHECKED   >> ${dsvg.eCheckState.Names[(dsvg.eCheckState.getNextCheckState(0, false))] }");
+    print("NON-NULLABLE-CHECKED     >> ${dsvg.eCheckState.Names[(dsvg.eCheckState.getNextCheckState(1, false))] }");
+    */
+    ///Cycles through check-states with nullability (i.e., inderterminable option availability) taken into account.
+    static int getNextCheckState(int currentState, bool isNullable) {
+        return (++currentState % (isNullable ? 3 : 2));  //modulo magic
+    }
+
+}
