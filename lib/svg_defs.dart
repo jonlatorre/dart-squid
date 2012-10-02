@@ -217,7 +217,7 @@ class SvgDefs {
         SVGElement _clonedFromDef   = null;
 
         if (_svgDefsMap[defIdToUse] == null) {
-            return;  //TODO: Throw?
+            return null;  //TODO: Throw?
         }
 
         _clonedFromDef = _svgDefsMap[defIdToUse].clone(true);

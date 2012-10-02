@@ -24,9 +24,11 @@
 //███████████████████████████████████████████████████████████████████████████████████████
 class TriStateOptionWidget extends Widget {
 
-    eCheckState _checkState     = eCheckState.UNCHECKED;
-    eCheckState get checkState  => _checkState;
-    void set checkState(eCheckState newState) {
+    int _checkState     = eCheckState.UNCHECKED;
+
+    ///See: [eCheckState] for details.
+    int get checkState  => _checkState;
+    void set checkState(int newState) {
         _checkState = newState;
         ///Make sure only the active "state" image is showing when value is changed externally.
         for (int i = 0; i < _stateImageIDs.length; i++) {
@@ -41,6 +43,7 @@ class TriStateOptionWidget extends Widget {
 
 
     bool _isNullable        = true;
+
     ///If [true] enables a "tri-state" selection (on, off, plus null for "n/a") vs. "two-state" only (on/off).
     bool get isNullable     => _isNullable;
     void set isNullable(bool includeInderterminateState) {
@@ -87,7 +90,7 @@ class TriStateOptionWidget extends Widget {
         //TODO: Throws vs. simple ignore-bad-args?
         if ((idList.length < 2) || (idList.length > 3)) return;
         if ((idList[1] == null) ||
-            (applicationObject._imageList[idList[1]])) return;
+            (applicationObject._imageList[idList[1]] == null)) return;
 
         _stateImageIDs[0] = idList[0];
         _stateImageIDs[1] = idList[1];
