@@ -8,7 +8,7 @@
     See LICENSE file (in project root) for MIT licensing information.
 */
 
-#import('dart:html');
+import 'dart:html';
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -17,7 +17,7 @@ Consider prefixing our library references within this application to avoid
 any potential namespace collisions.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
-#import("../lib/dart_squid.dart", prefix:'dsvg');
+import '../lib/dart_squid.dart' as dsvg;
 
 
 //place embedded app-specific class definitions here (if not in external file)

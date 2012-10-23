@@ -74,7 +74,7 @@
 *
 * The dart-squid library will need to be included in this .dart file:
 *
-*     #import("path-to-library/dart_squid.dart", prefix:'squid'); //(prefix optional)
+*     import 'path-to-library/dart_squid.dart' as squid; //(prefix optional)
 *
 * Within `main()`, it will be helpful to declare a few variables, with one referencing
 * the inner SVG Element (see Step 1 above) that will be our [Application.canvas]:
@@ -111,40 +111,40 @@
 *  ---
 */
 //███████████████████████████████████████████████████████████████████████████████████████
-#library("dart_squid");
+library dart_squid;
 
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // Standard libraries provided by Dart framework
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-#import('dart:html');
-#import('dart:math', prefix: 'Math');
+import 'dart:html';
+import 'dart:math' as Math;
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // Code that makes up the dart-squid framework
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-#source("enumerations.dart");
-#source("event_types.dart");
-#source("events_processor.dart");
-#source("exception_types.dart");
-#source("object_bounds.dart");
-#source("style_targets_css.dart");
-#source('svg_defs.dart');                       //i.e., for image-lists, filters, etc.
-#source("application.dart");
-#source("line_and_color.dart");
-#source("widget_borders.dart");
-#source("widget_constraints.dart");
-#source("widget_metrics.dart");
-#source("widget.dart");
-#source("globals.dart");
-#source("iframe_widget.dart");
-#source("html_widget.dart");
-#source('tri_state_option_widget.dart');        //i.e., for checkboxes_and_radios
+part 'enumerations.dart';
+part 'event_types.dart';
+part 'events_processor.dart';
+part 'exception_types.dart';
+part 'object_bounds.dart';
+part 'style_targets_css.dart';
+part 'svg_defs.dart';                         //i.e., for image-lists, filters, etc.
+part 'application.dart';
+part 'line_and_color.dart';
+part 'widget_borders.dart';
+part 'widget_constraints.dart';
+part 'widget_metrics.dart';
+part 'widget.dart';
+part 'globals.dart';
+part 'iframe_widget.dart';
+part 'html_widget.dart';
+part 'tri_state_option_widget.dart';        //i.e., for checkboxes_and_radios
 
 //---------------------------------------------------------------------------------------
 // BELOW are IN-PROGRESS (do not push to github yet)
 //---------------------------------------------------------------------------------------
-//#source("text_widget.dart");
-//#source("text_widget.dart");
-//#source("buttons.dart");
-//#source("sliders.dart");
+//part 'composite_widget.dart';               //i.e., test putting some of these together
+//part 'text_widget.dart';
+//part 'buttons.dart';
+//part 'sliders.dart';

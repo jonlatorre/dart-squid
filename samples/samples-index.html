@@ -14,7 +14,7 @@
 
 <h2>Framework Documentation</h2>
 <h3><a href="http://mv4t.com/dart-squid/docs/dart_squid.html">dart-squid Framework API full "dartdocs"</a></h3>
-
+<br />
 <h2>dart-squid Sample #1</h2>
 <h3><a href="./sample-1/sample_1.html">Sample #1 (SVG wrapped in HTML)</a></h3>
 <p>This is a very basic visual demonstration of the <strong>dart-squid Widgets</strong> in action.
@@ -25,8 +25,10 @@ the ability to hide/show Widgets (including any hierarchically contained), multi
 
 <h3><a href="./sample-1/sample_1.svg">Sample #1 (SVG)</a></h3>
 <p>
+<hr />
 <b>Note:</b> Until reported
-<a href="http://code.google.com/p/dart/issues/detail?id=2977" target="_blank">Dart Issue 2977 (ElementImplementation behavior fluctuates based on containing doc type (HTML vs. SVG)</a>
+<a href="http://code.google.com/p/dart/issues/detail?id=2977" target="_blank">Dart Issue 2977
+(ElementImplementation behavior fluctuates based on containing doc type (HTML vs. SVG)</a>
 is resolved, this example will not fully work (it may even "aw-snap" the first time; refresh browser and it should partially
 work (showing widgets will move/size, sorta) and allow you to see where innerHTML issue is hit that crashes things.
 The same Dart code, run from both a standalone SVG document and from within an HTML document, will not work in the SVG
@@ -39,9 +41,17 @@ selection (and de-selection) of widgets unpredictable or impossible.  Again, thi
 the behavior within the embedded SVG is totally as expected and predictable.  Clearly something is screwy in the Dart
 HTML library with regards to SVG elements that are "standalone" vs. "wrapped".</p>
 <p>
-    The ultimate goal was to remove the need for an outer HTML "wrapper" and have the entire "application" be
-    just an SVG document with all sorts of embedded functionality and interactivity.  This does work (these widgets
-    were first implemented in JS prior to Dart's existence and it worked fine there).
+<a href="http://code.google.com/p/dart/issues/detail?id=5526" target="_blank">Dart Issue 5526 (ElementImplementation
+behavior fluctuates based on containing doc type (HTML vs. SVG)</a> is somewhat similar to Issue 2977 (mentioned above),
+that appeared recently (as of Sept-26-2012) when a change by Dart team made this show up as yet another
+issue with "un-wrapped" SVG's when the failure formerly did not occur.  It may or may not appear during tests depending
+upon whether any other error(s) noted here are encountered first during execution.
+</p>
+<p><b>
+    The ultimate goal is to remove the need for an outer HTML "wrapper" and have the entire "application" be
+    just an SVG document with all embedded functionality and interactivity contained in that standalone SVG document.
+    This does work (these widgets were first implemented in JS prior to Dart's existence and it worked fine there), though
+    Dart's API/Library issues prevent this currently.</b>
 </p>
 
 </body>
