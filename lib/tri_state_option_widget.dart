@@ -102,15 +102,15 @@ class TriStateOptionWidget extends Widget {
 
 
 
+    //See below... needed for this mess: http://code.google.com/p/dart/issues/detail?id=3197
+    Function superMouseClick;
+
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Override [super]'s [mouseClick] method.
     * Adds functionality to cycle-through available "states" (on/off[/null])
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    //See below... needed for this mess: http://code.google.com/p/dart/issues/detail?id=3197
-    Function superMouseClick;
-
     void mouseClick(MouseEvent event) {
 
         void showOrHideImage(bool makeShow) {
