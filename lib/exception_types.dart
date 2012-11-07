@@ -1,3 +1,5 @@
+part of dart_squid;
+
 /*
     Copyright (c) 2011-2012, Mike Eberhart & Intersoft Development, Inc.
 
@@ -55,7 +57,7 @@ class UniqueConstraintException implements Exception {
 class InvalidTypeException implements Exception {
     String  typeErrorDesc;
     String  typeExpected;
-    Dynamic offendingType;
+    dynamic offendingType;
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**

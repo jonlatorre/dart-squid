@@ -72,7 +72,7 @@ main() {
     EXAMPLE CALLBACK F(X) of NotifyEvent Type..
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void testWidgetOnShowEventCallback(Dynamic eventObj) {
+    void testWidgetOnShowEventCallback(dynamic eventObj) {
         dsvg.logToConsole([
             'LINE3',
             "${eventObj.instanceName} onShow EVENT fired",
@@ -107,7 +107,7 @@ main() {
 
         dsvg.logToConsole([
             'LINE1',
-            'Running Application "$APP_NAME" within ${document.window.location.href} and SVG application canvas element ID=$APP_CANVAS_ELEMENT_ID',
+            'Running Application "$APP_NAME" within ${window.location.href} and SVG application canvas element ID=$APP_CANVAS_ELEMENT_ID',
             'LINE1'
         ]);
 

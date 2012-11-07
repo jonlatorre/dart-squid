@@ -1,3 +1,5 @@
+part of dart_squid;
+
 /*
     Copyright (c) 2011-2012, Mike Eberhart & Intersoft Development, Inc.
 
@@ -146,7 +148,7 @@ class SvgDefs {
 
                 //MUST get files synchronously or all sorts of issues occur throughout app!
                 HttpRequest request = new HttpRequest();
-                request.open("GET", defItem.defURL, async : false);
+                request.open("GET", defItem.defURL, false, '', '' );
                 request.send();
 
                 if (request.statusText.toUpperCase() == "OK") {

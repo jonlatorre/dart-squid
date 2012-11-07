@@ -1,3 +1,5 @@
+part of dart_squid;
+
 /*
     Copyright (c) 2011-2012, Mike Eberhart & Intersoft Development, Inc.
 
@@ -549,7 +551,7 @@ class Application {
     *   pass a String message-to-log through this parm instead.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    bool trace(int tracePoint, [Dynamic objInitiatingTrace = null]) {
+    bool trace(int tracePoint, [dynamic objInitiatingTrace = null]) {
         if (!tracingEnabled) return false;
         if (!(TracingDefs[tracePoint.toString()].isActive)) return false;
         if (objInitiatingTrace == null) return true;

@@ -1,3 +1,5 @@
+part of dart_squid;
+
 /*
     Copyright (c) 2011-2012, Mike Eberhart & Intersoft Development, Inc.
 
@@ -246,6 +248,7 @@ others like FF have isues that prevent certain features from working.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
 String getBrowserType() {
+
     if (window.navigator.userAgent.contains('Chrome/')) {
         return 'chrome';
     }
@@ -284,7 +287,7 @@ Predefined separator lines (Strings of bar-like-chars) are defined for easy form
 See SampleApplication for examples of usage.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
-void logToConsole(List<Dynamic> itemsToLog) {
+void logToConsole(List<dynamic> itemsToLog) {
     final   String spacesConst = "                                 ";
     String  insetPretty = "";
     bool    alignT = false;
@@ -293,13 +296,14 @@ void logToConsole(List<Dynamic> itemsToLog) {
     bool    alignL = false;
     bool    sizing = false;
 
-    Dynamic naForNull(var value) {
+    dynamic naForNull(var value) {
         return (value == null ? 'n/a' : value);
     }
 
     void writeLine(var valueToWrite) {
         if (getBrowserType() == 'chrome') {
             print(valueToWrite);
+            //window.console.log('%c${valueToWrite}', 'background: #333; color: white;');  TODO: Waiting for Dartium to catch up to Chrome24 canary
         } else {
             window.console.log(valueToWrite);
         }
@@ -347,7 +351,7 @@ void logToConsole(List<Dynamic> itemsToLog) {
 
             if (toLog is Application) {
                 insetPretty =   '              >>';
-                writeLine ("(Application) >> name = '${toLog.name}';  Application URL = ${document.window.location.href};  Canvas SVG Element.id = ${toLog.canvas.id};");
+                writeLine ("(Application) >> name = '${toLog.name}';  Application URL = ${window.location.href};  Canvas SVG Element.id = ${toLog.canvas.id};");
                 writeLine ("(Application) >> Environment:  browserType = ${toLog.browserType}; isStandaloneSVG = ${isStandaloneSVG()};  isRunningOnServer = ${isRunningOnServer()};");
                 writeLine ("${insetPretty} Geometry Data: (marginLeft, marginTop) = (${toLog.marginLeft}, ${toLog.marginTop});  canvasBounds(L, T, R, B) = (${toLog.canvasBounds.L}, ${toLog.canvasBounds.T}, ${toLog.canvasBounds.R}, ${toLog.canvasBounds.B}); canvasBounds(width,height) = (${toLog.canvasBounds.Width}, ${toLog.canvasBounds.Height});");
                 writeLine ("${insetPretty} App. Background Style: classesCSS = ${toLog.classesCSS};");

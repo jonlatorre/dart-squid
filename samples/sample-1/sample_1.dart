@@ -8,7 +8,7 @@
     See LICENSE file (in project root) for MIT licensing information.
 */
 
-#import('dart:html');
+import 'dart:html';
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -17,7 +17,7 @@ Furthermore, we prefix all our library references within this test application t
 any potential namespace collisions.
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 */
-#import("../../lib/dart_squid.dart", prefix:'dsvg');
+import '../../lib/dart_squid.dart' as dsvg;
 
 
 class DemoItemDef {
@@ -81,11 +81,12 @@ main() {
     dsvg.HtmlWidget     btnLog          = null;
     dsvg.HtmlWidget     btnDel          = null;
 
-    dsvg.TriStateOptionWidget    checkboxTest1  = null;
+    dsvg.TriStateOptionWidget   checkboxTest1   = null;
+
+    //dsvg.CompositeWidget        compTest1       = null;
 
     //This group is for when we are testing within HTML
     Element divInner    = null;
-    Element timeElement = null;
     Element divHeader   = null;
 
 
@@ -106,7 +107,8 @@ main() {
         'WidgetNotesWebPage'    : const DemoItemDef(100 , 85    , 650   , 550   , false , true  , true  , false , true  , 'Features & Notes'        , 140   , ''    ),
         'EmbedWebPage'          : const DemoItemDef(0   , 0     , 100   , 100   , false , true  , true  , true  , true  , 'README (via XHR)'        , 160   , ''    ),
         'FORepaintTestsPage'    : const DemoItemDef(300 , 150   , 800   , 500   , false , true  , true  , true  , true  , 'FO Repaint Tests'        , 140   , ''    ),
-        'checkboxTest'          : const DemoItemDef(220 , 250   , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Image control test - checkbox Image or such.'    ),
+        'checkboxTest'          : const DemoItemDef(220 , 250   , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Tri-state image control: checkbox or similar.'    ),
+        //'compositeTest'         : const DemoItemDef(320 , 250   , 150   , 50    , true  , true  , true  , true  , true  , 'Composite'               , 110   , 'Composite Widget (i.e., Widget with embedded Widget(s).'    ),
         'EmbedWebPageInIFrame'  : const DemoItemDef(10  , 60    , 700   , 600   , false , true  , true  , true  , true  , 'IFrameWidget'            , 120   , ''    )
     };
 
@@ -115,7 +117,7 @@ main() {
         const dsvg.ConstSvgDefsItem('checkMarkOn'  , defURL: '../../resources/graphics/blue_check_symbol.svg' ),
         const dsvg.ConstSvgDefsItem('checkMarkNull', defURL: '../../resources/graphics/gray_check_symbol.svg' ),
         const dsvg.ConstSvgDefsItem('filter3D'  , defURL: '../../resources/filters/standard_filters.svg' ),
-        const dsvg.ConstSvgDefsItem('ferrari'  , defURL: 'Ferrari.svg' ),
+//        const dsvg.ConstSvgDefsItem('ferrari'  , defURL: 'Ferrari.svg' ),
 //        const dsvg.ConstSvgDefsItem('failtest1'  , defURL: 'missing-file-here.svg' ),
 //        const dsvg.ConstSvgDefsItem('failtest2-no-valid-parms' ),
 //        const dsvg.ConstSvgDefsItem('failtest3' , defText: '<svg id="missing-attr-end-quote-here><g></g></svg>' ),
@@ -129,8 +131,6 @@ main() {
     BEGIN: VARIOUS TESTING METHODS CALLED BY main()
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
-
-    //TODO int setTimeout(TimeoutHandler handler, int timeout);
 
     String testStringCondition(String value, String expectedValue) {
         String  PassFail = ((value.toString() == expectedValue) ? "OK" : "FAIL");
@@ -250,7 +250,7 @@ main() {
     EXAMPLE CALLBACK F(X) of NotifyEvent Type..
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void testWidgetOnShowEventCallback(Dynamic eventObj) {
+    void testWidgetOnShowEventCallback(dynamic eventObj) {
         dsvg.logToConsole([
             'LINE3',
             "${eventObj.instanceName} onShow EVENT fired"
@@ -365,11 +365,6 @@ main() {
     void  createHTMLTestObjects() {
 
         divHeader = document.query('#headline');
-        timeElement = document.query('#time');
-
-        void myHandler(Element handledElement) {
-            handledElement.innerHTML = "Current time: ${new Date.now()}";
-        }
 
         void junkHandler(var handledElement) {
             handledElement.innerHTML = "SET VIA junkHandler";
@@ -379,9 +374,6 @@ main() {
         var a = {'class':'BoldRed', 'style': 'border:2px solid black; background-color:yellow; text-align:center;'};
         divHeader.innerHTML = "DART RUN STARTED &mdash; see console for tracing information.";
         dsvg.setElementAttributes(divHeader, a);
-
-        timeElement.innerHTML = "Preparing time loop... ";
-        window.setInterval(() {myHandler(timeElement);}, 1000);
     }
 
 
@@ -425,14 +417,13 @@ main() {
         testWidget1  = new dsvg.Widget('myWidget1', globalApplicationObject);
         initializeTestWidget(testWidget1);
 
-        //set bounds via the "long way" (one at a time) vs. SetBounds()
         testWidget1
             ..align.R.aspect = dsvg.eAspects.R
             ..align.B.aspect = dsvg.eAspects.B;
 
         //testWidget.onAlign = btnMenuOnAlign;
 
-        //TODO: Next line works as desired, but DART EDITOR (through build 11702 so far) throws warning: "expression does not yield a value"
+        //TODO: Next line works as desired, but DART EDITOR (through build r14458 so far) throws warning: "expression does not yield a value"
         testWidget1.on.show = testWidgetOnShowEventCallback(testWidget1);
 
         //test incorrect callback signature traps...
@@ -1000,6 +991,36 @@ main() {
     } //createTriStateItem
 
 
+    /*
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    COMPOSITE WIDGET INITIAL TESTING...
+    TODO: IN PROGRESS AND NOT AT ALL READY
+    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+    */
+//    void createCompositeItem() {
+//        compTest1  = new dsvg.CompositeWidget('compositeTest', globalApplicationObject );
+//
+//        initializeTestWidget(compTest1);
+//
+////        compTest1.embeddedCheck
+////            ..checkState = dsvg.eCheckState.CHECKED
+////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base'         , 'CheckboxWidget_Base')
+////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame'        , 'CheckboxWidget_Frame')
+////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter'  , 'CheckboxWidget_BorderOuter')
+////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner'  , 'CheckboxWidget_BorderInner')
+////            ..classesCSS.setClassSelectorsForTargetObjectName('ImageCSSStyle'       , 'filter:url(#Effect_3D);')
+////            ..on.mouseClick = triStateItemClick;
+//
+//        showOrNot(compTest1);
+//
+//        dsvg.logToConsole([
+//            'LINE1',
+//            'createCompositeItem method finished; object created:',
+//            compTest1
+//        ]);
+//
+//    } //createCompositeItem
+
 
     /*
     ███████████████████████████████████████████████████████████████████████████████████████████
@@ -1029,7 +1050,6 @@ main() {
             'runApplication() Entry (via Application object onReady callback)...'
         ]);
 
-
         //Misc non-visual test setups
         testWidgetMetrics();
         testObjectBounds();
@@ -1056,6 +1076,7 @@ main() {
             createFoRepaintTestWidget();
 
             createTriStateItem();
+           // createCompositeItem();
         }
 
         //Note: these buttons refer to previously-created objects; be careful moving this

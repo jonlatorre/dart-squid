@@ -1,3 +1,5 @@
+part of dart_squid;
+
 /*
     Copyright (c) 2011-2012, Mike Eberhart & Intersoft Development, Inc.
 
