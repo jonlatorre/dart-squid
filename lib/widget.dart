@@ -2246,6 +2246,19 @@ class Widget {
         _entireGroupSVGElement.nodes.add(_selectionRect);
 
 
+        //Simple "marquee" animation on selections.
+        SVGAnimationElement _selectionAnimate = new SVGElement.tag('animate');
+        _selectionAnimate.attributes = {
+            'id'            : '${_entireGroupName}_SelectionAnim',
+            'attributeName' : 'stroke-dasharray',
+            'dur'           : '.5s',
+            'from'          : '6,3,0,3',
+            'to'            : '3,6,0',
+            'repeatCount'   : 'indefinite'
+        };
+        _selectionRect.nodes.add(_selectionAnimate);
+
+
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         Grab defaults from app-level; can be overridden per instance if needed.

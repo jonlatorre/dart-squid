@@ -69,16 +69,10 @@ The Application class will apply this styling to "Selected" widgets.
 ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
 */
 .SelectedWidget {
-    fill-opacity: .2;
+    fill-opacity: .1;
     fill: black;
     stroke: gold;
-    stroke-dasharray: 4, 2;
     stroke-width: 4px;
-    animation-name: marquee;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    animation-timing-function: ease-in-out;
 }
 
 /*
