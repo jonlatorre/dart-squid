@@ -9,6 +9,8 @@
 */
 
 import 'dart:html';
+import 'dart:math';
+import 'dart:svg';
 
 /*
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -83,7 +85,7 @@ main() {
 
     dsvg.TriStateOptionWidget   checkboxTest1   = null;
 
-    //dsvg.CompositeWidget        compTest1       = null;
+    dsvg.CompositeWidget        compTest1       = null;
 
     //This group is for when we are testing within HTML
     Element divInner    = null;
@@ -108,7 +110,7 @@ main() {
         'EmbedWebPage'          : const DemoItemDef(0   , 0     , 100   , 100   , false , true  , true  , true  , true  , 'README (via XHR)'        , 160   , ''    ),
         'FORepaintTestsPage'    : const DemoItemDef(300 , 150   , 800   , 500   , false , true  , true  , true  , true  , 'FO Repaint Tests'        , 140   , ''    ),
         'checkboxTest'          : const DemoItemDef(220 , 250   , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Tri-state image control: checkbox or similar.'    ),
-        //'compositeTest'         : const DemoItemDef(320 , 250   , 150   , 50    , true  , true  , true  , true  , true  , 'Composite'               , 110   , 'Composite Widget (i.e., Widget with embedded Widget(s).'    ),
+        'compositeTest'         : const DemoItemDef(320 , 250   , 150   , 70    , true  , true  , true  , true  , true  , 'Composite'               , 110   , 'Composite Widget (i.e., Widget with embedded Widget(s).'    ),
         'EmbedWebPageInIFrame'  : const DemoItemDef(10  , 60    , 700   , 600   , false , true  , true  , true  , true  , 'IFrameWidget'            , 120   , ''    )
     };
 
@@ -367,12 +369,12 @@ main() {
         divHeader = document.query('#headline');
 
         void junkHandler(var handledElement) {
-            handledElement.innerHTML = "SET VIA junkHandler";
+            handledElement.innerHtml = "SET VIA junkHandler";
         }
 
 
         var a = {'class':'BoldRed', 'style': 'border:2px solid black; background-color:yellow; text-align:center;'};
-        divHeader.innerHTML = "DART RUN STARTED &mdash; see console for tracing information.";
+        divHeader.innerHtml = "DART RUN STARTED &mdash; see console for tracing information.";
         dsvg.setElementAttributes(divHeader, a);
     }
 
@@ -430,7 +432,7 @@ main() {
         //testWidget.on.mouseDown = IncorrectMouseEventSignatureTest;
 
         testWidget1.on.mouseDown = btnTestOnMouseDown;
-        
+
         testWidget1.anchors = dsvg.eAspects.R;
 
         showOrNot(testWidget1);
@@ -491,7 +493,8 @@ main() {
         testWidget3
             ..setBounds(120,120,110,150)
             ..align.CX.aspect = dsvg.eAspects.R
-            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill')
+        ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill')
+        ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame', 'FrameOption3')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder')      //Test "outset" ==> "raised" (virtual border style)
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder')  //Test "outset" ==> "raised" (virtual border style)
             ..sizeRules.maxWidth = 200
@@ -564,7 +567,7 @@ main() {
         dsvg.HtmlWidget tempMenuButton = null;
         menuButtons     =  new List<dsvg.HtmlWidget>();
         num currentLeft = 10;
-        
+
         DemoItemDefs.forEach( (String key, DemoItemDef itemInList) {
             tempMenuButton = new dsvg.HtmlWidget('MenuButton${key}', globalApplicationObject, parentInstance: topMenuHolder);
             tempMenuButton
@@ -576,12 +579,12 @@ main() {
                 ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner','ButtonWidget_BorderInner')
                 ..caption = itemInList.menuButtonCaption
                 ..tag = key
-                ..on.mouseClick = menuButtonsClickHandler;  
+                ..on.mouseClick = menuButtonsClickHandler;
 
             //add to our container list and show it
             menuButtons.add(tempMenuButton);
             tempMenuButton.show();
-            
+
             currentLeft = currentLeft + itemInList.menuButtonWidth;
         }); //...forEach
 
@@ -708,7 +711,7 @@ main() {
 
             //load the raw response text from the server into our foreign object
             onSuccess(HttpRequest req) {
-               embeddedWebPage.embeddedFO.htmlDiv.innerHTML= req.responseText;
+               embeddedWebPage.embeddedFO.htmlDiv.innerHtml= req.responseText;
             }
 
             getWebPageContent("dart_squid_SVG_UI_Widgets_Documentation.html", onSuccess);
@@ -997,29 +1000,29 @@ main() {
     TODO: IN PROGRESS AND NOT AT ALL READY
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-//    void createCompositeItem() {
-//        compTest1  = new dsvg.CompositeWidget('compositeTest', globalApplicationObject );
-//
-//        initializeTestWidget(compTest1);
-//
-////        compTest1.embeddedCheck
-////            ..checkState = dsvg.eCheckState.CHECKED
-////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base'         , 'CheckboxWidget_Base')
-////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame'        , 'CheckboxWidget_Frame')
-////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter'  , 'CheckboxWidget_BorderOuter')
-////            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner'  , 'CheckboxWidget_BorderInner')
-////            ..classesCSS.setClassSelectorsForTargetObjectName('ImageCSSStyle'       , 'filter:url(#Effect_3D);')
-////            ..on.mouseClick = triStateItemClick;
-//
-//        showOrNot(compTest1);
-//
-//        dsvg.logToConsole([
-//            'LINE1',
-//            'createCompositeItem method finished; object created:',
-//            compTest1
-//        ]);
-//
-//    } //createCompositeItem
+    void createCompositeItem() {
+        compTest1  = new dsvg.CompositeWidget('compositeTest', globalApplicationObject );
+
+        initializeTestWidget(compTest1);
+
+//        compTest1.embeddedCheck
+//            ..checkState = dsvg.eCheckState.CHECKED
+//            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base'         , 'CheckboxWidget_Base')
+//            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame'        , 'CheckboxWidget_Frame')
+//            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderOuter'  , 'CheckboxWidget_BorderOuter')
+//            ..classesCSS.setClassSelectorsForTargetObjectName('Widget_BorderInner'  , 'CheckboxWidget_BorderInner')
+//            ..classesCSS.setClassSelectorsForTargetObjectName('ImageCSSStyle'       , 'filter:url(#Effect_3D);')
+//            ..on.mouseClick = triStateItemClick;
+
+        showOrNot(compTest1);
+
+        dsvg.logToConsole([
+            'LINE1',
+            'createCompositeItem method finished; object created:',
+            compTest1
+        ]);
+
+    } //createCompositeItem
 
 
     /*
@@ -1076,7 +1079,7 @@ main() {
             createFoRepaintTestWidget();
 
             createTriStateItem();
-           // createCompositeItem();
+            createCompositeItem();
         }
 
         //Note: these buttons refer to previously-created objects; be careful moving this
@@ -1099,10 +1102,12 @@ main() {
     //Setup image list used by other controls
     dsvg.SvgDefs ourImageList = new dsvg.SvgDefs(InitialImageListItems);
 
-    globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication, ourImageList );
+    globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), ourImageList );
 
     globalApplicationObject.tracingEnabled = true; //change to false if ALL tracing is to be off.
 
+    runApplication();
+    
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     BEGIN: HTML-DOC TESTING...
