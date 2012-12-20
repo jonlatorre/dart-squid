@@ -118,7 +118,8 @@ library dart_squid;
 // Standard libraries provided by Dart framework
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 import 'dart:html';
-import 'dart:math' as Math;
+import 'dart:math';
+import 'dart:svg';
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // Code that makes up the dart-squid framework
@@ -144,7 +145,7 @@ part 'tri_state_option_widget.dart';        //i.e., for checkboxes_and_radios
 //---------------------------------------------------------------------------------------
 // BELOW are IN-PROGRESS (do not push to github yet)
 //---------------------------------------------------------------------------------------
-//part 'composite_widget.dart';               //i.e., test putting some of these together
+part 'composite_widget.dart';               //i.e., test putting some of these together
 //part 'text_widget.dart';
 //part 'buttons.dart';
 //part 'sliders.dart';

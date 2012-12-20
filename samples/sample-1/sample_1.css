@@ -27,7 +27,7 @@ BEGIN: CSS USED BY SAMPLES APPLICATION 1
 
 .MenuButtonsContainerFrame {
     border: 2px solid black;    /*FRAME*/
-    stroke-opacity: 1;          /*FRAME opacity*/
+    stroke-opacity: 1.0;          /*FRAME opacity*/
 }
 
 /*
@@ -78,8 +78,8 @@ body {
     font-size: 14px;
     font-weight: normal;
     text-decoration: none;
-    padding: 0;
-    margin: 0;
+    padding: 0px;
+    margin: 0px;
 }
 
 h1 {

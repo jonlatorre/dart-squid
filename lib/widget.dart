@@ -38,8 +38,8 @@ This is the primary UI Component in this framework.  The "base" control.
 * keep in mind the apparent *Z-order* will be: first-subitem-per-level is the
 * "back-most" (deepest) in that level:
 *
-*     <g> _entireGroupSVGElement
-*         <rect> _BgRectSVGElement
+*     <g> _entireGroupSvgElement
+*         <rect> _BgRectSvgElement
 *         <g> _borders.allBordersSVGGroupElement (aka, bordersSVGGroupElement)
 *             <g> _borders.Outer
 *                 <line> T1,T2 - i.e., top side primary line and secondary line
@@ -56,17 +56,17 @@ This is the primary UI Component in this framework.  The "base" control.
 *                 <line> R1,R2 - i.e., right side ...
 *                 <line> B1,B2 - i.e., bottom side ...
 *                 <line> L1,L2 - i.e., left side ...
-*         <svg> _clientSVGElement
-*             (optional) <g> _entireGroupSVGElement for hierarchically-contained widget1
-*             (optional) <g> _entireGroupSVGElement for hierarchically-contained widget2
-*             (optional) <g> _entireGroupSVGElement for hierarchically-contained widget3
+*         <svg> _clientSvgElement
+*             (optional) <g> _entireGroupSvgElement for hierarchically-contained widget1
+*             (optional) <g> _entireGroupSvgElement for hierarchically-contained widget2
+*             (optional) <g> _entireGroupSvgElement for hierarchically-contained widget3
 *             ...
 *         <rect> _selectionRect
 *
 * ### Textual discussion
 *
 * All SVG related to a Widget is contained within a single SVG Group ("g") element
-* (_entireGroupSVGElement).
+* (_entireGroupSvgElement).
 *
 * SVG <g> elements have the advantage of *transform* operations on their entire contents,
 * which we will use for moving (via translate transform) and potentially for zooming and
@@ -86,12 +86,12 @@ This is the primary UI Component in this framework.  The "base" control.
 * Next, our border group holds all sub-borders (WidgetParts of Outer, Frame, Inner) as well as the
 * lines that are used to draw each individual border part.
 *
-* Next, we ALWAYS append an "empty" <svg> element (_clientSVGElement) at the penultimate
+* Next, we ALWAYS append an "empty" <svg> element (_clientSvgElement) at the penultimate
 * position within group for holding any (future) child Widget(s); this is done for
 * consistency sake and simplicity -- such that any attempt to add child Widgets
 * (or Widget subclasses) has a predictable target element available.
 *
-* The ClientBounds <svg> (_clientSVGElement) will be sized and positioned within the widget
+* The ClientBounds <svg> (_clientSvgElement) will be sized and positioned within the widget
 * after calculating insets from its parent <svg> bounds.  I.e., inset distance from outside
 * must include (height/width adjustments) for any of border's:
 *     margin, outer border, frame, inner border, padding.
@@ -211,30 +211,30 @@ class Widget {
     List<Widget>    _widgetsList        = new List<Widget>();
 
 
-    SVGElement      _clientSVGElement   = null;
+    SvgElement      _clientSvgElement   = null;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
-    * Reference to an SVGElement we created during the Widget initialization process that
+    * Reference to an SvgElement we created during the Widget initialization process that
     * is available as a container for any hierarchically "owned" (aka, "client") Widgets' SVG.
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
-    SVGElement  get clientSVGElement        => _clientSVGElement;
+    SvgElement  get clientSvgElement        => _clientSvgElement;
 
 
-    SVGElement      _selectionRect      = null;
+    SvgElement      _selectionRect      = null;
     ///Widget's placeholder selection-rect; hidden unless Widget is currently "selected"
-    SVGElement  get selectionRect           => _selectionRect;
+    SvgElement  get selectionRect           => _selectionRect;
 
 
-    SVGElement      _parentSVGElement   = null;
+    SvgElement      _parentSvgElement   = null;
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
-    * If [hasParent], stores reference to [SVGElement] in which this Widget's generated-SVG
+    * If [hasParent], stores reference to [SvgElement] in which this Widget's generated-SVG
     * element(s) reside (i.e., hierarchically embedded); otherwise, our
     * default SVG-materialization target-element will be our [Application.canvas].
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
-    SVGElement      get parentSVGElement    => _parentSVGElement;
+    SvgElement      get parentSvgElement    => _parentSvgElement;
 
 
     //enumeration eWidgetState (int); additive/multi-state; beginUpdate/endUpdate methods use too.
@@ -243,20 +243,20 @@ class Widget {
     int             get widgetState         => _widgetState;
 
 
-    SVGGElement     _entireGroupSVGElement  = null;
+    GElement        _entireGroupSvgElement  = null;
     ///Reference to the group (SVG "g" element) this ENTIRE Widget's SVG will be rendered into.
-    SVGGElement get entireGroupSVGElement   => _entireGroupSVGElement;
+    GElement        get entireGroupSvgElement   => _entireGroupSvgElement;
 
     String          _entireGroupName        = '';
-    ///This is the "id" attribute value applied to [entireGroupSVGElement].
+    ///This is the "id" attribute value applied to [entireGroupSvgElement].
     String          get entireGroupName     => _entireGroupName;
 
     ///Quick access to the SVG Group element into which *all* border SVG elements are rendered.
-    SVGGElement get bordersSVGGroupElement  => _borders.allBordersSVGGroupElement;
+    GElement        get bordersSVGGroupElement  => _borders.allBordersSVGGroupElement;
 
 
     //(private) reference to the background (SVG "rect") element used for "fill"
-    SVGRectElement  _bgRectSVGElement       = null;
+    RectElement     _bgRectSvgElement       = null;
 
 
     EventsProcessor     _on     = new EventsProcessor();
@@ -397,14 +397,14 @@ class Widget {
         a single group, and thus a single call to retrieve "Base" and "Frame" styling, since the CSS Properties used for each do not conflict/overlap.
         But, since we could end up using properties like "filter" for both for widget background and its frame, separation was chosen.
         */
-        const ConstStyleTarget(W_BASE  , 'margin-top'          , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'margin-right'        , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'margin-bottom'       , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'margin-left'         , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'padding-top'         , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'padding-right'       , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'padding-bottom'      , '0'      ),
-        const ConstStyleTarget(W_BASE  , 'padding-left'        , '0'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-top'          , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-right'        , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-bottom'       , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'margin-left'         , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-top'         , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-right'       , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-bottom'      , '0px'      ),
+        const ConstStyleTarget(W_BASE  , 'padding-left'        , '0px'      ),
         const ConstStyleTarget(W_BASE  , 'fill'                , 'black'  ),
         const ConstStyleTarget(W_BASE  , 'fill-opacity'        , '0.0'    ),
 
@@ -412,10 +412,10 @@ class Widget {
         const ConstStyleTarget(W_FRAME , 'border-right-style'  , 'none'   ),
         const ConstStyleTarget(W_FRAME , 'border-bottom-style' , 'none'   ),
         const ConstStyleTarget(W_FRAME , 'border-left-style'   , 'none'   ),
-        const ConstStyleTarget(W_FRAME , 'border-top-width'    , '0'      ),
-        const ConstStyleTarget(W_FRAME , 'border-right-width'  , '0'      ),
-        const ConstStyleTarget(W_FRAME , 'border-bottom-width' , '0'      ),
-        const ConstStyleTarget(W_FRAME , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(W_FRAME , 'border-top-width'    , '0px'      ),
+        const ConstStyleTarget(W_FRAME , 'border-right-width'  , '0px'      ),
+        const ConstStyleTarget(W_FRAME , 'border-bottom-width' , '0px'      ),
+        const ConstStyleTarget(W_FRAME , 'border-left-width'   , '0px'      ),
         const ConstStyleTarget(W_FRAME , 'border-top-color'    , '0'      ),
         const ConstStyleTarget(W_FRAME , 'border-right-color'  , '0'      ),
         const ConstStyleTarget(W_FRAME , 'border-bottom-color' , '0'      ),
@@ -432,10 +432,10 @@ class Widget {
         const ConstStyleTarget(W_OUTER , 'border-right-style'  , 'none'   ),
         const ConstStyleTarget(W_OUTER , 'border-bottom-style' , 'none'   ),
         const ConstStyleTarget(W_OUTER , 'border-left-style'   , 'none'   ),
-        const ConstStyleTarget(W_OUTER , 'border-top-width'    , '0'      ),
-        const ConstStyleTarget(W_OUTER , 'border-right-width'  , '0'      ),
-        const ConstStyleTarget(W_OUTER , 'border-bottom-width' , '0'      ),
-        const ConstStyleTarget(W_OUTER , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(W_OUTER , 'border-top-width'    , '0px'      ),
+        const ConstStyleTarget(W_OUTER , 'border-right-width'  , '0px'      ),
+        const ConstStyleTarget(W_OUTER , 'border-bottom-width' , '0px'      ),
+        const ConstStyleTarget(W_OUTER , 'border-left-width'   , '0px'      ),
         const ConstStyleTarget(W_OUTER , 'border-top-color'    , '0'      ),
         const ConstStyleTarget(W_OUTER , 'border-right-color'  , '0'      ),
         const ConstStyleTarget(W_OUTER , 'border-bottom-color' , '0'      ),
@@ -447,10 +447,10 @@ class Widget {
         const ConstStyleTarget(W_INNER , 'border-right-style'  , 'none'   ),
         const ConstStyleTarget(W_INNER , 'border-bottom-style' , 'none'   ),
         const ConstStyleTarget(W_INNER , 'border-left-style'   , 'none'   ),
-        const ConstStyleTarget(W_INNER , 'border-top-width'    , '0'      ),
-        const ConstStyleTarget(W_INNER , 'border-right-width'  , '0'      ),
-        const ConstStyleTarget(W_INNER , 'border-bottom-width' , '0'      ),
-        const ConstStyleTarget(W_INNER , 'border-left-width'   , '0'      ),
+        const ConstStyleTarget(W_INNER , 'border-top-width'    , '0px'      ),
+        const ConstStyleTarget(W_INNER , 'border-right-width'  , '0px'      ),
+        const ConstStyleTarget(W_INNER , 'border-bottom-width' , '0px'      ),
+        const ConstStyleTarget(W_INNER , 'border-left-width'   , '0px'      ),
         const ConstStyleTarget(W_INNER , 'border-top-color'    , '0'      ),
         const ConstStyleTarget(W_INNER , 'border-right-color'  , '0'      ),
         const ConstStyleTarget(W_INNER , 'border-bottom-color' , '0'      ),
@@ -495,9 +495,9 @@ class Widget {
     *
     * ### Styling of "Widget_Base"target parts:
     *
-    *    * **margin** : Distance to inset Outer border (from [parentSVGElement] bounding box);
+    *    * **margin** : Distance to inset Outer border (from [parentSvgElement] bounding box);
     *        note that this can vary PER-SIDE.
-    *    * **padding** : Distance to inset [clientSVGElement] from inner border; this can also
+    *    * **padding** : Distance to inset [clientSvgElement] from inner border; this can also
     *        vary PER-SIDE (e.g., padding-left)
     *    * **fill** : Widget's background color
     *    * **fill-opacity** : Widget's background opacity
@@ -713,7 +713,7 @@ class Widget {
     * X coordinate value in the Cartesian plane and the left-most bounds of Widget.
     *
     * Coordinate system is relative to the origin of the SVG <svg> element
-    * into which a Widget is rendered — i.e., within the [clientSVGElement] of the [parentWidget],
+    * into which a Widget is rendered — i.e., within the [clientSvgElement] of the [parentWidget],
     * or within [Application.canvas] bounds for top-level widgets residing directly on that canvas.
     *
     * Note that alignment ([align]) properties, [anchors] values, and [sizeRules], etc can
@@ -839,7 +839,7 @@ class Widget {
     //═══════════════════════════════════════════════════════════════════════════════════════
     /**
     * Anchors are a special type of constraint that is designed to fix side(s) of a Widget
-    * in a particular location relative to the [parentWidget.clientSVGElement] bounds
+    * in a particular location relative to the [parentWidget.clientSvgElement] bounds
     * (i.e., our container's bounds) when a Widget is resized or otherwise aligned (per
     * [align] specifications).
     *
@@ -928,14 +928,14 @@ class Widget {
 
         _fillColor              = ensureStandardNoneColor(_obtainStyleCalcValue(targetObjectName, 'fill'));
         _fillOpacity            = ((_fillColor == 'none') ? '0.0' : _obtainStyleCalcValue(targetObjectName, 'fill-opacity'));
-        _borders.Margin.T.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-top'    ));
-        _borders.Margin.R.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-right'  ));
-        _borders.Margin.B.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-bottom' ));
-        _borders.Margin.L.width = int.parse(_obtainStyleCalcValue(targetObjectName, 'margin-left'   ));
-        _borders.Padding.T.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-top'   ));
-        _borders.Padding.R.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-right' ));
-        _borders.Padding.B.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-bottom'));
-        _borders.Padding.L.width= int.parse(_obtainStyleCalcValue(targetObjectName, 'padding-left'  ));
+        _borders.Margin.T.width = double.parse(_obtainStyleCalcValue(targetObjectName, 'margin-top'    ));
+        _borders.Margin.R.width = double.parse(_obtainStyleCalcValue(targetObjectName, 'margin-right'  ));
+        _borders.Margin.B.width = double.parse(_obtainStyleCalcValue(targetObjectName, 'margin-bottom' ));
+        _borders.Margin.L.width = double.parse(_obtainStyleCalcValue(targetObjectName, 'margin-left'   ));
+        _borders.Padding.T.width= double.parse(_obtainStyleCalcValue(targetObjectName, 'padding-top'   ));
+        _borders.Padding.R.width= double.parse(_obtainStyleCalcValue(targetObjectName, 'padding-right' ));
+        _borders.Padding.B.width= double.parse(_obtainStyleCalcValue(targetObjectName, 'padding-bottom'));
+        _borders.Padding.L.width= double.parse(_obtainStyleCalcValue(targetObjectName, 'padding-left'  ));
 
         if (_visible) {
              rePaint();
@@ -968,14 +968,14 @@ class Widget {
             String  sTemp       = '';
 
             //workaround for issue with non-100%-zoom-factor-getcomputedstyle returning bogus non-INT values!
-            int getProperWidthValues(String potentialDecimalWidth) {
+            double getProperWidthValues(String potentialDecimalWidth) {
                 int decIndex    = potentialDecimalWidth.indexOf('.');
 
                 if (decIndex > -1) {
                     potentialDecimalWidth = potentialDecimalWidth.substring(0, decIndex);
-                    return int.parse(potentialDecimalWidth) + 1;  //add one for "ceiling" effect
+                    return double.parse(potentialDecimalWidth) + 1.0;  //add one for "ceiling" effect
                 } else {
-                    return int.parse(potentialDecimalWidth);
+                    return double.parse(potentialDecimalWidth);
                 }
             }
 
@@ -1080,13 +1080,13 @@ class Widget {
             }
 
             _align.alignSpecs.forEach( (objAlignPart) {
-            
+
                 if ((objAlignPart.objToAlignTo != null) && (objAlignPart.aspect > eAspects.NONE)) {
                     //If Aligning to a Sibling presumably... verify validity and acquire value if valid.
 
                     //make sure referenced widget is earlier in SVG node list than THIS widget.
                     //this implies both our object and sibling have same parent SVG element for starters..
-                    if (objAlignPart.objToAlignTo.parentSVGElement != _parentSVGElement) {
+                    if (objAlignPart.objToAlignTo.parentSvgElement != _parentSvgElement) {
                         throw new Exception('(acquireReferencedAlignValues)  ${objAlignPart.objToAlignTo.instanceName} not a direct Sibling of ${_instanceName}.' );
                     }
 
@@ -1212,7 +1212,7 @@ class Widget {
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eAspects.R) == eAspects.R) {
-                        ptrWidgetBounds.R = Math.max((ptrWidgetBounds.L + _width + 1), mTempR);  //prevent negative width
+                        ptrWidgetBounds.R = max((ptrWidgetBounds.L + _width + 1), mTempR);  //prevent negative width
                     } else {
                         //see if Right align exists (since it is not mutually exclusive of Left align decision tree we are in)...
                         if (_align.R.aspect != eAspects.NONE) {
@@ -1227,7 +1227,7 @@ class Widget {
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eAspects.L) == eAspects.L) {
-                        ptrWidgetBounds.L = Math.min((ptrWidgetBounds.R - _width - 1), _x);  //prevent negative width
+                        ptrWidgetBounds.L = min((ptrWidgetBounds.R - _width - 1), _x);  //prevent negative width
                     } else {
                         ptrWidgetBounds.L = ptrWidgetBounds.R - _width;
                     }
@@ -1254,7 +1254,7 @@ class Widget {
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eAspects.B) == eAspects.B) {
-                        ptrWidgetBounds.B = Math.max((ptrWidgetBounds.T + _height + 1), mTempB);  //prevent negative Height
+                        ptrWidgetBounds.B = max((ptrWidgetBounds.T + _height + 1), mTempB);  //prevent negative Height
                     } else {
                         //see if Bottom align exists (since it is not mutually exclusive of Top align decision tree we are in)...
                         if (_align.B.aspect != eAspects.NONE) {
@@ -1269,7 +1269,7 @@ class Widget {
 
                     //anchors only make sense when one side is aligned and its opposite side is not... holds other side at specified position
                     if ( (_anchors & eAspects.T) == eAspects.T) {
-                        ptrWidgetBounds.T = Math.min((ptrWidgetBounds.B - _height - 1), _y);  //prevent negative Height
+                        ptrWidgetBounds.T = min((ptrWidgetBounds.B - _height - 1), _y);  //prevent negative Height
                     } else {
                         ptrWidgetBounds.T = ptrWidgetBounds.B - _height;
                     }
@@ -1449,10 +1449,10 @@ class Widget {
         TODO: handle any rotations too
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        _entireGroupSVGElement.attributes['transform'] =
+        _entireGroupSvgElement.attributes['transform'] =
             'translate(${((_hasParent ? _parentWidget.getClientBounds().L : 0 ) + _translateX)},${((_hasParent ? _parentWidget.getClientBounds().T : 0 ) + _translateY)}), scale(1,1)';
 
-        setSVGAttributes(_bgRectSVGElement, {
+        setSVGAttributes(_bgRectSvgElement, {
             'x'             : (ptrBoundsForBgRect.L).toString(),
             'y'             : (ptrBoundsForBgRect.T).toString(),
             'width'         : (ptrBoundsForBgRect.Width).toString(),
@@ -1460,7 +1460,7 @@ class Widget {
             'fill'          : _fillColor,
             'fill-opacity'  : _fillOpacity,
             'stroke'        : 'none',
-            'stroke-width'  : '0'
+            'stroke-width'  : '0px'
         });
 
         //Keep our (potentially-displayed) selection-indicator-rect updated
@@ -1519,7 +1519,7 @@ class Widget {
     void handleIsMovableIsSizableChanges() {
         if ((!_isSizable.x) && (!_isSizable.y) && (!_isMovable.x) && (!_isMovable.y)) {
             _borders.allBordersSVGGroupElement.on.mouseDown.remove(mouseDownHandler);
-            _entireGroupSVGElement.attributes['cursor'] = 'default';
+            _entireGroupSvgElement.attributes['cursor'] = 'default';
             _isSelectable = false;
             return;
         }
@@ -1667,7 +1667,7 @@ class Widget {
              }
 
             //Widget shall be more transparent during movement
-            _entireGroupSVGElement.attributes['opacity'] = '0.7';
+            _entireGroupSvgElement.attributes['opacity'] = '0.7';
         } else {
             _widgetState = eWidgetState.setState(_widgetState, eWidgetState.SIZING);
 
@@ -1770,7 +1770,7 @@ class Widget {
         //Restore opacity after movement/sizing (if Move, entire widget effects applied, otherwise just border);
         //TODO: Get values from CSS -- Application-wide setting.
         if (eWidgetState.isMoving(_widgetState)) {
-            _entireGroupSVGElement.attributes['opacity'] = '1.0';
+            _entireGroupSvgElement.attributes['opacity'] = '1.0';
             _widgetState = eWidgetState.removeState(_widgetState, eWidgetState.MOVING);
         } else {
             _borders.allBordersSVGGroupElement.attributes['opacity'] = '1.0';
@@ -1859,7 +1859,7 @@ class Widget {
             }
         }
 
-        _entireGroupSVGElement.attributes['transform'] =
+        _entireGroupSvgElement.attributes['transform'] =
              'translate(${((_hasParent ? _parentWidget.getClientBounds().L : 0 ) + _translateX)},${((_hasParent ? _parentWidget.getClientBounds().T : 0 ) + _translateY)}), scale(1,1)';
 
     } //... move()
@@ -2001,7 +2001,7 @@ class Widget {
     /**
     * Make the Widget visible to user.
     *
-    * Sets attributes on the Widget's [entireGroupSVGElement] — i.e., the outermost visual
+    * Sets attributes on the Widget's [entireGroupSvgElement] — i.e., the outermost visual
     * SVG container object within which all renderable visual objects for the Widget are
     * hierarchically contained — such that the Widget is "Showing". The [widgetState] is
     * updated to include [eWidgetState.SHOWING].
@@ -2016,7 +2016,7 @@ class Widget {
         //call any user-provided method that fires before our standard show
         _on.beforeShow(new NotifyEventObject(this));
 
-        setSVGAttributes(_entireGroupSVGElement, {
+        setSVGAttributes(_entireGroupSvgElement, {
             'display'       : 'inherit',
             'visibility'    : 'visible'
         });
@@ -2057,7 +2057,7 @@ class Widget {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void hide() {
-        _entireGroupSVGElement.attributes['display'] = 'none';
+        _entireGroupSvgElement.attributes['display'] = 'none';
 
         _visible = false;
 
@@ -2171,7 +2171,7 @@ class Widget {
         Create the SVG group (g element) with unique name based on per InstanceName and TypeName
         This will hold entire Widget's graphical contents
 
-        Note: the _entireGroupSVGElement is created in a "hidden" visibility state as opposed to
+        Note: the _entireGroupSvgElement is created in a "hidden" visibility state as opposed to
         using display:none due to the fact that Webkit will crash (aw-snap) if this element
         is not part of the rendering tree when various initial operations are performed on it
         (e.g., especially in sub-classes that add an FO with DOM objects).
@@ -2182,15 +2182,15 @@ class Widget {
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
         _entireGroupName       = "${_instanceName}_${_typeName}";
-        _entireGroupSVGElement = new SVGElement.tag('g');
-        _entireGroupSVGElement.attributes = {
+        _entireGroupSvgElement = new SvgElement.tag('g');
+        _entireGroupSvgElement.attributes = {
             'id': _entireGroupName,
             'visibility'    : 'hidden'
              //,  'pointer-events' : 'none'  //TODO?  And, enable as appropriate on show()
         };
 
-        _parentSVGElement.nodes.add(_entireGroupSVGElement);
-        _entireGroupSVGElement.on.click.add(mouseClickHandler);
+        _parentSvgElement.nodes.add(_entireGroupSvgElement);
+        _entireGroupSvgElement.on.click.add(mouseClickHandler);
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -2200,12 +2200,12 @@ class Widget {
         Note: rect will ultimately be sized such that only inner-region of Widget (i.e., all but margin) will have a fill-color.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        _bgRectSVGElement = new SVGElement.tag('rect');
-        _bgRectSVGElement.attributes = {
+        _bgRectSvgElement = new SvgElement.tag('rect');
+        _bgRectSvgElement.attributes = {
             'id'        : '${_entireGroupName}_Background',
             'display'   : 'inherit'
         };
-        _entireGroupSVGElement.nodes.add(_bgRectSVGElement);
+        _entireGroupSvgElement.nodes.add(_bgRectSvgElement);
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -2213,7 +2213,7 @@ class Widget {
         border-types at once (for resize/etc).
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        _entireGroupSVGElement.nodes.add(_borders.allBordersSVGGroupElement);
+        _entireGroupSvgElement.nodes.add(_borders.allBordersSVGGroupElement);
 
 
         /*
@@ -2222,9 +2222,9 @@ class Widget {
         this will always be last child (node) in a Widget's group
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        _clientSVGElement = new SVGElement.tag('svg');
-        _clientSVGElement.attributes = {'id' : '${_entireGroupName}_ClientSVG'};
-        _entireGroupSVGElement.nodes.add(_clientSVGElement);
+        _clientSvgElement = new SvgElement.tag('svg');
+        _clientSvgElement.attributes = {'id' : '${_entireGroupName}_ClientSVG'};
+        _entireGroupSvgElement.nodes.add(_clientSvgElement);
 
 
         /*
@@ -2236,18 +2236,18 @@ class Widget {
         selection rect is part of the rendering-tree initially; avoids aw-snap! errors)
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        _selectionRect = new SVGElement.tag('rect');
+        _selectionRect = new SvgElement.tag('rect');
         _selectionRect.attributes = {
             'id'            : '${_entireGroupName}_SelectionRect',
             'class'         : 'SelectedWidget',
             'pointer-events': 'none',   //we want all events to "pass through" this overlay
             'visibility'    : 'hidden'
         };
-        _entireGroupSVGElement.nodes.add(_selectionRect);
+        _entireGroupSvgElement.nodes.add(_selectionRect);
 
 
         //Simple "marquee" animation on selections.
-        SVGAnimationElement _selectionAnimate = new SVGElement.tag('animate');
+        AnimationElement  _selectionAnimate = new SvgElement.tag('animate');
         _selectionAnimate.attributes = {
             'id'            : '${_entireGroupName}_SelectionAnim',
             'attributeName' : 'stroke-dasharray',
@@ -2304,7 +2304,7 @@ class Widget {
 
         //removing our SVG G (group) should blast all child SVG objects.
         //TODO: is this truly good enough for browser to effectively GC?
-        _entireGroupSVGElement.remove();
+        _entireGroupSvgElement.remove();
 
         //clear reference to *this* Widget in our parentWidget's list of "owned" widgets.
         //Only needed on first level (not in recursion-descended destructors)
@@ -2318,6 +2318,36 @@ class Widget {
         _applicationObject.removeWidget(_instanceName);
     }
 
+
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    /**
+    * TODO: DOCUMENT -- PRIVATE, FOR USE ONLY BY COMPONENT-WRITERS
+    */
+    //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    void _setParent(Widget parentInstance) {
+         /*
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        Test validity of parent, if specified, and raise exception if specified parent object
+        is not of proper [Widget] (or derivation thereof) type.
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        */
+        if ((parentInstance != null) && (parentInstance is! Widget)) {
+            throw new InvalidTypeException('(${_instanceName}) Invalid Widget Constructor: specified Parent-Instance value is neither null nor an instance of Widget.',  '[Widget]', parentInstance);
+        }
+
+        if (parentInstance != null) {
+            _parentWidget       = parentInstance;
+            _hasParent          = true;
+            _parentSvgElement   = _parentWidget.clientSvgElement;
+            _parentWidget.addWidget(this);
+            _hierarchyPath      = "${_parentWidget.hierarchyPath},${_instanceName}";
+        } else {
+            _parentSvgElement   = _applicationObject.canvas;
+            _hierarchyPath      = "${_instanceName}";
+        }
+
+
+    }
 
 
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -2334,10 +2364,11 @@ class Widget {
     * A null value will create a Widget without a parent (i.e. a Widget that
     * resides directly on our "canvas" at the highest level).
     *    * [String] typeName: used for various identification purposes (in SVG constructs, etc.)
+    *    * deferParentAndCreation TODO: DOCUMENT THIS! IF `true` caller must handle parent-setting and creation-call PRIOR  to show()!!
     *
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    Widget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Widget']) :
+    Widget(String instanceName, Application appInstance, [Widget parentInstance = null, String typeName = 'Widget', bool deferParentAndCreation = false]) :
 
         //Create any EMBEDDED CLASSES a widget uses that can NOT be done via Lazy initialization at object-declaration point earlier in code...
         _borders        = new WidgetBorders("${instanceName}_${typeName}")
@@ -2381,28 +2412,6 @@ class Widget {
 
         /*
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-        Test validity of parent, if specified, and raise exception if specified parent object
-        is not of proper [Widget] (or derivation thereof) type.
-        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-        */
-        if ((parentInstance != null) && (parentInstance is! Widget)) {
-            throw new InvalidTypeException('(${_instanceName}) Invalid Widget Constructor: specified Parent-Instance value is neither null nor an instance of Widget.',  '[Widget]', parentInstance);
-        }
-
-        if (parentInstance != null) {
-            _parentWidget       = parentInstance;
-            _hasParent          = true;
-            _parentSVGElement   = _parentWidget.clientSVGElement;
-            _parentWidget.addWidget(this);
-            _hierarchyPath      = "${_parentWidget.hierarchyPath},${_instanceName}";
-        } else {
-            _parentSVGElement   = _applicationObject.canvas;
-            _hierarchyPath      = "${_instanceName}";
-        }
-
-
-        /*
-        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         TODO: ISSUE 144: FIND "144" (above) for description of this dart-issue-144 workaround.
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         */
@@ -2425,14 +2434,6 @@ class Widget {
 
         /*
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-        Time to actually create the default SVG objects used to render a Widget.
-        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-        */
-        _create();
-
-
-        /*
-        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         setup callbacks required by these objects...
         ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
         */
@@ -2444,6 +2445,17 @@ class Widget {
             objAlignPart.changeHandler = handleAlignmentChanges;
         });
 
+
+        /*
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        Time to actually create the default SVG objects used to render a Widget.
+        ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
+        */
+
+        if (!deferParentAndCreation) {
+            _setParent(parentInstance);
+            _create();
+        }
     } //constructor
 
 } //class Widget

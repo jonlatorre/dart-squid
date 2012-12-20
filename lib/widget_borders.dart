@@ -75,8 +75,8 @@ class WidgetBorderSide {
     String      opacity         = '1.0';                //Expects a decimal value between zero (transparent) and one (totally opaque).
     String      color           = 'black';
     int         _style          = eBorderStyle.NONE;    //enumeration eBorderStyle (int)
-    SVGElement  lineElement1    = null;                 //reference to SVGLineElement
-    SVGElement  lineElement2    = null;                 //reference to [optional] SVGLineElement for double-stroke border-types (effects)
+    SvgElement  lineElement1    = null;                 //reference to SVGLineElement
+    SvgElement  lineElement2    = null;                 //reference to [optional] SVGLineElement for double-stroke border-types (effects)
     bool        isSpacingOnly   = false;                //true only for "virtual" borders (margin/padding)
     //String          effect          = '';                   //TODO: any "3D" filter look, etc.
 
@@ -287,8 +287,8 @@ class WidgetBorderSide {
     * ### Parameters
     *   * [eWidgetPart] borderType: denormalized information for convenience; enumeration value as [:int:].
     *   * [eAspects] side: denormalized info; enumeration value as [:int:] indicating T/R/B/L.
-    *   * [SVGElement] lineElement1: the SVG line element this side renders into.
-    *   * (optional) [SVGElement] lineElement2: the SVG line element available to dual-line borders (inner/outer);
+    *   * [SvgElement] lineElement1: the SVG line element this side renders into.
+    *   * (optional) [SvgElement] lineElement2: the SVG line element available to dual-line borders (inner/outer);
     *   optional parm on .line() constructor since frame only ever uses single line.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -322,7 +322,7 @@ class WidgetBorderSide {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorder {
     int                 borderType  = eWidgetPart.NONE;     //enumeration eWidgetPart (int); quick reference to what type of border this group of sides is for
-    SVGElement          borderGroupElementRef   = null;     //the SVG Group hierarchically above the group of lines comprising all side(s) of a border
+    SvgElement          borderGroupElementRef   = null;     //the SVG Group hierarchically above the group of lines comprising all side(s) of a border
     WidgetBorderSide    T   = null;
     WidgetBorderSide    R   = null;
     WidgetBorderSide    B   = null;
@@ -339,7 +339,7 @@ class WidgetBorder {
     - side : expects a valid value from the enumeration eAspects (int)
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
-    void _setLineID(SVGElement LineElement, int side, [strokeNumSuffix = '']) {
+    void _setLineID(SvgElement LineElement, int side, [strokeNumSuffix = '']) {
         LineElement.attributes = {
             'id'        : "${_instanceNameAndType}_Border_${eWidgetPart.Names[_part]}_${eAspects.ShortNames[side.toString()]}${strokeNumSuffix}",
             'display'   : 'inherit'
@@ -499,11 +499,11 @@ class WidgetBorder {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     WidgetBorder.line1(String InstanceNameAndType, int part) :
-        borderGroupElementRef   = new SVGElement.tag('g'),
-        T   = new WidgetBorderSide.line(part, eAspects.T, new SVGElement.tag('line') ),
-        R   = new WidgetBorderSide.line(part, eAspects.R, new SVGElement.tag('line') ),
-        B   = new WidgetBorderSide.line(part, eAspects.B, new SVGElement.tag('line') ),
-        L   = new WidgetBorderSide.line(part, eAspects.L, new SVGElement.tag('line') )
+        borderGroupElementRef   = new SvgElement.tag('g'),
+        T   = new WidgetBorderSide.line(part, eAspects.T, new SvgElement.tag('line') ),
+        R   = new WidgetBorderSide.line(part, eAspects.R, new SvgElement.tag('line') ),
+        B   = new WidgetBorderSide.line(part, eAspects.B, new SvgElement.tag('line') ),
+        L   = new WidgetBorderSide.line(part, eAspects.L, new SvgElement.tag('line') )
     {
         _instanceNameAndType = InstanceNameAndType;
         _part = part;
@@ -547,11 +547,11 @@ class WidgetBorder {
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     WidgetBorder.line2(String InstanceNameAndType, int part) :
-        borderGroupElementRef   = new SVGElement.tag('g'),
-        T   = new WidgetBorderSide.line(part, eAspects.T, new SVGElement.tag('line'), new SVGElement.tag('line') ),
-        R   = new WidgetBorderSide.line(part, eAspects.R, new SVGElement.tag('line'), new SVGElement.tag('line') ),
-        B   = new WidgetBorderSide.line(part, eAspects.B, new SVGElement.tag('line'), new SVGElement.tag('line') ),
-        L   = new WidgetBorderSide.line(part, eAspects.L, new SVGElement.tag('line'), new SVGElement.tag('line') )
+        borderGroupElementRef   = new SvgElement.tag('g'),
+        T   = new WidgetBorderSide.line(part, eAspects.T, new SvgElement.tag('line'), new SvgElement.tag('line') ),
+        R   = new WidgetBorderSide.line(part, eAspects.R, new SvgElement.tag('line'), new SvgElement.tag('line') ),
+        B   = new WidgetBorderSide.line(part, eAspects.B, new SvgElement.tag('line'), new SvgElement.tag('line') ),
+        L   = new WidgetBorderSide.line(part, eAspects.L, new SvgElement.tag('line'), new SvgElement.tag('line') )
     {
         _instanceNameAndType = InstanceNameAndType;
         _part = part;
@@ -678,7 +678,7 @@ class WidgetBorder {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 class WidgetBorders {
     ///Reference to the SVG Group hierarchically above the groups holding each border-subtype.
-    SVGElement      allBordersSVGGroupElement   = null;
+    SvgElement      allBordersSVGGroupElement   = null;
 
     WidgetBorder    Margin      = null;
     WidgetBorder    Outer       = null;
@@ -693,9 +693,9 @@ class WidgetBorders {
     */
     WidgetBorders(String instanceNameAndType) :
         //NOTE: the following technique only works inside HTML docs (vs. SVG docs), as it is seen as "InnerHtml" and SVG docs don't like this!
-        //AllBordersSVGGroupElement   = new SVGElement.svg('<g id="${InstanceNameAndType}_Borders" display="inherit"></g>'),
+        //AllBordersSVGGroupElement   = new SvgElement.svg('<g id="${InstanceNameAndType}_Borders" display="inherit"></g>'),
 
-        allBordersSVGGroupElement   = new SVGElement.tag('g'),
+        allBordersSVGGroupElement   = new SvgElement.tag('g'),
         Margin      = new WidgetBorder.spacing(eWidgetPart.MARGIN),
         Outer       = new WidgetBorder.line2(instanceNameAndType, eWidgetPart.OUTER),
         Frame       = new WidgetBorder.line1(instanceNameAndType, eWidgetPart.FRAME),

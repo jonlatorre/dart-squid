@@ -19,8 +19,8 @@ BEGIN: HtmlFO Class
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
 * An [HtmlFO] encapsulates an HTML Body/Div structure inside an SVG foreignObject and
-* allows interaction with Div Element's contents ("innerHTML") via our exposed
-* [innerHTML] property.
+* allows interaction with Div Element's contents ("innerHtml") via our exposed
+* [innerHtml] property.
 *
 * This class implements provisions for setting [scrollOverflow] preferences to either
 * display scrollbars (to allow access to overflow) or simply hide any overflow.
@@ -53,19 +53,19 @@ BEGIN: HtmlFO Class
 class HtmlFO {
     //These variables obtain their value during createFOStructure
     Widget              _ptrWidget              = null;
-    SVGElement          _ptrSVGElementForFO     = null;
-    String              _idOfSVGElementForFO    = '';
+    SvgElement          _ptrSvgElementForFO     = null;
+    String              _idOfSvgElementForFO    = '';
     bool                _scrollOverflow         = false;  //default to hidden (vs. scroll) of overflow; i.e., clip any visual overflow
 
     //these hold refs to our created elements, and inner content
-    SVGForeignObjectElement _foElementRef       = null;
+    ForeignObjectElement _foElementRef       = null;
     Element             _htmlBodyObj            = null;
     Element             _htmlDivObj             = null;
-    String              _innerHTMLMarkup        = '';
+    String              _innerHtmlMarkup        = '';
 
 
     //accessors
-    SVGElement      get svgFO                   => _foElementRef;
+    SvgElement      get svgFO                   => _foElementRef;
     Element         get htmlBody                => _htmlBodyObj;
     Element         get htmlDiv                 => _htmlDivObj;
 
@@ -74,57 +74,57 @@ class HtmlFO {
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    innerHTML:
-    TODO: NOTE -- issues with setting innerHTML if Widget/subclass not "showing".
+    innerHtml:
+    TODO: NOTE -- issues with setting innerHtml if Widget/subclass not "showing".
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
-    String          get innerHTML               =>  _innerHTMLMarkup;
-    void            set innerHTML(String newHTML) {
-        _innerHTMLMarkup        = newHTML;
-        _htmlDivObj.innerHTML   = _innerHTMLMarkup;      //TODO: FLAKY YET: SEE DART ISSUE 2977 -- must "wrap" SVG doc in HTML doc to work!
+    String          get innerHtml               =>  _innerHtmlMarkup;
+    void            set innerHtml(String newHTML) {
+        _innerHtmlMarkup        = newHTML;
+        _htmlDivObj.innerHtml   = _innerHtmlMarkup;      //TODO: FLAKY YET: SEE DART ISSUE 2977 -- must "wrap" SVG doc in HTML doc to work!
     }
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Creates the following FO / HTML structure within the [Widget] specified by [widget] parameter,
-    * within the Widget's client-region (i.e., [Widget.clientSVGElement]).
+    * within the Widget's client-region (i.e., [Widget.clientSvgElement]).
     *
     *     <foreignObject x="10" y="10" width="100" height="150">  //NOTE: Metrics filled in later
     *         <body>
-    *             <div>Contents of this DIV are set via the [innerHTML] property</div>
+    *             <div>Contents of this DIV are set via the [innerHtml] property</div>
     *         </body>
     *     </foreignObject>
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void createFOStructure(Widget widget, String innerHTMLMarkup) {
+    void createFOStructure(Widget widget, String innerHtmlMarkup) {
         _ptrWidget              = widget;
-        _ptrSVGElementForFO     = widget.clientSVGElement;
-        _idOfSVGElementForFO    = _ptrSVGElementForFO.attributes['id'];
-        _innerHTMLMarkup        = innerHTMLMarkup;
+        _ptrSvgElementForFO     = widget.clientSvgElement;
+        _idOfSvgElementForFO    = _ptrSvgElementForFO.attributes['id'];
+        _innerHtmlMarkup        = innerHtmlMarkup;
 
         _foElementRef.attributes = {
             'display'       : 'inherit',
             //'pointer-events': 'none',   //we want all events to "pass through" this overlay   //TODO: ALLOW SETTING THIS FOR INTERACTIVE HTML CONTROLS SUPPORT
-            'id'            : "${_idOfSVGElementForFO}_ContainerFO"
+            'id'            : "${_idOfSvgElementForFO}_ContainerFO"
         };
 
         //TODO: create head/style and allow passing in of stylesheet. default to our outer stylesheet (for placeholder)
 
         _htmlBodyObj.attributes = {
-            'id'            : "${_idOfSVGElementForFO}_ContainerFOBody",
+            'id'            : "${_idOfSvgElementForFO}_ContainerFOBody",
             'style'         : 'border:0; padding:0; margin:0;'   //_ApplicationObject.DefaultFont.Style -- NOTE: TODO: PASS STYLE/Class VALUE(S)
         };
 
         _htmlDivObj.attributes = {
-            'id'            : "${_idOfSVGElementForFO}_ContainerFODiv"
+            'id'            : "${_idOfSvgElementForFO}_ContainerFODiv"
         };
 
-        _htmlDivObj.innerHTML = _innerHTMLMarkup;
+        _htmlDivObj.innerHtml = _innerHtmlMarkup;
         _htmlBodyObj.nodes.add(_htmlDivObj);
         _foElementRef.nodes.add(_htmlBodyObj);
 
-        _ptrSVGElementForFO.nodes.add(_foElementRef);
+        _ptrSvgElementForFO.nodes.add(_foElementRef);
     }
 
 
@@ -188,7 +188,7 @@ class HtmlFO {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     HtmlFO() :
-        _foElementRef   = new SVGElement.tag('foreignObject'),
+        _foElementRef   = new SvgElement.tag('foreignObject'),
         _htmlBodyObj    = new BodyElement(),
         _htmlDivObj     = new DivElement();
 
@@ -225,7 +225,7 @@ class HtmlWidget extends Widget {
     void    set caption(String newCaption) {
         if (_caption == newCaption ) return;
 
-        _embeddedFO.innerHTML = newCaption;
+        _embeddedFO.innerHtml = newCaption;
     }
 
 

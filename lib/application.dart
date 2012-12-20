@@ -133,10 +133,10 @@ class Application {
 
     /// The SVG 'rect' element that exists as the first element on our canvas solely
     /// for allowing an easy way to style our application canvas fill-color, etc.
-    SVGRectElement _backgroundRect  = null;
+    RectElement   _backgroundRect  = null;
 
     ///Off-screen CSS calcs element to have available at all times.
-    SVGElement     _cssTestingRect  = null;
+    SvgElement    _cssTestingRect  = null;
 
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -223,7 +223,7 @@ class Application {
     SvgDefs get imageList           => _imageList;
 
 
-    SVGSVGElement  _svgRoot         = null;
+    SvgSvgElement  _svgRoot         = null;
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * The SVG object (of element type 'svg') that is outermost to the application.
@@ -233,11 +233,11 @@ class Application {
     * [canvas] - contained directly within this "root" SVG element..
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    SVGSVGElement  get  svgRoot     => _svgRoot;
+    SvgSvgElement  get  svgRoot     => _svgRoot;
 
 
 
-    SVGSVGElement  _canvas          = null;
+    SvgSvgElement  _canvas          = null;
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * The SVG object (of element type 'svg') that will act as an application's "canvas"
@@ -250,7 +250,7 @@ class Application {
     * container HTML or SVG doc.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    SVGSVGElement get canvas        => _canvas;
+    SvgSvgElement get canvas        => _canvas;
 
 
     String  _name                   = 'SVGApplication';
@@ -337,7 +337,7 @@ class Application {
     void _updateCanvasAttributes() {
         //Create rect only on initial setup...
         if (_backgroundRect == null) {
-            _backgroundRect = new SVGElement.tag('rect');
+            _backgroundRect = new SvgElement.tag('rect');
             _canvas.nodes.add(_backgroundRect);
         }
 
@@ -370,17 +370,18 @@ class Application {
     void _createMetricsTestingObjects() {
         //the dart:html version (not yet supported by getComputedStyle)
         if (_cssTestingRect == null) {
-            _cssTestingRect = new SVGElement.tag('rect');
+            _cssTestingRect = new SvgElement.tag('rect');
             _canvas.nodes.add(_cssTestingRect);
 
             //Position off-screen, hide it, name it
             _cssTestingRect.attributes = {
-                'visibility': 'visible',
+                'visibility': 'hidden',
+                'position'  : 'absolute',
                 'id'        : 'CSSTestingRect',
-                'x'         :'-1000',
-                'y'         :'-1000',
-                'width'     :'100',
-                'height'    :'100'
+                'x'         : '200',     //NOTE: X and Y must be positive values for Firefox to work! otherwise...
+                'y'         : '200',     //NOTE: odd things happen where document.documentElement.clientWidth/Height (used elsewhere in app) will not get proper value!?!
+                'width'     : '100px',
+                'height'    : '100px'
             };
         }
 
@@ -402,7 +403,7 @@ class Application {
     Though, Dart is not exposing viewportElement correctly and other issues too.
 
     With Chrome, (using JavaScript) any of these permutations worked:
-        _canvasBounds.R    = (_canvasBounds.L + mCanvas.viewportElement.clientWidth);
+        _canvasBounds.R    = (_canvasBounds.L + _Canvas.viewportElement.clientWidth);
         _canvasBounds.R    = document.documentElement.clientWidth;
         _canvasBounds.R    = window.innerWidth - 17; (where the 17 is adjusting for width of scrollbar)
 
@@ -447,39 +448,30 @@ class Application {
             _canvasBounds.B  = (_canvasBounds.T + window.innerHeight - scrollBarWidth);
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        Future<ElementRect> _viewportRect;
-        _viewportRect = _canvas.viewportElement.rect;   //returns size of *entire* SVG
+      window.requestLayoutFrame(() {
+         ClientRect _viewportRect;
+        _viewportRect = _canvas.viewportElement.getBoundingClientRect();   //returns size of *entire* SVG; has valid left/top margin info too.
 
-        //note: within ".then", the future's return value is accessible as either _viewportRect.value (i.e., future-var-name.value) or "rect" (parm name)
-        _viewportRect.then((rect) {
-            _marginLeft = rect.bounding.left;   //left inset
-            _marginTop  = rect.bounding.top;    //top inset
+        _marginLeft = _viewportRect.left;   //left inset
+        _marginTop  = _viewportRect.top;    //top inset
 
-            Future<ElementRect> _docRect;
-            _docRect = document.documentElement.rect;   //returns the actual *viewable* (on screen) portion
-            _docRect.then((rect2) {
-                _canvasBounds.L     = rect2.client.left;
-                _canvasBounds.T     = rect2.client.top;
-                _canvasBounds.R     = (_canvasBounds.L  + rect2.client.right   - _marginLeft);
-                _canvasBounds.B     = (_canvasBounds.T  + rect2.client.bottom  - _marginTop);
+        _canvasBounds.L     = _marginLeft;
+        _canvasBounds.T     = _marginTop;
+        _canvasBounds.R     = document.documentElement.clientWidth; //(_canvasBounds.L  + _docRect.right   - _marginLeft);
+        _canvasBounds.B     = document.documentElement.clientHeight; //(_canvasBounds.T  + _docRect.bottom  - _marginTop);
+      });
 
-                trace(103, this);
-
-                if (!_isAppReady) {
-                    trace(100, this);
-                    _isAppReady = true;
-                    _onAppReady();
-                } else {
-                    //cleanup callback ref if still around; this may be overkill...
-                    if (_onAppReady != null) {
-                        _onAppReady = null;
-                    }
-                }
-
-            });
-
-        });
-
+//        logToConsole([
+//                      '_marginLeft: ${_marginLeft.toString()}',
+//                      '_marginLeft2: ${document.documentElement.clientLeft.toString()}',
+//                      '_marginTop:  ${_marginTop.toString()}',
+////                      '_marginRight:  ${_viewportRect.right.toString()}' //3010
+////                      '_marginRight:  ${_canvas.clientWidth.toString()}' //0
+////                      '_marginRight:  ${_viewportRect.width.toString()}' //3000
+//                      '_marginRight:  ${document.documentElement.clientWidth.toString()}' //1592
+//        ]);
+//
+        
     } //... _updateCanvasBounds()
 
 
@@ -683,6 +675,7 @@ class Application {
         String  sPropertyName       = '';
         String  sPropertyValue      = '';
         String  sCalculatedValue    = '';
+        num     nCalcValue          = 0.0;
         num     iBorderWidth        = 0.0;
         int     iIndex              = 0;
         bool    useVirtualBorder    = false;
@@ -690,14 +683,6 @@ class Application {
         if (selectorNames.indexOf('UseVirtualBorder') > -1) {useVirtualBorder = true;}
 
         setSVGAttributes(_cssTestingRect, {'class': selectorNames});
-
-        if (trace(101)) {
-            logToConsole([
-                'LINE2',
-                "${TracingDefs['101'].tracePointDesc}   SelectorNames = ${selectorNames};  targetName = ${targetName};",
-                'LINE3'
-            ]);
-        }
 
         //TODO: NOTE THAT SECOND PARM OF getComputedStyle is String name of a pseudo-element (e.g., :first-line or :hover and so forth)
         CSSStyleDeclaration styledec = window.$dom_getComputedStyle(_cssTestingRect, '');
@@ -710,9 +695,12 @@ class Application {
 
             sCalculatedValue = styledec.getPropertyValue(sPropertyName);
 
-            //Strip trailing "px" from width/size-properties and return just Int value for any px-width specs
-            sCalculatedValue = sCalculatedValue.replaceFirst('px','');
-
+            //Strip trailing "px" from width/size-properties and return just Numeric portion of value for any px-width specs
+            if (sCalculatedValue.contains('px')) {
+                sCalculatedValue = sCalculatedValue.replaceFirst('px','');
+                nCalcValue = double.parse(sCalculatedValue);
+                sCalculatedValue = (((nCalcValue * 10.0 ).round()) / 10.0).toString();
+            }
 
             //See if we have a CSS style specification to convert to our internal enumeration value
             if (sPropertyName.indexOf('style') > -1) {
@@ -725,14 +713,6 @@ class Application {
 
                 //Handle all other (non-virtual) border styles now; any unknowns have already been mapped to internal "NONE" type.
                 sCalculatedValue = eBorderStyle.Names[iIndex];
-
-                if (trace(102)) {
-                    logToConsole([
-                        "${TracingDefs['102'].tracePointDesc}   targetName = ${targetName};  sPropertyName = ${sPropertyName};  useVirtualBorder = ${useVirtualBorder};  eBorderStyle.Name = ${eBorderStyle.Names[iIndex]};  CALCULATED VALUE = ${sCalculatedValue} (CALC)",
-                        'LINE4'
-                    ]);
-                }
-
             }
 
             target.calcValue = sCalculatedValue;
@@ -946,18 +926,18 @@ class Application {
     *
     * ### Parameters (required)
     *   * [String] _name: whatever name you wish to give your application — simply notational.
-    *   * [SVGSVGElement] canvasElement: the SVG element (obj reference) to use as our Canvas.
+    *   * [SvgSvgElement] canvasElement: the SVG element (obj reference) to use as our Canvas.
     *   * [ChangeHandler] _onAppReady: method called when this application is "ready" to start
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    Application(this._name, SVGSVGElement canvasElement, this._onAppReady, [this._imageList]) {
+    Application(this._name, SvgSvgElement canvasElement, [this._imageList]) {
 
-        if (canvasElement is! SVGSVGElement) {
-            throw new InvalidTypeException('$_name (Application Object) Constructor : canvasElement is not an instance of SVGSVGElement.',  'SVGSVGElement', canvasElement);
+        if (canvasElement is! SvgSvgElement) {
+            throw new InvalidTypeException('$_name (Application Object) Constructor : canvasElement is not an instance of SvgSvgElement.',  'SvgSvgElement', canvasElement);
         }
 
         _canvas = canvasElement;
-        _svgRoot = canvasElement.ownerSVGElement;
+        _svgRoot = canvasElement.ownerSvgElement;
         _browserType = getBrowserType();
 
         _updateCanvasAttributes();

@@ -85,9 +85,9 @@ The Application class will apply this styling to "Selected" widgets.
 *
 * We use the following CSS properties:
 *
-*    * **margin** : Distance to inset Outer border (from [parentSVGElement] bounding box);
+*    * **margin** : Distance to inset Outer border (from [parentSvgElement] bounding box);
 *        note that this can vary PER-SIDE.
-*    * **padding** : Distance to inset [clientSVGElement] from inner border; this can also
+*    * **padding** : Distance to inset [clientSvgElement] from inner border; this can also
 *        vary PER-SIDE (e.g., padding-left)
 *    * **fill** : Widget's background color
 *    * **fill-opacity** : Widget's background opacity
@@ -118,7 +118,7 @@ The Application class will apply this styling to "Selected" widgets.
     margin: 0px;
     padding: 10px;
     fill: skyblue;
-    fill-opacity: .5;
+    fill-opacity: 0.5;
 }
 
 .Widget_Frame {
@@ -198,7 +198,7 @@ Enumerate our STANDARD BORDER STYLE definitions here
 }
 
 .RaisedBorder {
-    border: 8px outset #3cb371;  /*combine with selector "UseVirtualBorder" to indicate our "raised" style*/
+    border: 2px outset #3cb371;  /*combine with selector "UseVirtualBorder" to indicate our "raised" style*/
     stroke-opacity:   1;  /*BORDER opacity*/
 }
 
@@ -283,19 +283,21 @@ Samples Index Page Header Styles and other custom styling
 */
 
 .Examples {
+    font-family: "calibri, Arial, Helvetica", Sans-serif;
+    font-size: 18px;
     padding: 8px 8px 24px 8px;
     text-align: justify;
-    background-color: #404040;
+    background-color: #636363;
     color: #CCC;
-    border-bottom: 1px solid #666666;
+    border-bottom: 1px solid #828282;
 }
 
 div.Examples {
-    font-family: "Arial, Helvetica", Sans-serif;
-    font-size: 16px;
+    font-family: "calibri, Arial, Helvetica", Sans-serif;
+    font-size: 18px;
     padding: 8px 8px 24px 8px;
     text-align: justify;
-    background-color: #404040;
+    background-color: #636363;
     color: #CCC;
 }
 
@@ -316,7 +318,7 @@ div.Examples {
     padding: 8px;
     margin-top: 12px;
     font-size: 1.5em;
-    background-color: #333333;
+    background-color: #3d3d3d;
     color: #DD7700;
     border-top: 1px solid white;
 }
@@ -326,14 +328,14 @@ div.Examples {
     padding: 8px;
     margin: 0;
     font-size: 1.3em;
-    background-color: #333333;
+    background-color: #3d3d3d;
     color: #DD7700;
 }
 
 .Examples p {
     color: #CCC;
-    font-family: "Arial, Helvetica", Sans-serif;
-    font-size: 16px;
+    font-family: "calibri, Arial, Helvetica", Sans-serif;
+    font-size: 18px;
     padding: 0 0 8px 0;
 }
 

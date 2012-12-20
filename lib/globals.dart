@@ -51,7 +51,7 @@ final Map<String, TracingInfo> TracingDefs = const {
     '6'   : const TracingInfo(false , 'Widget'          , 'mouseMove method...'),
     '7'   : const TracingInfo(false , 'Widget'          , 'move > proposed-X-axis-move-test...'),
 //TODO    '8'   : const TracingInfo(false , 'Widget'          , '_updateStylePropertiesListValuesFromCSS...'),    //use with traces 101,102
-    '100' : const TracingInfo(true  , 'Application'     , '(Application) _updateCanvasBounds > nested Future<ElementRect> > FIRING _onAppReady (ChangeHandler) NOW and STARTING APPLICATION.'),
+    '100' : const TracingInfo(false  , 'Application'     , '(Application) _updateCanvasBounds > nested Future<ElementRect> > FIRING _onAppReady (ChangeHandler) NOW and STARTING APPLICATION.'),
     '101' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (BEGIN):'),
     '102' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (StyleTarget list loop):'),
     '103' : const TracingInfo(false , 'Application'     , '_updateCanvasBounds > nested Future<ElementRect>...'),
@@ -82,13 +82,13 @@ BEGIN: HELPER methods...
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 /**
-* Method that allows setting an arbitrary number of attributes on the [SVGElement]
+* Method that allows setting an arbitrary number of attributes on the [SvgElement]
 * specified in [svgEl]. The [attributesPairs] parameter is a reference to a [Map] (array)
 * of element attributes and their desired values, to be applied to [svgEl].
 *
 * E.g., the calling code could look like this:
 *
-*     setSVGAttributes(_someSVGElement, {
+*     setSVGAttributes(_someSvgElement, {
 *         'display'       : 'inherit',
 *         'visibility'    : 'visible'
 *     });
@@ -108,7 +108,7 @@ BEGIN: HELPER methods...
 * Element.attributes['key'] = 'value' vs. using this custom method, as it may be marginally faster).
 **/
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-void setSVGAttributes(SVGElement svgEl, var attributesPairs) {
+void setSVGAttributes(SvgElement svgEl, var attributesPairs) {
     attributesPairs.forEach((attr, value) {
         svgEl.attributes[attr] = value;
     });
@@ -270,7 +270,7 @@ bool isStandaloneSVG()   => window.location.href.toLowerCase().endsWith('.svg');
 
 
 ///Convenience method to get reference to the SVG <defs> tag where we maintain an Application's re-usable SVG objects.  See [SvgDefs] for more.
-SVGElement getSvgRootDefsElement({String rootDefsId: "rootDefs"}) => document.query("#${rootDefsId}");
+SvgElement getSvgRootDefsElement({String rootDefsId: "rootDefs"}) => document.query("#${rootDefsId}");
 
 
 
@@ -301,12 +301,26 @@ void logToConsole(List<dynamic> itemsToLog) {
     }
 
     void writeLine(var valueToWrite) {
-        if (getBrowserType() == 'chrome') {
-            print(valueToWrite);
-            //window.console.log('%c${valueToWrite}', 'background: #333; color: white;');  TODO: Waiting for Dartium to catch up to Chrome24 canary
-        } else {
+        switch (getBrowserType()) {
+          case 'chrome': {
+            print(valueToWrite); 
+//            window.console.log('%c${valueToWrite}', 'background: #333; color: white;'); //TODO: Waiting for Dartium to catch up to Chrome24 canary
+            break;}
+          case 'firefox': {
             window.console.log(valueToWrite);
+            break;}
+          case 'other': {
+            console.log(valueToWrite);
+            break;}
         }
+      
+//        if (getBrowserType() == 'chrome') {
+//            print(valueToWrite);
+////            window.console.log('%c${valueToWrite}', 'background: #333; color: white;'); //TODO: Waiting for Dartium to catch up to Chrome24 canary
+//        } else {
+//            console.log('AA');  //TODO - TEST
+//            console.log(valueToWrite);
+//        }
     }
 
     itemsToLog.forEach( (toLog) {

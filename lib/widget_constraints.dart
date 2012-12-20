@@ -97,28 +97,28 @@ class WidgetSizeRules {
     num get minWidth    => (_minWidth == null ? 20.0 : _minWidth);
     void set minWidth(newVal) {
         if (_minWidth   == newVal) return;
-        _minWidth = (_maxWidth != null) ? Math.min(newVal, _maxWidth) : newVal;
+        _minWidth = (_maxWidth != null) ? min(newVal, _maxWidth) : newVal;
         if (changeHandler != null) {changeHandler();}
     }
 
     num get minHeight   =>  (_minHeight== null ? 20.0 : _minHeight);
     void set minHeight(newVal) {
         if (_minHeight  == newVal) return;
-        _minHeight = (_maxHeight != null) ? Math.min(newVal, _maxHeight) : newVal;
+        _minHeight = (_maxHeight != null) ? min(newVal, _maxHeight) : newVal;
         if (changeHandler != null) {changeHandler();}
     }
 
     num get maxWidth    =>  _maxWidth;
     void set maxWidth(newVal) {
         if (_maxWidth   == newVal) return;
-        _maxWidth = Math.max(newVal, minWidth);
+        _maxWidth = max(newVal, minWidth);
         if (changeHandler != null) {changeHandler();}
     }
 
     num get maxHeight   =>  _maxHeight;
     void set maxHeight(newVal) {
         if (_maxHeight  == newVal) return;
-        _maxHeight = Math.max(newVal, minHeight);
+        _maxHeight = max(newVal, minHeight);
         if (changeHandler != null) {changeHandler();}
     }
 
@@ -129,13 +129,13 @@ class WidgetSizeRules {
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
     num getConstrainedWidth(num proposedVal) {
-        num tempMax = (_maxWidth != null) ? Math.min(proposedVal, _maxWidth) : proposedVal;
-        return Math.max(tempMax, minWidth);
+        num tempMax = (_maxWidth != null) ? min(proposedVal, _maxWidth) : proposedVal;
+        return max(tempMax, minWidth);
     }
 
     num getConstrainedHeight(num proposedVal) {
-        num tempMax = (_maxHeight != null) ? Math.min(proposedVal, _maxHeight) : proposedVal;
-        return Math.max(tempMax, minHeight);
+        num tempMax = (_maxHeight != null) ? min(proposedVal, _maxHeight) : proposedVal;
+        return max(tempMax, minHeight);
     }
 
 } //WidgetSizeRules

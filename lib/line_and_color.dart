@@ -76,7 +76,7 @@ class Color {
 
     void lightenColor([int shiftColorByInt=24]) {
         int GetShiftedSubColor(int channelValue) {
-            return Math.min(MAX_VALUE, (channelValue + shiftColorByInt));
+            return min(MAX_VALUE, (channelValue + shiftColorByInt));
         }
 
         R = GetShiftedSubColor(R);
@@ -86,7 +86,7 @@ class Color {
 
     void darkenColor([int shiftColorByInt=24]) {
         int GetShiftedSubColor(int channelValue) {
-            return Math.max(MIN_VALUE, (channelValue - shiftColorByInt));
+            return max(MIN_VALUE, (channelValue - shiftColorByInt));
         }
 
         R = GetShiftedSubColor(R);

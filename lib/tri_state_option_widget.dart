@@ -100,7 +100,7 @@ class TriStateOptionWidget extends Widget {
     }
 
     ///Created to hold 3 elements regardless of nullability. See [eCheckState].
-    List<SVGElement> _stateImageRefs = new List(3);
+    List<SvgElement> _stateImageRefs = new List(3);
 
 
 
@@ -145,12 +145,12 @@ class TriStateOptionWidget extends Widget {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void extendedRealign() {
         //ASSUMPTION MADE CURRENTLY: ALL (provided) images are of same width/height as the CHECKED state.
-        SVGElement sourceSVG    = applicationObject._imageList[_stateImageIDs[1]];
+        SvgElement sourceSVG    = applicationObject._imageList[_stateImageIDs[1]];
 
         //See: http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute
         //Use the "size" of the image to display as our viewBox size so that contents "scale" automatically
         //to mach the dimensions of our client-svg area.
-        setSVGAttributes(_clientSVGElement, {
+        setSVGAttributes(_clientSvgElement, {
             'x'             : (getClientBounds().L).toString(),
             'y'             : (getClientBounds().T).toString(),
             'width'         : (getClientBounds().Width).toString(),
@@ -166,7 +166,7 @@ class TriStateOptionWidget extends Widget {
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
     For each provided image reference, create a cloned (i.e., "use") structure equivalance
-    of that reference inside this Widget's _clientSVGElement.
+    of that reference inside this Widget's _clientSvgElement.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */
     void _createImageStructure() {
@@ -174,7 +174,7 @@ class TriStateOptionWidget extends Widget {
         for (int i = 0; i < _stateImageIDs.length; i++) {
             if (_stateImageIDs[i] != null) {
                 _stateImageRefs[i] = applicationObject._imageList.useSvgDef(
-                    _clientSVGElement,
+                    _clientSvgElement,
                     _stateImageIDs[i],
                     '${_entireGroupName}_${(eCheckState.Names[i])}',
                     (_checkState == i ? 'inherit' : 'none')
@@ -192,7 +192,7 @@ class TriStateOptionWidget extends Widget {
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     void _applyCSSStyleAttributesToImages(String cssAttributeValue) {
-        setSVGAttributes(_clientSVGElement, { 'style' : cssAttributeValue });
+        setSVGAttributes(_clientSvgElement, { 'style' : cssAttributeValue });
     }
 
 

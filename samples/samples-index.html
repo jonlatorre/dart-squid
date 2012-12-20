@@ -1,58 +1,52 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="utf-8">
+<html dir="ltr" lang="en">
+  <head>
     <link type="text/css" rel="stylesheet" media="all" href="../resources/dart_squid_defaults.css">
     <title>Dart / SVG dart-squid Samples Index</title>
-</head>
-<body class="Examples">
-<h1>Dart / SVG dart-squid Samples Index</h1>
-
-<div><p>Note: these samples appear here only in their native DART version and will require the
-    <a href="http://gsdview.appspot.com/dartium-archive/continuous/" target="_blank">Dartium browser for your platform.</a>
-    Dartium browser is also included with the <a href="http://gsdview.appspot.com/dart-editor-archive-integration/latest/" target="_blank">Dart Editor</a>.</p></div>
-
-<h2>Framework Documentation</h2>
-<h3><a href="http://mv4t.com/dart-squid/docs/dart_squid.html">dart-squid Framework API full "dartdocs"</a></h3>
-<br />
-<h2>dart-squid Sample #1</h2>
-<h3><a href="./sample-1/sample_1.html">Sample #1 (SVG wrapped in HTML)</a></h3>
-<p>This is a very basic visual demonstration of the <strong>dart-squid Widgets</strong> in action.
-Play around a bit and you will notice some alignment features (between widgets and related to browser-window boundaries),
-some position-constraint features that invoke during movement,
-the ability to hide/show Widgets (including any hierarchically contained), multi-select, re-size/movement, and so forth.</p>
-
-
-<h3><a href="./sample-1/sample_1.svg">Sample #1 (SVG)</a></h3>
-<p>
-<hr />
-<b>Note:</b> Until reported
-<a href="http://code.google.com/p/dart/issues/detail?id=2977" target="_blank">Dart Issue 2977
-(ElementImplementation behavior fluctuates based on containing doc type (HTML vs. SVG)</a>
-is resolved, this example will not fully work (it may even "aw-snap" the first time; refresh browser and it should partially
-work (showing widgets will move/size, sorta) and allow you to see where innerHTML issue is hit that crashes things.
-The same Dart code, run from both a standalone SVG document and from within an HTML document, will not work in the SVG
-document due to weird object-hierarchy issues or something that makes "innerHTML" unknown. Notice that the HTML version
-of this example (above) is just a wrapper around the identical SVG structure.
-</p>
-<p>Another issue with the non-wrapped SVG version is odd behavior with event-code removal, thus making the
-selection (and de-selection) of widgets unpredictable or impossible.  Again, this may be very much related to issue
-2977 (with regards to the element hierarchy in DART) since, by simply wrapping this SVG doc with a dummy-HTML file,
-the behavior within the embedded SVG is totally as expected and predictable.  Clearly something is screwy in the Dart
-HTML library with regards to SVG elements that are "standalone" vs. "wrapped".</p>
-<p>
-<a href="http://code.google.com/p/dart/issues/detail?id=5526" target="_blank">Dart Issue 5526 (ElementImplementation
-behavior fluctuates based on containing doc type (HTML vs. SVG)</a> is somewhat similar to Issue 2977 (mentioned above),
-that appeared recently (as of Sept-26-2012) when a change by Dart team made this show up as yet another
-issue with "un-wrapped" SVG's when the failure formerly did not occur.  It may or may not appear during tests depending
-upon whether any other error(s) noted here are encountered first during execution.
-</p>
-<p><b>
-    The ultimate goal is to remove the need for an outer HTML "wrapper" and have the entire "application" be
-    just an SVG document with all embedded functionality and interactivity contained in that standalone SVG document.
-    This does work (these widgets were first implemented in JS prior to Dart's existence and it worked fine there), though
-    Dart's API/Library issues prevent this currently.</b>
-</p>
-
-</body>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  </head>
+  <body class="Examples">
+    <h1>Dart / SVG dart-squid Samples Index</h1>
+    <div>
+      <p>Note: these samples appear here only in their native DART version and will require the <a href="http://gsdview.appspot.com/dartium-archive/continuous/" target="_blank">Dartium browser for
+          your platform.</a> Dartium browser is also included with the <a href="http://gsdview.appspot.com/dart-editor-archive-integration/latest/" target="_blank">Dart Editor</a>.</p>
+    </div>
+    <h2>Framework Documentation</h2>
+    <h3><a href="http://mv4t.com/dart-squid/docs/dart_squid.html">dart-squid Framework API full "dartdocs"</a></h3>
+    <br>
+    <h2>dart-squid Sample #1</h2>
+    <p><b>NOTE: As of recent Dartium builds (based on Chrome v25.x), the refresh of the SVG objects (repaint regions) is completely messed up.&nbsp; For some reason, the browser is no longer
+        repainting anything outside of a rectangular area whose extent is defined having a width ending at the right-most "menu button" widget and a height that has no relation to anything.&nbsp; But,
+        the browser WILL repaint SVG items anywhere on the screen IF you manually resize the browser window.&nbsp; It is bugs like this that prevent any real progress on this component set.&nbsp; It
+        has been one issue after another and constantly-changing browser and/or Dart-library issues breaking what used to work just fine in a native JS-only implementation of this Widget set.&nbsp; As
+        of December, 2012, if some stability does not come to the browser and Dart SVG code and rendering, this project is most likely going to be abandon in favor of native JS code, a different
+        target-browser, a native Windows WPF approach, or some such alternative.</b></p>
+    <h3><a href="./sample-1/sample_1.html">Sample #1 (SVG wrapped in HTML)</a></h3>
+    <p>This is a very basic visual demonstration of the <strong>dart-squid Widgets</strong> in action.
+      Play around a bit and you will notice some alignment features (between widgets and related to browser-window boundaries),
+      some position-constraint features that invoke during movement,
+      the ability to hide/show Widgets (including any hierarchically contained), multi-select, re-size/movement, and so forth.</p>
+    <h3><a href="./sample-1/sample_1.svg">Sample #1 (SVG)</a></h3>
+    <p>
+    </p>
+    <hr>
+    <b>Note:</b> Although the reported
+    <a href="http://code.google.com/p/dart/issues/detail?id=2977" target="_blank">Dart Issue 2977
+      (ElementImplementation behavior fluctuates based on containing doc type (HTML vs. SVG)</a>
+    is marked as "fixed", there is still some implementation difference between HTML-"wrapped" SVG and standalone.&nbsp; The standalone SVG STILL does not work (hits an error stating: "<span
+      style="color: rgb(255, 0, 0); font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal;
+      line-height: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto;
+      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">Exception: NoSuchMethodError : method not found: '$dom_children'</span>"). &nbsp;
+    Sadly, this type of continual problems in the Dart SVG implementations are making the goals of this project impossible to implement.
+    <p></p>
+    <p>Another issue with the non-wrapped SVG version is odd behavior with event-code removal, thus making the
+      selection (and de-selection) of widgets unpredictable or impossible. Again, this may be very much related to issue
+      2977 (with regards to the element hierarchy in DART) since, by simply wrapping this SVG doc with a dummy-HTML file,
+      the behavior within the embedded SVG is totally as expected and predictable. Clearly something is screwy in the Dart
+      HTML library with regards to SVG elements that are "standalone" vs. "wrapped".</p>
+    <p><b> The ultimate goal is to remove the need for an outer HTML "wrapper" and have the entire "application" be just an SVG document with all embedded functionality and interactivity contained in
+        that standalone SVG document. This does work (these widgets were first implemented in JS prior to Dart's existence and it worked fine there), though Dart's API/Library issues prevent this
+        currently.</b>
+    </p>
+  </body>
 </html>

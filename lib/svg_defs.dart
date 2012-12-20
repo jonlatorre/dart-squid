@@ -86,11 +86,11 @@ class ConstSvgDefsItem {
 * SVG content by way of SVG <defs>.  [ConstSvgDefsItem] instances are provided to
 * this class via add... methods and/or constructor parameter.
 *
-* SVGElement(s) containing re-usable SVG <defs> content are created for each provided
+* SvgElement(s) containing re-usable SVG <defs> content are created for each provided
 * [ConstSvgDefsItem] definition and made available throughout an [Application] --
 * most notably images and SVG filters and the like are contained.  A given item def's
-* associated SVGElement is accessible via the `[]` operator using "id" value provided
-* in [ConstSvgDefsItem].   That SVGElement can be "used" (i.e., cloned elsewhere in
+* associated SvgElement is accessible via the `[]` operator using "id" value provided
+* in [ConstSvgDefsItem].   That SvgElement can be "used" (i.e., cloned elsewhere in
 * the application) via the [useSvgDef] method.
 */
 //███████████████████████████████████████████████████████████████████████████████████████
@@ -109,18 +109,18 @@ class SvgDefs {
     * e.g., may wish to keep image-sizing information handy, etc.
     */
     //═══════════════════════════════════════════════════════════════════════════════════════
-    Map<String, SVGElement> _svgDefsMap = new  Map();
+    Map<String, SvgElement> _svgDefsMap = new  Map();
 
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
-    * Returns the [SVGElement] (from within our SVG <defs> structure) associated with [key],
+    * Returns the [SvgElement] (from within our SVG <defs> structure) associated with [key],
     * whose value must match one of the [ConstSvgDefsItem.defId] values that has been
     * provided via [addDefToSvgRoot] or [addDefsInListToSvgRoot] methods (or constructor parm).
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    SVGElement operator [] (String key) => _svgDefsMap[key];
+    SvgElement operator [] (String key) => _svgDefsMap[key];
 
 
 
@@ -136,13 +136,13 @@ class SvgDefs {
     *
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    void addDefToSvgRoot(ConstSvgDefsItem defItem, SVGElement rootDefsElement, bool isRunningOnServer) {
-        SVGElement tempSVG = null;
-        tempSVG = new SVGElement.tag('svg');
+    void addDefToSvgRoot(ConstSvgDefsItem defItem, SvgElement rootDefsElement, bool isRunningOnServer) {
+        SvgElement tempSVG = null;
+        tempSVG = new SvgElement.tag('svg');
 
         //String-based specifier will take precedence since this works with Apps on server (http:) AND local (file:) filesystem.
         if (defItem.defText != null) {
-            tempSVG.innerHTML = defItem.defText;
+            tempSVG.innerHtml = defItem.defText;
         } else {
             if ((isRunningOnServer) && (defItem.defURL != null)) {
 
@@ -152,13 +152,13 @@ class SvgDefs {
                 request.send();
 
                 if (request.statusText.toUpperCase() == "OK") {
-                    tempSVG.innerHTML = request.responseText;
+                    tempSVG.innerHtml = request.responseText;
                 } else {
-                    throw new Exception('Specified URL is invalid / unreachable; request status = ${request.statusText}. Specified defItem value: \n${defItem.toString()}');
+                    throw new StateError('Specified URL is invalid / unreachable; request status = ${request.statusText}. Specified defItem value: \n${defItem.toString()}');
                 }
             } else {
                 tempSVG = null;
-                throw new Exception('Specified defItem value(s) not compatible with run-environment (e.g., only URL provided but not running from HTTP? neither Text nor URL provided in defItem?): \n${defItem.toString()}');
+                throw new UnsupportedError('Specified defItem value(s) not compatible with run-environment (e.g., only URL provided but not running from HTTP? neither Text nor URL provided in defItem?): \n${defItem.toString()}');
             }
         }
 
@@ -190,11 +190,11 @@ class SvgDefs {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void addDefsInListToSvgRoot(List<ConstSvgDefsItem> defsList) {
         //get these just once, for optimal speed
-        SVGElement rootDefsElement  = getSvgRootDefsElement();
-        bool isRunningOnServer      = isRunningOnServer();
+        SvgElement rootDefsElement  = getSvgRootDefsElement();
+        bool isOnServer             = isRunningOnServer();
 
         defsList.forEach( (ConstSvgDefsItem defItem) {
-            addDefToSvgRoot(defItem, rootDefsElement, isRunningOnServer);
+            addDefToSvgRoot(defItem, rootDefsElement, isOnServer);
         });
     }
 
@@ -207,7 +207,7 @@ class SvgDefs {
     * an <svg> tag construct for consistency within the [addDefToSvgRoot] method.
     *
     * ## Parameters:
-    *    * [cloneToNode] : the [SVGElement] into which the specified <defs> item will be cloned.
+    *    * [cloneToNode] : the [SvgElement] into which the specified <defs> item will be cloned.
     *    * [defIdToUse]  : the String value of the "id" identifying the <defs> item to clone.
     *    * [idOfNewUseNode] : the "id" value to assign to the cloned <svg> tag.
     *    * [initialDisplayState] : (optionl) determines whether cloned <svg> "use" structure
@@ -215,8 +215,8 @@ class SvgDefs {
     *    (i.e., standard svg display attr values).
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    SVGElement useSvgDef(SVGElement cloneToNode, String defIdToUse, String idOfNewUseNode, [String initialDisplayState='inherit']) {
-        SVGElement _clonedFromDef   = null;
+    SvgElement useSvgDef(SvgElement cloneToNode, String defIdToUse, String idOfNewUseNode, [String initialDisplayState='inherit']) {
+        SvgElement _clonedFromDef   = null;
 
         if (_svgDefsMap[defIdToUse] == null) {
             return null;  //TODO: Throw?
@@ -281,7 +281,7 @@ WITHIN *STATIC SVG STRUCTURES*  but not within DYNAMICALLY CREATED content/struc
 The following approach *should* work once the Dart team fixes the attributes setter to
 support namespaces (need xlink NS for xlink attr!)
 
-    _clonedFromDef = new SVGElement.tag('use');
+    _clonedFromDef = new SvgElement.tag('use');
     _clonedFromDef.attributes = {
         'id': idOfNewUseNode,
         'xlink:href'    : defIdToUse
@@ -294,10 +294,10 @@ See this: http://code.google.com/p/chromium/issues/detail?id=109212 bug report.
 
 --------------------------------------------------------------------------------------
 THE ONLY OTHER APPROACH that worked currently was assigning string-representation
-of the entire-SVG-symbol into the innerHTML; this works inside HTML docs at least,
+of the entire-SVG-symbol into the innerHtml; this works inside HTML docs at least,
 though Dart Issue 2977 prevents standalone SVG docs from working with this code:
 
-    cloneToNode.innerHTML = svgStructureAsString;
+    cloneToNode.innerHtml = svgStructureAsString;
 
 */
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

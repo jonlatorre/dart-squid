@@ -34,22 +34,22 @@ BEGIN: IFrameFO Class
 class IFrameFO {
     //These variables obtain their value during createFOStructure
     Widget              _ptrWidget              = null;
-    SVGElement          _ptrSVGElementForFO     = null;
-    String              _idOfSVGElementForFO    = '';
+    SvgElement          _ptrSvgElementForFO     = null;
+    String              _idOfSvgElementForFO    = '';
 
     //these hold refs to our created elements, and inner content
-    SVGForeignObjectElement _foElementRef       = null;
+    ForeignObjectElement _foElementRef       = null;
     Element             _iFrameObj              = null;
 
     //accessors
-    SVGElement      get svgFO                   => _foElementRef;
+    SvgElement      get svgFO                   => _foElementRef;
     Element         get iFrame                  => _iFrameObj;
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Creates the following FO / HTML structure within the [Widget] specified by [widget] parameter,
-    * within the Widget's client-region (i.e., [Widget.clientSVGElement]).
+    * within the Widget's client-region (i.e., [Widget.clientSvgElement]).
     *
     *     <foreignObject x="10" y="10" width="100" height="150">  //NOTE: Metrics filled in later
     *         <iframe>
@@ -60,23 +60,23 @@ class IFrameFO {
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     void createFOStructure(Widget widget) {
         _ptrWidget              = widget;
-        _ptrSVGElementForFO     = widget.clientSVGElement;
-        _idOfSVGElementForFO    = _ptrSVGElementForFO.attributes['id'];
+        _ptrSvgElementForFO     = widget.clientSvgElement;
+        _idOfSvgElementForFO    = _ptrSvgElementForFO.attributes['id'];
 
         _foElementRef.attributes = {
             'display'       : 'inherit',
-            'id'            : "${_idOfSVGElementForFO}_ContainerFO"
+            'id'            : "${_idOfSvgElementForFO}_ContainerFO"
         };
 
         _iFrameObj.attributes = {
-            'id'            : "${_idOfSVGElementForFO}_ContainerFOiFrame",
+            'id'            : "${_idOfSvgElementForFO}_ContainerFOiFrame",
             'marginwidth'   : "0",
             'marginheight'  : "0",
             'scrolling'     : "auto"
         };
 
         _foElementRef.nodes.add(_iFrameObj);
-        _ptrSVGElementForFO.nodes.add(_foElementRef);
+        _ptrSvgElementForFO.nodes.add(_foElementRef);
     }
 
 
@@ -137,7 +137,7 @@ class IFrameFO {
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     IFrameFO() :
-        _foElementRef   = new SVGElement.tag('foreignObject'),
+        _foElementRef   = new SvgElement.tag('foreignObject'),
         _iFrameObj      = new IFrameElement();
 
 } //IFrameFO
