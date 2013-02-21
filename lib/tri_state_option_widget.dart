@@ -165,7 +165,7 @@ class TriStateOptionWidget extends Widget {
 
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
-    For each provided image reference, create a cloned (i.e., "use") structure equivalance
+    For each provided image reference, create a cloned (i.e., "use") structure equivalence
     of that reference inside this Widget's _clientSvgElement.
     ═══════════════════════════════════════════════════════════════════════════════════════
     */

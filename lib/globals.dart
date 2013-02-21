@@ -51,7 +51,7 @@ final Map<String, TracingInfo> TracingDefs = const {
     '6'   : const TracingInfo(false , 'Widget'          , 'mouseMove method...'),
     '7'   : const TracingInfo(false , 'Widget'          , 'move > proposed-X-axis-move-test...'),
 //TODO    '8'   : const TracingInfo(false , 'Widget'          , '_updateStylePropertiesListValuesFromCSS...'),    //use with traces 101,102
-    '100' : const TracingInfo(false  , 'Application'     , '(Application) _updateCanvasBounds > nested Future<ElementRect> > FIRING _onAppReady (ChangeHandler) NOW and STARTING APPLICATION.'),
+//    '100' : const TracingInfo(false  , 'Application'     , '(Application) RETIRED THIS ONE.'),
     '101' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (BEGIN):'),
     '102' : const TracingInfo(false , 'Application'     , 'Application.getCSSPropertyValuesForClassNames (StyleTarget list loop):'),
     '103' : const TracingInfo(false , 'Application'     , '_updateCanvasBounds > nested Future<ElementRect>...'),
@@ -62,9 +62,6 @@ final Map<String, TracingInfo> TracingDefs = const {
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // BEGIN: Misc
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-
-///Widget-set source-code version label.
-const String DART_SQUID_VERSION = '2012-10-01 : 0.3.5';
 
 ///Used to produce quickly recognizable visual breaks between logical sections of console-logged output and such; likewise for line2, 3, 4, and 5 styles.
 const String DIVIDER_LINE_1 = '███████████████████████████████████████████████████████████████████████████████████████████';
@@ -310,7 +307,7 @@ void logToConsole(List<dynamic> itemsToLog) {
             window.console.log(valueToWrite);
             break;}
           case 'other': {
-            console.log(valueToWrite);
+            window.console.log(valueToWrite);
             break;}
         }
       

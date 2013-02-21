@@ -63,7 +63,7 @@ BEGIN: EVENT-HANDLING CLASS(ES)
 * When SVG elements are created as part of a Widget, native-SVG-event-handlers are created
 * on some of those SVG Elements,  e.g.:
 *
-*     someSvgGroupElement.on.click.add(mouseClick)
+*     someSvgGroupElement.onClick.listen((event) => mouseClickHandler(event)); //TODO: which simply calls mouseCLick()
 *
 * ...where 'mouseClick' is the standard widget-class method [Widget.mouseClick] .
 * This directs the native SVG event-handlers to execute a standard Widget method when an

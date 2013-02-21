@@ -55,13 +55,13 @@
 * *SVG Document:* the following lines will be placed just after the opening (outermost)
 * SVG element tag:
 *
-*     <script type="application/javascript" xlink:href="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"/>
+*     <script type="application/javascript" xlink:href="../../lib/packages/browser/dart.js"></script>
 *     <script type="application/dart" xlink:href="yourAppFileContainingMain.dart"/>
 *
 * *HTML Document:* the following lines will be placed just after the closing </body>
 * element tag:
 *
-*     <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+*     <script src="../../lib/packages/browser/dart.js"></script>
 *     <script type="application/dart" src="yourAppFileContainingMain.dart"/>
 *
 * **Note:** see the resources sub-directory within the dart-squid project for a
@@ -83,30 +83,12 @@
 *     const String APP_CANVAS_ELEMENT_ID    = '#dartsquidAppCanvas';
 *     const String APP_NAME                 = 'myAppName';
 *
-* Still within `main()` we define a method that the [Application] object will transfer
-* execution to when it is "ready" (i.e., after it has finished computing canvas
-* dimensions and performing basic setup tasks). *Note: this was necessary due to the
-* way [Future] completions within the Application object behave with regards
-* to the execution-flow of `main()`.*
-*
-* E.g., this will be our primary application method:
-*
-*     void runApplication() {
-*        ... the primary application code will go here;
-*        ... create various Widgets, define properties, setup event-handlers, etc.
-*        ... see samples for more ...
-*     }
-*
-* Essentially, that method becomes the "main" program-execution path
-* once the Application starts up.
-*
 * Just before the end of `main()', we place code that instantiates our [Application]
 * object like this:
 *
-*     globalApplicationObject = new squid.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), runApplication );
+*     globalApplicationObject = new dsvg.Application(APP_NAME, document.query(APP_CANVAS_ELEMENT_ID), optionalImageList );
 *
-* Notice that `runApplication` is a *method reference* (to a callback routine)
-* where the application-execution will begin, as mentioned earlier.
+* Now we are ready for writing our widget-based application code to execute...
 *
 *  ---
 */
@@ -120,6 +102,7 @@ library dart_squid;
 import 'dart:html';
 import 'dart:math';
 import 'dart:svg';
+import 'dart:async';
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // Code that makes up the dart-squid framework

@@ -1407,6 +1407,10 @@ class Widget {
 
         //Performance optimization -- we can redraw now.
         _applicationObject.canvas.unsuspendRedraw(handle);
+
+        //TODO: TOTAL HACK TO FORCE CHROME V25+ TO ACTUALLY REPAINT THINGS!
+        toggleVisibility();
+        toggleVisibility();
     } //...ReAlign()
 
 
@@ -1489,7 +1493,6 @@ class Widget {
         _borders[eWidgetPart.INNER].R.updateBorderLineElements();
         _borders[eWidgetPart.INNER].B.updateBorderLineElements();
         _borders[eWidgetPart.INNER].L.updateBorderLineElements();
-
     } //...renderBordersAndBackground
 
 
@@ -1518,14 +1521,17 @@ class Widget {
     */
     void handleIsMovableIsSizableChanges() {
         if ((!_isSizable.x) && (!_isSizable.y) && (!_isMovable.x) && (!_isMovable.y)) {
-            _borders.allBordersSVGGroupElement.on.mouseDown.remove(mouseDownHandler);
+
+            if (_borders._onMouseDown != null)  { _borders._onMouseDown.cancel(); _borders._onMouseDown  = null; };
+
             _entireGroupSvgElement.attributes['cursor'] = 'default';
             _isSelectable = false;
             return;
         }
 
         _borders.allBordersSVGGroupElement.attributes['cursor'] = 'move';
-        _borders.allBordersSVGGroupElement.on.mouseDown.add(mouseDownHandler);
+        _borders._onMouseDown = _borders.allBordersSVGGroupElement.onMouseDown.listen((event) => mouseDownHandler(event));
+
         _isSelectable = true;
     }
 
@@ -1642,8 +1648,8 @@ class Widget {
 
         //TODO: CLEANER WAY?  This is a hack to address how there is no easy way to detect if a user left the "stage" (i.e., took mouse outside browser/canvas),
         //thus leaving potentially hanging event listeners.
-        _applicationObject.canvas.on.mouseMove.remove(mouseMoveHandler);
-        _applicationObject.canvas.on.mouseUp.remove(mouseUpHandler);
+        if (_applicationObject._onMouseMove != null)  { _applicationObject._onMouseMove.cancel();   _applicationObject._onMouseMove = null; };
+        if (_applicationObject._onMouseUp   != null)  { _applicationObject._onMouseUp.cancel();     _applicationObject._onMouseUp   = null; };
 
         //get out of here if not a valid action on this widget widget.
         if (isMovingAttempt && (!_isMovable.x) && (!_isMovable.y) ) return;
@@ -1678,8 +1684,9 @@ class Widget {
         //Although mousedown is trapped on particular Widget, we need to trap mousemove/mouseup events
         //all over since user can move mouse quicker than event-loop-cycle, and thus the cursor-pos
         //and associated events can fall somewhere outside of widget, but are still ours to handle.
-        _applicationObject.canvas.on.mouseMove.add(mouseMoveHandler);
-        _applicationObject.canvas.on.mouseUp.add(mouseUpHandler);
+        _applicationObject._onMouseMove  = _applicationObject.canvas.onMouseMove.listen((event) => mouseMoveHandler(event));
+        _applicationObject._onMouseUp    = _applicationObject.canvas.onMouseUp.listen((event) => mouseUpHandler(event));
+
     } //... MouseDown()
 
 
@@ -1761,8 +1768,8 @@ class Widget {
         //test for null because we programmatically call MouseUp to abort Move() that would otherwise violate PosRules
         if (event != null) {event.stopPropagation();}
 
-        _applicationObject.canvas.on.mouseMove.remove(mouseMoveHandler);
-        _applicationObject.canvas.on.mouseUp.remove(mouseUpHandler);
+        if (_applicationObject._onMouseMove != null)  { _applicationObject._onMouseMove.cancel();   _applicationObject._onMouseMove = null; };
+        if (_applicationObject._onMouseUp   != null)  { _applicationObject._onMouseUp.cancel();     _applicationObject._onMouseUp   = null; };
 
         //Process any potential user-assigned event code to occur on mouse up
         _on.mouseUp(new MouseNotifyEventObject(this, event));
@@ -2190,7 +2197,7 @@ class Widget {
         };
 
         _parentSvgElement.nodes.add(_entireGroupSvgElement);
-        _entireGroupSvgElement.on.click.add(mouseClickHandler);
+        _entireGroupSvgElement.onClick.listen((event) => mouseClickHandler(event));
 
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
@@ -2266,7 +2273,6 @@ class Widget {
         */
         _showHint   = _applicationObject.showHint;
         _hintPause  = _applicationObject.hintPause;
-
     } //...Create()
 
 

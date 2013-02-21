@@ -1,52 +1,120 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
-  <head>
+<head>
     <link type="text/css" rel="stylesheet" media="all" href="../resources/dart_squid_defaults.css">
     <title>Dart / SVG dart-squid Samples Index</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
-  </head>
-  <body class="Examples">
-    <h1>Dart / SVG dart-squid Samples Index</h1>
-    <div>
-      <p>Note: these samples appear here only in their native DART version and will require the <a href="http://gsdview.appspot.com/dartium-archive/continuous/" target="_blank">Dartium browser for
-          your platform.</a> Dartium browser is also included with the <a href="http://gsdview.appspot.com/dart-editor-archive-integration/latest/" target="_blank">Dart Editor</a>.</p>
-    </div>
-    <h2>Framework Documentation</h2>
-    <h3><a href="http://mv4t.com/dart-squid/docs/dart_squid.html">dart-squid Framework API full "dartdocs"</a></h3>
-    <br>
-    <h2>dart-squid Sample #1</h2>
-    <p><b>NOTE: As of recent Dartium builds (based on Chrome v25.x), the refresh of the SVG objects (repaint regions) is completely messed up.&nbsp; For some reason, the browser is no longer
-        repainting anything outside of a rectangular area whose extent is defined having a width ending at the right-most "menu button" widget and a height that has no relation to anything.&nbsp; But,
-        the browser WILL repaint SVG items anywhere on the screen IF you manually resize the browser window.&nbsp; It is bugs like this that prevent any real progress on this component set.&nbsp; It
-        has been one issue after another and constantly-changing browser and/or Dart-library issues breaking what used to work just fine in a native JS-only implementation of this Widget set.&nbsp; As
-        of December, 2012, if some stability does not come to the browser and Dart SVG code and rendering, this project is most likely going to be abandon in favor of native JS code, a different
-        target-browser, a native Windows WPF approach, or some such alternative.</b></p>
-    <h3><a href="./sample-1/sample_1.html">Sample #1 (SVG wrapped in HTML)</a></h3>
-    <p>This is a very basic visual demonstration of the <strong>dart-squid Widgets</strong> in action.
-      Play around a bit and you will notice some alignment features (between widgets and related to browser-window boundaries),
-      some position-constraint features that invoke during movement,
-      the ability to hide/show Widgets (including any hierarchically contained), multi-select, re-size/movement, and so forth.</p>
-    <h3><a href="./sample-1/sample_1.svg">Sample #1 (SVG)</a></h3>
-    <p>
+    <meta name="robots" content="nofollow"/>
+</head>
+<body class="Examples">
+<h1>Dart / SVG dart-squid Samples Index</h1>
+
+<div>
+    <p>Note: these samples appear here only in their native DART version and will require the <a
+            href="http://gsdview.appspot.com/dartium-archive/continuous/" target="_blank">Dartium browser for
+        your platform.</a> Dartium browser is also included with the <a
+            href="http://gsdview.appspot.com/dart-editor-archive-integration/latest/" target="_blank">Dart Editor</a>.
     </p>
-    <hr>
-    <b>Note:</b> Although the reported
-    <a href="http://code.google.com/p/dart/issues/detail?id=2977" target="_blank">Dart Issue 2977
-      (ElementImplementation behavior fluctuates based on containing doc type (HTML vs. SVG)</a>
-    is marked as "fixed", there is still some implementation difference between HTML-"wrapped" SVG and standalone.&nbsp; The standalone SVG STILL does not work (hits an error stating: "<span
-      style="color: rgb(255, 0, 0); font-family: Consolas, 'Lucida Console', monospace; font-size: 12px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal;
-      line-height: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto;
-      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">Exception: NoSuchMethodError : method not found: '$dom_children'</span>"). &nbsp;
-    Sadly, this type of continual problems in the Dart SVG implementations are making the goals of this project impossible to implement.
-    <p></p>
-    <p>Another issue with the non-wrapped SVG version is odd behavior with event-code removal, thus making the
-      selection (and de-selection) of widgets unpredictable or impossible. Again, this may be very much related to issue
-      2977 (with regards to the element hierarchy in DART) since, by simply wrapping this SVG doc with a dummy-HTML file,
-      the behavior within the embedded SVG is totally as expected and predictable. Clearly something is screwy in the Dart
-      HTML library with regards to SVG elements that are "standalone" vs. "wrapped".</p>
-    <p><b> The ultimate goal is to remove the need for an outer HTML "wrapper" and have the entire "application" be just an SVG document with all embedded functionality and interactivity contained in
-        that standalone SVG document. This does work (these widgets were first implemented in JS prior to Dart's existence and it worked fine there), though Dart's API/Library issues prevent this
-        currently.</b>
-    </p>
-  </body>
+</div>
+<h2>Framework Documentation</h2>
+
+<h3><a href="http://mv4t.com/dart-squid/docs/dart_squid.html">dart-squid Framework API full "dartdocs"</a></h3>
+<br>
+
+<h2>dart-squid Sample #1</h2>
+<h3><a href="./sample-1/sample_1.html">Sample #1 (SVG wrapped in HTML)</a></h3>
+
+<p>This is a very basic visual demonstration of the <strong>dart-squid Widgets</strong> in action.
+    Play around a bit and you will notice some alignment features (between widgets and related to browser-window
+    boundaries),
+    some position-constraint features that invoke during movement,
+    the ability to hide/show Widgets (including any hierarchically contained), multi-select, re-size/movement, and so
+    forth.</p>
+
+<p><b>NOTE: As of recent Dartium builds (based on Chrome v25.x+), the visual refresh of SVG objects (repaint regions)
+    is rather messed up (**there are some "workarounds" I discuss (below) &mdash; like how the repaint issue is
+    partially
+    resolved simply by launching Dartium from the Dart Editor).</b>
+</p>
+
+<p>For some reason,
+    the browser is no longer repainting SVG objects outside of an arbitrary rectangular area
+    whose extent is currently defined as approximately having a width ending at the
+    right-most "menu button" widget and a height that has no relation to anything.&nbsp;
+    But, the browser WILL repaint SVG items anywhere on the screen IF you manually resize the browser window.&nbsp;
+    It is bugs like this that prevent any substantial progress on this component set.&nbsp;
+    If proper SVG repaints do not return to SVG rendering,
+    this project is likely to be in a "holding pattern" and only implement minor Dart language / API updates while
+    awaiting SVG fixes.
+</p>
+
+<p>
+    In Feb-2013 widget build, I implemented a PARTIAL workaround by forcing widgets to undergo a complete Hide()/Show()
+    (i.e., toggled their visibility on/off) while in a Move()/Size() operation to force repaints,
+    but they will not all INITIALLY show until you slightly-resize the browser window first.
+    And, nested SVG widgets do not yet repaint if in the region(s) affected by Webkit's
+    refusal-to-repaint-bug!
+</p>
+
+<p>
+<span style="font-size: 1.2em; color:  rgb(255, 0, 0); background-color: rgb(255, 255, 255);">FEB-2013 UPDATE: as of latest Dartium build
+    (Version 26.0.1403.0), there are some less-than-optimal "workaround" to the
+    SVG-Repaint-Region problem available, including:</span>
+<ul>
+    <li><strong>Courtesy of the NEW developer-tools settings</strong> (Chrome v26+) &mdsahs; although RATHER SLOW
+        (rendering) will
+        ensue &mdash;
+        change the dev tools "Rendering" setting such that <b>"Enable
+            continuous page repainting"</b> is checked. This setting is located by clicking the "gear icon" in
+        lower-right corner of developer tools window. IN ADDITION, this only works as long as the developer-tools
+        (bottom window) remains "open", if even minimally in
+        size
+        (i.e., you can shrink its height to zero; just don't "close" it).
+        <br>With this SLOW option enabled, Widgets will repaint anywhere on the screen like they used to
+        in pre-Chrome-25.x versions of Chromium.
+    </li>
+    <li><strong>Use a Dartium-Launch to view the SVG Widget HTML pages, from within the Dart Editor.</strong>
+        Whatever the Dart Editor is doing, it somehow forces the SVG Repaints to occur properly, but only for "top
+        level" widgets,
+        even without tweaking the developer-tools setting as mentioned above! So, this is a partial "workaround", but
+        you
+        still need to enable dev-tools-continuous-page-repainting to resolve <b>nested widgets repainting issues</b>.
+    </li>
+    <li>Launch in Dartium outside of the Editor, but prior to initial-widget-interaction, <strong>simply resize your
+        browser window a bit</strong>
+        and the Widget(s) should all show and then remain functional (but, nested widgets will remain problematic
+        without continuous repaint).
+    </li>
+</ul>
+</p>
+
+<h3><a href="./sample-1/sample_1.svg">Sample #1 (SVG)</a></h3>
+<hr>
+<b>Note:</b>
+<a href="http://code.google.com/p/dart/issues/detail?id=2977" target="_blank">Dart Issue 2977 &mdash; originally
+    reported in May, 2012 &mdash;
+    (ElementImplementation behavior fluctuates based on containing doc type (HTML vs. SVG)</a>
+is marked as "fixed", but implementation differences between HTML-"wrapped" SVG and standalone SVG persist.&nbsp; <b>Standalone
+    SVG version REMAINS broken</b> (hits an error stating: "<span
+        style="color: rgb(255, 0, 0); background-color: rgb(255, 255, 255);">Exception: NoSuchMethodError : method not found: '$dom_children'</span>").
+&nbsp;
+<br>
+<br><b>The Dart team has since created a NEW issue with no timeline/milestone target for a fix</b>: see
+<a href="http://code.google.com/p/dart/issues/detail?id=6947" target="_blank">Dart Issue 6947 &mdash; Support top-level
+    SVG documents.</a>
+Sadly, these continual problems in the Dart SVG implementations are making the goals of this project impossible to
+implement.
+<p>Another issue with the non-wrapped SVG version is odd behavior with event-code removal, thus making the
+    selection (and de-selection) of widgets unpredictable or impossible. Again, this may be very much related to issue
+    6947 (with regards to the element hierarchy in DART) since, by simply wrapping this SVG doc with a dummy-HTML file,
+    the behavior within the embedded SVG is totally as expected and predictable. Clearly something is screwy in the Dart
+    HTML library with regards to SVG elements that are "standalone" vs. "wrapped".</p>
+
+<p><b> The ultimate goal is to remove the need for an outer HTML "wrapper" and have the entire "application" be just an
+    SVG document with all embedded functionality and interactivity contained in
+    that standalone SVG document. This does work (these widgets were first implemented in JS prior to Dart's existence
+    and it worked fine there), though Dart's API/Library issues prevent this
+    currently.</b>
+</p>
+</body>
 </html>

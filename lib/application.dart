@@ -138,27 +138,6 @@ class Application {
     ///Off-screen CSS calcs element to have available at all times.
     SvgElement    _cssTestingRect  = null;
 
-    /*
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    These two variables are used only during initial "launch" of the application.
-    This was implemented as a workaround to how the Dart future(s), as of 4/15/2012,  were
-    being processed within the _UpdateCanvasBounds method.  Our application object is
-    instantiated from  main() (i.e., initiation via outer main thread), and for whatever
-    reason, the future(s) in here would only complete after ALL of main() finished.
-    So, this callback essentially transfers control to another routine inside main(),
-    only after our initial future(s) complete.  A flag prevents repeats.
-
-    I.e., this is a HACK due to the fact that the only *accurate* and *predictable* way
-    to get screen-dimensions (browser-viewable-region) is through these futures, since
-    Dart no longer exposes the values in non-future-ways. (LAME!) JS had no such issues.
-    Is this perhaps over-engineering (by Dart team) of client.values (screen dimensions)
-    access? ...if JS can expose without futures, why did Dart choose to make these deferred
-    values?  It is not like it takes more than a couple milliseconds to obtain these, right?
-    ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
-    */
-    ChangeHandler   _onAppReady     = null;
-    bool            _isAppReady     = false;
-
 
     List<Widget>    _widgetsList    = new List<Widget>();
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -186,6 +165,11 @@ class Application {
     //(be it movement/sizing, or otherwise)
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     List<Widget>    selectedWidgetsList = new List<Widget>();
+
+
+    //todo: DOCUMENT
+    StreamSubscription  _onMouseMove  = null;
+    StreamSubscription  _onMouseUp    = null;
 
 
     /*
@@ -368,7 +352,6 @@ class Application {
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     */
     void _createMetricsTestingObjects() {
-        //the dart:html version (not yet supported by getComputedStyle)
         if (_cssTestingRect == null) {
             _cssTestingRect = new SvgElement.tag('rect');
             _canvas.nodes.add(_cssTestingRect);
@@ -419,36 +402,21 @@ class Application {
         /*
         ═══════════════════════════════════════════════════════════════════════════════════════
         NOTES:
-        We use the _canvas.viewportElement.rect future to get access to the "bounding"
+        We use the _canvas.viewportElement.getBoundingClientRect() to get access to the "bounding"
         rect that returns the ENTIRE SVG Element size (vs. viewport), BUT it is needed
         in the case where our SVG is embedded inside an HTML document, since the top and left
         values reflect the proper inset (in browser window) of margin width and/or other HTML
         elements taking up space around our SVG.
 
-        We use the document.documentElement.rect future to get access to the "client"
+        We use the document.documentElement.rect to get access to the "client"
         rect information that includes proper browser-view-region (including consideration for
         scrollbar(s) if present) for the right and bottom values.
 
         Using these two "rects", we can compute our real working-region for any
         align-to-viewable-area situations.
-
-        ALSO IMPORTANT:
-        This Future-based approach produces correct value, but but takes forever to return value!
-        (i.e., after entire main() finishes!)
-        See comments included with _isAppReady/_onAppReady variables for more info about
-        how/why callback was used.
-
-        DOING THIS WITHOUT FUTURES: (EASY IN JS; dart:html framework made this ridiculous)
-        The following few lines of code were the ONLY "immediate" version (non Future) that worked
-        in Dartium from what I could determine, though the need to figure out scrollbar width
-        was an added layer of garbage subject to issues:
-
-            static const int scrollBarWidth  = 17;  //"standard" width?
-            _canvasBounds.R  = (_canvasBounds.L + window.innerWidth  - scrollBarWidth);
-            _canvasBounds.B  = (_canvasBounds.T + window.innerHeight - scrollBarWidth);
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-      window.requestLayoutFrame(() {
+      window.setImmediate(() {
          ClientRect _viewportRect;
         _viewportRect = _canvas.viewportElement.getBoundingClientRect();   //returns size of *entire* SVG; has valid left/top margin info too.
 
@@ -461,17 +429,6 @@ class Application {
         _canvasBounds.B     = document.documentElement.clientHeight; //(_canvasBounds.T  + _docRect.bottom  - _marginTop);
       });
 
-//        logToConsole([
-//                      '_marginLeft: ${_marginLeft.toString()}',
-//                      '_marginLeft2: ${document.documentElement.clientLeft.toString()}',
-//                      '_marginTop:  ${_marginTop.toString()}',
-////                      '_marginRight:  ${_viewportRect.right.toString()}' //3010
-////                      '_marginRight:  ${_canvas.clientWidth.toString()}' //0
-////                      '_marginRight:  ${_viewportRect.width.toString()}' //3000
-//                      '_marginRight:  ${document.documentElement.clientWidth.toString()}' //1592
-//        ]);
-//
-        
     } //... _updateCanvasBounds()
 
 
@@ -556,18 +513,6 @@ class Application {
     /*
     ▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     getCSSPropertyValuesForClassNames
-
-    I TRIED to use the Future<CSSStyleDeclaration> implementation of getComputedStyle(),
-    but NOTHING would work (UPDATE: this was probably due to same issue as getting window-size
-    using a Future, which had to wait for all code in main() to finish before run).
-
-    The Dart source code appears to just be returning window.$dom_getComputedStyle() anyhow.
-
-    http://code.google.com/searchframe#TDGadvYaD94/trunk/dart/lib/html/dartium/html_dartium.dart
-        (search for "getComputedStyle" to find relevant lines)
-
-    So, INSTEAD OF USING a FUTURE, I just hard-coded the $dom_... approach here.
-
     ═══════════════════════════════════════════════════════════════════════════════════════
     ISSUES! BUG IN WEBKIT!  (NEED TO REPORT - TODO)
     More of the WebKit buggy mess has been exposed, this time with regard to zoom-factors
@@ -660,8 +605,8 @@ class Application {
     * *after any size properties* or they will interpret to zero here!!!
     * Numbers without UOM (unit of measure) suffix will always yield *zero*!
     *
-    * Within this method, the calls to [window.$dom_getComputedStyle] ==>
-    * [CSSStyleDeclaration.getPropertyValue] ==>
+    * Within this method, the call to getComputedStyle yields a [CssStyleDeclaration] ==>
+    * then, for dimension-related properties, [CSSStyleDeclaration.getPropertyValue]
     * yields *whole number* ([int]) values (in *px*),
     * and *requires* a specified UOM in the CSS stylesheet definitions to yield desired value.
     *
@@ -684,8 +629,8 @@ class Application {
 
         setSVGAttributes(_cssTestingRect, {'class': selectorNames});
 
-        //TODO: NOTE THAT SECOND PARM OF getComputedStyle is String name of a pseudo-element (e.g., :first-line or :hover and so forth)
-        CSSStyleDeclaration styledec = window.$dom_getComputedStyle(_cssTestingRect, '');
+        //TODO: getComputedStyle has argument String name of a pseudo-element (e.g., :first-line or :hover and so forth); add support for this.
+        CssStyleDeclaration styledec = _cssTestingRect.getComputedStyle('');
 
         for (StyleTarget target in listStylable) {
             if (target.targetObject != targetName) {continue;}
@@ -919,15 +864,12 @@ class Application {
 
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     /**
-    * Constructs an Application object, initializes various properties, and once the
-    * _updateCanvasBounds private method completes its [Future] operations, returns control
-    * to the caller by way of executing the callback handler (method) specified in the
-    * constructor parameter [_onAppReady].
+    * Constructs an Application object, initializes various properties.
     *
     * ### Parameters (required)
     *   * [String] _name: whatever name you wish to give your application — simply notational.
     *   * [SvgSvgElement] canvasElement: the SVG element (obj reference) to use as our Canvas.
-    *   * [ChangeHandler] _onAppReady: method called when this application is "ready" to start
+    *   * [SvgDefs] _imageList: (optional) reference to re-usable SVG object definitions our app uses.
     */
     //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     Application(this._name, SvgSvgElement canvasElement, [this._imageList]) {
@@ -949,8 +891,7 @@ class Application {
         See [_resize] method docs for more details.
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
-        window.on.resize.add( (event) => _resize(event) );
-
+        window.onResize.listen((event) => _resize(event));
 
         //Make sure our off-screen testing objects are available once canvas is ready
         _createMetricsTestingObjects();

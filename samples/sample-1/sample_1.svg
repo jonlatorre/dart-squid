@@ -14,7 +14,7 @@ SEE APPLICATION OBJECT (dartdoc) DOCUMENTATION FOR DISCUSSION ABOUT SVG PROPERTI
         xml:space="preserve"
         >
 
-    <script type="application/javascript" xlink:href="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"/>
+    <script type="application/javascript" xlink:href="../../lib/packages/browser/dart.js"></script>
     <script type="application/dart" xlink:href="sample_1.dart"/>
 
     <!-- PLACEHOLDER FOR "defs" that enable re-use of ImageList items, filters, and such: populated at runtime -->

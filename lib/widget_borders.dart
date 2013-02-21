@@ -686,6 +686,9 @@ class WidgetBorders {
     WidgetBorder    Inner       = null;
     WidgetBorder    Padding     = null;
 
+    //TODO: DOC
+    StreamSubscription  _onMouseDown = null;
+
     /*
     ═══════════════════════════════════════════════════════════════════════════════════════
     Constructor

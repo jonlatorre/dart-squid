@@ -106,11 +106,11 @@ main() {
         'myWidget1'             : const DemoItemDef(100 , 100   , 200   , 100   , true  , true  , true  , true  , true  , 'Widget1'                 , 80    , 'This widget is aligned to bottom/right corner of page.'    ),
         'myWidget2'             : const DemoItemDef(100 , 100   , 400   , 400   , true  , true  , false , false , false , 'Widget2'                 , 80    , 'Container for smaller widget. Limitted to X-axis Moves.'    ),
         'myWidget3'             : const DemoItemDef(100 , 100   , 100   , 100   , true  , true  , true  , true  , true  , 'Widget3'                 , 80    , ''    ),
-        'WidgetNotesWebPage'    : const DemoItemDef(100 , 85    , 650   , 550   , false , true  , true  , false , true  , 'Features & Notes'        , 140   , ''    ),
+        'WidgetNotesWebPage'    : const DemoItemDef(100 , 85    , 650   , 550   , false , true  , true  , false , true  , 'Features & Notes'        , 160   , ''    ),
         'EmbedWebPage'          : const DemoItemDef(0   , 0     , 100   , 100   , false , true  , true  , true  , true  , 'README (via XHR)'        , 160   , ''    ),
-        'FORepaintTestsPage'    : const DemoItemDef(300 , 150   , 800   , 500   , false , true  , true  , true  , true  , 'FO Repaint Tests'        , 140   , ''    ),
+        'FORepaintTestsPage'    : const DemoItemDef(300 , 150   , 800   , 500   , true  , true  , true  , true  , true  , 'FO Repaint Tests'        , 160   , ''    ),
         'checkboxTest'          : const DemoItemDef(220 , 250   , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Tri-state image control: checkbox or similar.'    ),
-        'compositeTest'         : const DemoItemDef(320 , 250   , 150   , 70    , true  , true  , true  , true  , true  , 'Composite'               , 110   , 'Composite Widget (i.e., Widget with embedded Widget(s).'    ),
+        'compositeTest'         : const DemoItemDef(320 , 250   , 170   , 70    , false , true  , true  , true  , true  , 'Composite'               , 110   , 'Composite Widget (i.e., Widget with embedded Widget(s).'    ),
         'EmbedWebPageInIFrame'  : const DemoItemDef(10  , 60    , 700   , 600   , false , true  , true  , true  , true  , 'IFrameWidget'            , 120   , ''    )
     };
 
@@ -374,7 +374,7 @@ main() {
 
 
         var a = {'class':'BoldRed', 'style': 'border:2px solid black; background-color:yellow; text-align:center;'};
-        divHeader.innerHtml = "DART RUN STARTED &mdash; see console for tracing information.";
+        divHeader.innerHtml = "DART RUN STARTED &mdash; see console for tracing information";
         dsvg.setElementAttributes(divHeader, a);
     }
 
@@ -442,7 +442,7 @@ main() {
             'createTestWidget1 method finished; object created:',
             testWidget1
         ]);
-    }
+   }
 
 
     /*
@@ -493,8 +493,8 @@ main() {
         testWidget3
             ..setBounds(120,120,110,150)
             ..align.CX.aspect = dsvg.eAspects.R
-        ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill')
-        ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame', 'FrameOption3')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base', 'RedFill')
+            ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Frame', 'FrameOption3')
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'RaisedBorder')      //Test "outset" ==> "raised" (virtual border style)
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_BorderOuter', 'UseVirtualBorder')  //Test "outset" ==> "raised" (virtual border style)
             ..sizeRules.maxWidth = 200
@@ -571,7 +571,7 @@ main() {
         DemoItemDefs.forEach( (String key, DemoItemDef itemInList) {
             tempMenuButton = new dsvg.HtmlWidget('MenuButton${key}', globalApplicationObject, parentInstance: topMenuHolder);
             tempMenuButton
-                ..setBounds((currentLeft), 10, itemInList.menuButtonWidth, 35)
+                ..setBounds((currentLeft), 10, itemInList.menuButtonWidth, 40)
                 ..align.CY.aspect = dsvg.eAspects.CY
                 ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base,${(itemInList.isShowing ? "LightGreenFill" : "LightPinkFill")}')
                 ..classesCSS.setClassSelectorsForTargetObjectName('Widget_Frame',      'ButtonWidget_Frame')
@@ -704,17 +704,17 @@ main() {
         //HttpRequest cannot load file:///drive:/path_to_file/readme.html. Cross origin requests are only supported for HTTP.
         //Exception: Error: NETWORK_ERR: HttpRequest Exception 101
         if (dsvg.isRunningOnServer()) {
-            getWebPageContent(String url, onSuccess(HttpRequest req)) {
-              // call the web server asynchronously
-              var request = new HttpRequest.get(url, onSuccess);
-            }
 
-            //load the raw response text from the server into our foreign object
-            onSuccess(HttpRequest req) {
-               embeddedWebPage.embeddedFO.htmlDiv.innerHtml= req.responseText;
-            }
-
-            getWebPageContent("dart_squid_SVG_UI_Widgets_Documentation.html", onSuccess);
+            //effectively, getWebPageContent asynchronously now; could use HttpRequest.request and grab the xhr.responseText result
+            //or use the specialized HttpRequest.getString method which returns a String (as we chose here)
+            HttpRequest.getString("dart_squid_SVG_UI_Widgets_Documentation.html").then(
+                (xhr) {
+                    //load the raw response text from the server into our foreign object
+                    embeddedWebPage.embeddedFO.htmlDiv.innerHtml= xhr;
+                },
+                onError: (e) {
+                    // error!
+                });
         }
 
         dsvg.logToConsole([
@@ -747,34 +747,32 @@ main() {
             <div class="FOBackground">
             <span class="BoldRed " >SVG Components Features &amp; Notes</span><br /><br />
             <div class="FeaturesText">
-            Pure-SVG Widget/Component-Set Highlights:<br />
-            <ul>
-                <li><b>Nesting of widgets</b> (visual and true object-hierarchical); rather like Delphi panels and controls.</li>
-                <li><b>Base Widget implements borders, positioning, sizing, and alignment</b> (relative to other Widget parts, parent/container-widgets, or browser-window bounds).</li>
-                <li><b>Borders Sub-Components</b> include margin, outer, frame, inner, and padding (from outermost to innermost).</li>
-                <li><b>Movable/Sizable</b> (including sizing, moving, and position rules/constraints); <b>alignment preserved during move/size operations where it makes sense.</b></li>
-                <li><b>Multi-Select</b> (for Moves) &mdash; depress SHIFT key while left-clicking.</li>
-                <li><b>CSS used to Style parts</b>, including pre-defined border-styles (raised, grooved, flat, etc).</li>
-                <li>Effects via SVG-Filters are possible.)</li>
-            </ul>
-            <br />
-            Note: only Google Chrome browser (Dartium for native Dart version) works <b>reasonably</b> well, and as of Chrome V17/V18/V19/V20/V21/V22/... these issues persist:<br />
-            <ul>
-                <li>Chrome: Webkit (presumably) has MAJOR ISSUES with repaint-rect calculations and control-updates with regards to ForeignObjects (FO)
-                when the page-zoom-factor is other than 100%!
-                Such FO issues have persisted since v17 (repaints not triggered);</li>
-                <li>Chrome: Scrollbar(s) on ForeignObjects get hosed if zoom-factor is not 100% &mdash; Chrome thinks the scrollbar is still at
-                the position it would be at 100% zoom. Likewise content in non-100%-zoom-regions is not properly refreshed, as Webkit is only repainting some
-                arbitrary portion of the area instead.</li>
-                <li>Chrome: Cursor-type not honored by browser after mousedown and mousemove begins;</li>
-                <li>Chrome: re-use of external SVG-file definitions (of filters,etc) by url(file#def-name) reference does not work (FF gets this right).</li>
-                <li><strong>FireFox</strong> (JS version): <b>issues galore!</b>
-                <br />No resize (of browser-window) event is ever triggered, thus relative-position (to browser-dimensions) hosed.
-                <br />In general, getting the browser-dimensions in FF is nearly impossible.
-                <br />Borders not drawing on Widgets (probably position-calc related). Thus, no way to style, move, resize Widgets.
-                <br />And much more...</li>
-            </ul>
-            <br />
+                Pure-SVG Widget/Component-Set Highlights:<br />
+                <ul>
+                    <li><b>Nesting of widgets</b> (visual and true object-hierarchical); rather like Delphi panels and controls.</li>
+                    <li><b>Base Widget implements borders, positioning, sizing, and alignment</b> (relative to other Widget parts, parent/container-widgets, or browser-window bounds).</li>
+                    <li><b>Borders Sub-Components</b> include margin, outer, frame, inner, and padding (from outermost to innermost).</li>
+                    <li><b>Movable/Sizable</b> (including sizing, moving, and position rules/constraints); <b>alignment preserved during move/size operations where it makes sense.</b></li>
+                    <li><b>Multi-Select</b> (for Moves) &mdash; depress SHIFT key while left-clicking.</li>
+                    <li><b>CSS used to Style parts</b>, including pre-defined border-styles (raised, grooved, flat, etc).</li>
+                    <li>Effects via SVG-Filters are possible.)</li>
+                </ul>
+                <br />
+                Note: only Google Chrome browser (Dartium for native Dart version) works <b>reasonably</b> well, and as of Chrome V26 these issues persist:<br />
+                <ul>
+                    <li>Chrome: Webkit (presumably) has MAJOR ISSUES with repaint-rect calculations for SVG objects.  See the
+                    <a href="../samples-index.html">samples-index page</a> for more details;</li>
+                    <li>Chrome: Scrollbar(s) on ForeignObjects get hosed if zoom-factor is not 100% &mdash; Chrome thinks the scrollbar is still at
+                    the position it would be at 100% zoom.</li>
+                    <li>Chrome: Cursor-type not honored by browser after mousedown and mousemove begins &mdash; a recent webkit patch (for V27+? perhaps) may finally fix this;</li>
+                    <li>Chrome: re-use of external SVG-file definitions (of filters,etc) by url(file#def-name) reference does not work (FF gets this right).</li>
+                    <li><strong>FireFox</strong> (JS version): <b>issues galore!</b>
+                    <br />No resize (of browser-window) event is ever triggered, thus relative-position (to browser-dimensions) hosed.
+                    <br />In general, getting the browser-dimensions in FF is nearly impossible.
+                    <br />Borders not drawing on Widgets (probably position-calc related). Thus, no way to style, move, resize Widgets.
+                    <br />And much more...</li>
+                </ul>
+                <br />
             </div>
             </div>
         ''';
@@ -806,9 +804,8 @@ main() {
         String          selectedColorValue      = '';
         String          selectFrameWidthValue   = '';
 
-        //findSelectBox = document.query("#comboColor");  //works
-        colorSelectElement      = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboColor");    //works - is this "faster" approach than using "query" (i.e., limits search to div)?
-        frameWidthSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboFrameWidth");
+        colorSelectElement      = document.query("#comboColor");
+        frameWidthSelectElement = document.query("#comboFrameWidth");
 
         //Gets the "value" portion of first-selected option in select-element. (e.g., "RedColor")
         selectedColorValue      = colorSelectElement.value;
@@ -847,8 +844,14 @@ main() {
 
         foRepaintTests.caption = '''
             <div class="FORepaintTest" style="background-color: #fff8dc; " >
-            <span class="BoldRed" >SVG Components FO Repaint Tests</span>
-            <p>This is a HtmlWidget that uses <b>SVG ForeignObject (FO)</b> to embed HTML content.</p>
+            <span class="BoldRed" >SVG Components FO (SVG Foreign Object) Repaint Tests</span>
+            <p>This is the HtmlWidget that uses an <b>SVG ForeignObject (FO)</b> to embed HTML content.
+            <br>
+            <br>
+            FO was used because <span class="BoldRed">automatic HTML content line-wraps</span> occur as desired and as expected of
+            any typical HTML output &mdash; FO is just an HTML document embedded inside an SVG control.  Contrast this to native SVG &quot;text&quot;
+            elements which offer no automatic line-wrap capabilities currently.
+            </p>
             <p>HTML Controls test (edit, select, radio) appear below.  Some of these controls interact with Widget(s) in this Sample Application.</p>
             <p>Set this <b>Widget's Frame Color</b>:
                 <select id="comboColor" name="color">
@@ -859,6 +862,7 @@ main() {
                     <option value="BrightPurpleColor">Bright Purple</option>
                     <option value="MintGreenColor">Mint Green</option>
                 </select>
+                <br />
                 Set this <b>Widget's Frame Width</b>:
                 <select id="comboFrameWidth" name="frameWidth">
                     <option value="FrameOption1">2px</option>
@@ -870,19 +874,13 @@ main() {
                 <br />
                 Radio Control Test: <input id="inputRadio" type="radio" name="sex" value="Male"/> Male &nbsp;&nbsp;&nbsp;<input type="radio" name="sex" value="Female" /> Female<br />
                 Value Input Test: <input id="inputQty" type="value" name="qty" value="1" />
+                <br />
                 Submit Button Test (does nothing): <input id="inputSubmitButton" type="button" value="submittest1"  name="submit" alt="Submit Test (inactive)" />
             </p>
-            <p>A regression in Webkit/Chrome was introduced (it seems) as of Chrome v17 where control repaints and/or
-            content repaints within a FO inside an SVG are very, very buggy if browser zoom-level is other than 100%
-            (Chrome/Dartium v22,23 seem OK at 100% zoom).  But, for non-100%-page-zoom situations, both the Chrome(JS)
-            and Dartium(Dart) versions incorrectly update FO content and controls (as of v18,19,20, 21, 22, 23...).
-            </p>
-            <p>The controls will fail to reflect user changes and/or display garbled mess unless a <b>user-triggered</b> browser repaint
-            occurs via: user scrolling the FO controls off the page and back, changing the browser zoom-factor (CTRL+/-), etc.
-            Even after a user-triggered repaint, the bounding-box of the repainted-region will be only that of the 100%-zoom-factor size, thus
-            leaving garbage elsewhere unrefreshed, scrollbars disfunctional (since the browser "forgets" where they are), etc.<br />
-            The (webkit) issue has been reported AGES ago and remains outstanding.<br /><br />
-            FO was used for Text because <span class="BoldRed" >Line-wraps</span> occur by default and wrap as desired and expected by any typical HTML output.
+            <p><span class="BoldRed">BUG NOTE:</span> There is a Webkit/Chrome bug (still exists as of v26 it seems) where the browser, for purposes of embedded scrollbars in the FO,
+            interprets the bounding-box of the repainted-FO-region to be only that of the 100%-zoom-factor size, thus
+            there will be disfunctional scrollbars at any zoom factor other than 100%
+            (since the browser "forgets" where they are and does not process mouse-events on them); use the keyboard instead (pgUp/Down and/or Up/Down Arrows).
             </p>
             </div>
         ''';
@@ -904,13 +902,12 @@ main() {
         SelectElement  colorSelectElement = null;
         SelectElement  frameWidthSelectElement = null;
 
-        //colorSelectElement = document.query("#comboColor");  //works
-        colorSelectElement      = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboColor");    //works - is this "faster" approach than using "query" (i.e., limits search to div)?
-        frameWidthSelectElement = foRepaintTests.embeddedFO.htmlDiv.$dom_querySelector("#comboFrameWidth");
+        colorSelectElement      = document.query("#comboColor");
+        frameWidthSelectElement = document.query("#comboFrameWidth");
 
         //assign event-handler to that select element
-        colorSelectElement.on.change.add( (event) => foRepaint_HtmlContolsChangeHandler(event) );
-        frameWidthSelectElement.on.change.add( (event) => foRepaint_HtmlContolsChangeHandler(event) );
+        colorSelectElement.onChange.listen( (event) => foRepaint_HtmlContolsChangeHandler(event) );
+        frameWidthSelectElement.onChange.listen( (event) => foRepaint_HtmlContolsChangeHandler(event) );
     }
 
 
@@ -1025,78 +1022,15 @@ main() {
     } //createCompositeItem
 
 
-    /*
-    ███████████████████████████████████████████████████████████████████████████████████████████
-    APPLICATION EXECUTION STARTS HERE UPON APPLICATION-READY CALLBACK...
-    (this apparent over-complexity only exists so we can have "align to window-edges"
-    functionality available for our widgets)
-
-    FLOW NOTES:
-        main() will create the Widget's Application-object instance.
-        The application object constructor takes a callback to transfer execution when it is
-        "ready" (due to Dart not completing pending Future(s) prior to main() finishing
-        otherwise).  The application object transfers back here to our runApplication(),
-        where all the real work is done.
-
-    **the ONLY code that can run outside of runApplication is stuff that is NOT DEPENDENT on
-    our Widgets/application objects.
-
-    ***one potential (slim chance?) issue would be any application resize events that fire
-    during the processing of the method within runApplication, since presumably the future(s)
-    in the applcation object would cause unpredictable widget-alignments to occur.
-    ███████████████████████████████████████████████████████████████████████████████████████████
-    */
-    void runApplication() {
-
-        dsvg.logToConsole([
-            'LINE1',
-            'runApplication() Entry (via Application object onReady callback)...'
-        ]);
-
-        //Misc non-visual test setups
-        testWidgetMetrics();
-        testObjectBounds();
-        testAlignSpec();
-        testAlign();
-
-        //Some basic widget-creation tests
-        createTestWidget1();
-        createTestWidget2();
-        createTestWidget3();
-
-        createWebPageIFrameWidget();
-
-        //Due to BUG with ElementImplementation InnerHtml (Dart issue# 2977), these currently do not work in standalone SVG document.
-        if (!dsvg.isStandaloneSVG()) {
-            //createDeleteWidgetButton();
-
-            createLogAppWidgetsDataToConsoleButton();
-
-            createNotesWidget();
-
-            createWebPageInWidget();
-
-            createFoRepaintTestWidget();
-
-            createTriStateItem();
-            createCompositeItem();
-        }
-
-        //Note: these buttons refer to previously-created objects; be careful moving this
-        createMenuButtonsContainer();
-        createMenuButtons();
-
-    }  //runApplication
 
 
     /*
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     MAIN() EXECUTION STARTS HERE
-    Anything from here forward in main() must be safe to execute outside of runApplication
 
-    First, CREATE GLOBALLY-AVAILABLE INSTANCE OF OUR APPLICATION OBJECT
+    First, CREATE GLOBALLY-AVAILABLE INSTANCE OF OUR APPLICATION OBJECT.
     Parameters are app-name and the SVG Element we will use for our "Canvas", and finally
-    the callback (to runApplication) where our app really begins
+    the list of image resources we will be re-using throughout our application.
     ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     */
     //Setup image list used by other controls
@@ -1106,18 +1040,52 @@ main() {
 
     globalApplicationObject.tracingEnabled = true; //change to false if ALL tracing is to be off.
 
-    runApplication();
-    
+
     /*
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-    BEGIN: HTML-DOC TESTING...
-    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    ███████████████████████████████████████████████████████████████████████████████████████████
+    OUR "WIDGET-BASED APPLICATION" EXECUTION STARTS HERE...
+    ███████████████████████████████████████████████████████████████████████████████████████████
     */
+     dsvg.logToConsole([
+        'LINE1',
+        'WIDGET-BASED APPLICATION" EXECUTION STARTING...'
+    ]);
+
+    //Misc non-visual test setups
+    testWidgetMetrics();
+    testObjectBounds();
+    testAlignSpec();
+    testAlign();
+
+    //Some basic widget-creation tests
+    createTestWidget1();
+    createTestWidget2();
+    createTestWidget3();
+
+    //Due to Dart issue# 6947, these currently do not work in standalone SVG document.
     if (!dsvg.isStandaloneSVG()) {
+        //createDeleteWidgetButton();
+
+        createLogAppWidgetsDataToConsoleButton();
+
+        createNotesWidget();
+
+        createWebPageInWidget();
+
+        createFoRepaintTestWidget();
+
+        createTriStateItem();  //The "checkbox" example
+
+        createCompositeItem();
+
+        //Note: these buttons refer to previously-created objects; be careful moving this
+        createMenuButtonsContainer();
+        createMenuButtons();
+
+        createWebPageIFrameWidget(); //Show a website inside a widget
+
         createHTMLTestObjects();
     }
-
-
 
 }  //main
 
