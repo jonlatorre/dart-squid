@@ -4,9 +4,11 @@
 .children
 *.map
 *.bak
+*.lock
 .7z
 *.js
 *.js.map
+*.js.deps
 TODO/
 docs/
 *.dll
