@@ -1,0 +1,9 @@
+name: dart_squid
+version: 0.3.6
+author: Mike Eberhart
+description: DART / SVG Quick UI Development Widgets (alpha)
+homepage: https://github.com/IntersoftDev/dart-squid
+environment:
+  sdk: ">=0.3.7+6.r18717"
+dependencies:
+  browser: ">=0.3.7+6"
