@@ -21,9 +21,6 @@ class CompositeWidget extends Widget {
     Widget ownedWidget1 = null;
 
 
-    //See below... needed for this mess: http://code.google.com/p/dart/issues/detail?id=3197
-    Function superMouseClick;
-
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Override [super]'s [mouseClick] method.
@@ -34,12 +31,8 @@ class CompositeWidget extends Widget {
 
         //determine WHICH "click(s)" we want to enable... this widget's or embedded widget(s)'
 
-        //TODO: Dart Issue: WHY DOESN'T super.mouseClick(event) WORK HERE?! See: http://code.google.com/p/dart/issues/detail?id=3197
-        superMouseClick(event);
-
+        super.mouseClick(event);
     } //MouseClick
-
-
 
 
 
@@ -81,7 +74,6 @@ class CompositeWidget extends Widget {
         super(instanceName, appInstance, parentInstance, typeName)
 
     {
-        superMouseClick = super.mouseClick;
         //ownedWidget1.show();
         ownedWidget1
             ..classesCSS.addClassSelectorsForTargetObjectName('Widget_Base',       'ButtonWidget_Base')

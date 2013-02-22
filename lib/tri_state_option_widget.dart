@@ -103,10 +103,6 @@ class TriStateOptionWidget extends Widget {
     List<SvgElement> _stateImageRefs = new List(3);
 
 
-
-    //See below... needed for this mess: http://code.google.com/p/dart/issues/detail?id=3197
-    Function superMouseClick;
-
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
     * Override [super]'s [mouseClick] method.
@@ -130,9 +126,7 @@ class TriStateOptionWidget extends Widget {
 
         //tracing: print("${instanceName}.${typeName}.checkState now = ${eCheckState.Names[checkState]}.");
 
-        //TODO: Dart Issue: WHY DOESN'T super.mouseClick(event) WORK HERE?! See: http://code.google.com/p/dart/issues/detail?id=3197
-        superMouseClick(event);
-
+        super.mouseClick(event);
     } //MouseClick
 
 
@@ -236,7 +230,6 @@ class TriStateOptionWidget extends Widget {
     {
         stateImageIDs = imageIDs;
         _createImageStructure();
-        superMouseClick = super.mouseClick;
     }
 
 } //class TriStateOptionWidget
