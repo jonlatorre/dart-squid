@@ -16,7 +16,7 @@ part of dart_squid;
 * content available throughout an [Application]
 * -- most notably images and SVG filters and the like.
 * The content to re-use can be sourced from external files (using [defURL] property) or
-* from a string-representation of SVG construct to re-use (using [defText] propety).
+* from a string-representation of SVG construct to re-use (using [defText] property).
 *
 */
 //███████████████████████████████████████████████████████████████████████████████████████
@@ -175,7 +175,11 @@ class SvgDefs {
             throw new Exception(errorMsg);
         }
 
+        //Override any "ID" that exists internal to the re-usable content; replace it with the value passed in to this routine (our "defId").
+        //This should ensure that IDs are unique to our application (in as much as developer ensures this when creating their image resource list of ConstSvgDefsItem objects)
+        _svgDefsMap[defItem.defId].attributes['id'] = defItem.defId;
 
+        //These defs should all be right under the top-most SVG "root" (use developer-tools, inspect element feature to confirm)
         rootDefsElement.nodes.add(_svgDefsMap[defItem.defId]);
 
     } //addDefToSvgRoot
@@ -202,17 +206,38 @@ class SvgDefs {
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     /**
-    * Essentially, emulates an SVG <use> based on a <defs> item by cloning the desired
-    * <defs> item into a specified target [cloneToNode].  Each "def" has been wrapped by
-    * an <svg> tag construct for consistency within the [addDefToSvgRoot] method.
+    * Create an SVG <use> of on a <defs> item into a specified target [cloneToNode].
+    * Each "def" has already been wrapped by <svg> tag construct for consistency
+    * within the [addDefToSvgRoot] method.
     *
     * ## Parameters:
     *    * [cloneToNode] : the [SvgElement] into which the specified <defs> item will be cloned.
     *    * [defIdToUse]  : the String value of the "id" identifying the <defs> item to clone.
     *    * [idOfNewUseNode] : the "id" value to assign to the cloned <svg> tag.
-    *    * [initialDisplayState] : (optionl) determines whether cloned <svg> "use" structure
+    *    * [initialDisplayState] : (optional) determines whether cloned <svg> "use" structure
     *    will be showing (the default) or not upon creation; pass either "inherit" or "none"
     *    (i.e., standard svg display attr values).
+    */
+    /*
+    --------------------------------------------------------------------------------------
+    DEVELOPER NOTES / FUNCTIONALITY DISCUSSION for SvgDefs and SVG 'use':
+
+    Perhaps in the future Webkit will fully support implementing:
+        <use xlink:href="Full_URI_or_Relative_URI_path_and_filename#resourceIDhere">
+    (i.e., reference reusable content in EXTERNAL FILES)
+
+    As of Dartium v26, this "sorta" (partially) seems to work, but there are still issues.
+    Noted issues/oddities yet:
+      - the 'display' attribute value of 'none' does not truly hide a USE sourced from an
+        external URI; instead, the value 'hide' must to be specified.
+      - more than one externally-sourced 'use' under an SVG element (as implemented in the
+        tri_state_option_widget) results in only the first-most 'use' ever showing; it is
+        like Webkit is "confused" about what URIs map to what child 'use' element, and
+        repeats using the first-most value in subsequent children?
+
+    --------------------------------------------------------------------------------------
+    At last check, there were also problem with externally-ref'd filters (defs) not being available...
+    See this: http://code.google.com/p/chromium/issues/detail?id=109212 bug report.
     */
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
     SvgElement useSvgDef(SvgElement cloneToNode, String defIdToUse, String idOfNewUseNode, [String initialDisplayState='inherit']) {
@@ -222,12 +247,16 @@ class SvgDefs {
             return null;  //TODO: Throw?
         }
 
-        _clonedFromDef = _svgDefsMap[defIdToUse].clone(true);
+        _clonedFromDef = new SvgElement.tag('use');
 
         setSVGAttributes(_clonedFromDef, {
-            'id'            : idOfNewUseNode,
-            'display'       : initialDisplayState
+              'id': idOfNewUseNode,
+             'display'       : initialDisplayState
         });
+
+        //The xlink:href attribute is ns (namespace) specific!
+        //DEPRECATED WAY:  _clonedFromDef.$dom_setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#${defIdToUse}');  //NEW WAY FOLLOWS...
+        _clonedFromDef.getNamespacedAttributes('http://www.w3.org/1999/xlink')['xlink:href'] = '#${defIdToUse}';
 
         cloneToNode.nodes.add(_clonedFromDef);
         return _clonedFromDef;
@@ -252,52 +281,3 @@ class SvgDefs {
     }
 
 } //class SvgDefs
-
-
-/*
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-DEVELOPER NOTES / FUNCTIONALITY DISCUSSSION for SvgDefs:
-
-SEE MY ISSUE REPORT: http://code.google.com/p/dart/issues/detail?id=5395
-"Dynamically Generated (Dart) SVG Elements with "xlink:href" attributes will not render
-in Dartium (or Chromium using Dart2JS)."  This issue report pertains only to
-in-the-same-SVG-file-defs-references, as Webkit (in general) fails to honor ANY external
-file-referenced xlink:href content.
---------------------------------------------------------------------------------------
-
-So, we "Embed" the DEF via cloning for now...
-
-Embed the DEF via cloning...
-It may appear easier to implement via <use xlink:href="#checkMark"> or <image xlink:href>
-or, better yet, reference EXTERNAL FILES, but Webkit is a buggy piece of junk when it
-comes to this.  And, for same-file-ref'd "use" or "image" tag(s), the expected content
-will show up in the DOM tree but not DISPLAY! (issue 5395) since xlink attribute not
-being created with proper namespace information.
-
-A KEY NOTE TO MENTION: the USE/IMAGE (referencing <defs> content) approach DOES WORK
-WITHIN *STATIC SVG STRUCTURES*  but not within DYNAMICALLY CREATED content/structures
-(and, obviously all [Application] [Widget] controls create their structures at runtime.)
-
-The following approach *should* work once the Dart team fixes the attributes setter to
-support namespaces (need xlink NS for xlink attr!)
-
-    _clonedFromDef = new SvgElement.tag('use');
-    _clonedFromDef.attributes = {
-        'id': idOfNewUseNode,
-        'xlink:href'    : defIdToUse
-    };
-    cloneToNode.nodes.add(_clonedFromDef);
-
---------------------------------------------------------------------------------------
-There are also problem with externally-ref'd filters (defs) not being available...
-See this: http://code.google.com/p/chromium/issues/detail?id=109212 bug report.
-
---------------------------------------------------------------------------------------
-THE ONLY OTHER APPROACH that worked currently was assigning string-representation
-of the entire-SVG-symbol into the innerHtml; this works inside HTML docs at least,
-though Dart Issue 2977 prevents standalone SVG docs from working with this code:
-
-    cloneToNode.innerHtml = svgStructureAsString;
-
-*/
-//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
