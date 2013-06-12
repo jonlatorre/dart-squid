@@ -101,7 +101,7 @@ library dart_squid;
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 import 'dart:html';
 import 'dart:math';
-import 'dart:svg';
+import 'dart:svg' hide Rect; //force the use of html.Rect throughout since errors occur otherwise in getBoundingClientRect calls.
 import 'dart:async';
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -129,6 +129,7 @@ part 'tri_state_option_widget.dart';        //i.e., for checkboxes_and_radios
 // BELOW are IN-PROGRESS (do not push to github yet)
 //---------------------------------------------------------------------------------------
 part 'composite_widget.dart';               //i.e., test putting some of these together
+//part 'image_widget.dart';  //a generalized one without check-state stuff (from tri-state)
 //part 'text_widget.dart';
 //part 'buttons.dart';
 //part 'sliders.dart';

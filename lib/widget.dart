@@ -1408,9 +1408,6 @@ class Widget {
         //Performance optimization -- we can redraw now.
         _applicationObject.canvas.unsuspendRedraw(handle);
 
-        //TODO: TOTAL HACK TO FORCE CHROME V25+ TO ACTUALLY REPAINT THINGS!
-        toggleVisibility();
-        toggleVisibility();
     } //...ReAlign()
 
 

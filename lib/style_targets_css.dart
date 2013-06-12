@@ -359,8 +359,8 @@ class CSSTargetsMap {
         StringBuffer sbTemp = new StringBuffer();
         int i = 0;
         for (String sSelector in existingSelectorsAsList) {
-            if (i > 0) {sbTemp.add(',');}
-            sbTemp.add(sSelector.trim());
+            if (i > 0) {sbTemp.write(',');}
+            sbTemp.write(sSelector.trim());
             i++;
         }
 
@@ -405,8 +405,8 @@ class CSSTargetsMap {
         StringBuffer sbTemp = new StringBuffer();
         int i = 0;
         for (String sSelector in existingSelectorsAsList) {
-            if (i > 0) {sbTemp.add(',');}
-            sbTemp.add(sSelector.trim());
+            if (i > 0) {sbTemp.write(',');}
+            sbTemp.write(sSelector.trim());
             i++;
         }
 

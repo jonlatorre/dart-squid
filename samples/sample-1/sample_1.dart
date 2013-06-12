@@ -106,10 +106,10 @@ main() {
         'myWidget1'             : const DemoItemDef(100 , 100   , 200   , 100   , true  , true  , true  , true  , true  , 'Widget1'                 , 80    , 'This widget is aligned to bottom/right corner of page.'    ),
         'myWidget2'             : const DemoItemDef(100 , 100   , 400   , 400   , true  , true  , false , false , false , 'Widget2'                 , 80    , 'Container for smaller widget. Limitted to X-axis Moves.'    ),
         'myWidget3'             : const DemoItemDef(100 , 100   , 100   , 100   , true  , true  , true  , true  , true  , 'Widget3'                 , 80    , ''    ),
-        'WidgetNotesWebPage'    : const DemoItemDef(100 , 85    , 650   , 550   , false , true  , true  , false , true  , 'Features & Notes'        , 160   , ''    ),
+        'WidgetNotesWebPage'    : const DemoItemDef(50  , 85    , 650   , 550   , true  , true  , true  , false , true  , 'Features & Notes'        , 160   , ''    ),
         'EmbedWebPage'          : const DemoItemDef(0   , 0     , 100   , 100   , false , true  , true  , true  , true  , 'README (via XHR)'        , 160   , ''    ),
-        'FORepaintTestsPage'    : const DemoItemDef(300 , 150   , 800   , 500   , true  , true  , true  , true  , true  , 'FO Repaint Tests'        , 160   , ''    ),
-        'checkboxTest'          : const DemoItemDef(220 , 250   , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Tri-state image control: checkbox or similar.'    ),
+        'FORepaintTestsPage'    : const DemoItemDef(500 , 350   , 800   , 500   , true  , true  , true  , true  , true  , 'FO Repaint Tests'        , 160   , ''    ),
+        'checkboxTest'          : const DemoItemDef(820 , 50    , 50    , 50    , true  , true  , true  , true  , true  , 'Tri-State ckBox'         , 140   , 'Tri-state image control: checkbox or similar.'    ),
         'compositeTest'         : const DemoItemDef(320 , 250   , 170   , 70    , false , true  , true  , true  , true  , 'Composite'               , 110   , 'Composite Widget (i.e., Widget with embedded Widget(s).'    ),
         'EmbedWebPageInIFrame'  : const DemoItemDef(10  , 60    , 700   , 600   , false , true  , true  , true  , true  , 'IFrameWidget'            , 120   , ''    )
     };
@@ -758,19 +758,25 @@ main() {
                     <li>Effects via SVG-Filters are possible.)</li>
                 </ul>
                 <br />
-                Note: only Google Chrome browser (Dartium for native Dart version) works <b>reasonably</b> well, and as of Chrome V26 these issues persist:<br />
+                Note: only Webkit / Blink &mdash; Google Chrome browser, or Dartium for native Dart version &mdash; works <b>reasonably</b> well,
+                and as of Dartium/Chromium V28+ builds these issues persist with Webkit-based browsers:<br />
                 <ul>
-                    <li>Chrome: Webkit (presumably) has MAJOR ISSUES with repaint-rect calculations for SVG objects.  See the
+                    <li>Refusal to paint / show initially-showing SVG objects whose on-screen
+                    position is dependent on browser-window-metrics.  See the
                     <a href="../samples-index.html">samples-index page</a> for more details;</li>
-                    <li>Chrome: Scrollbar(s) on ForeignObjects get hosed if zoom-factor is not 100% &mdash; Chrome thinks the scrollbar is still at
+                    <li>Scrollbar(s) on ForeignObjects get hosed if zoom-factor is not 100% &mdash; Chrome thinks the scrollbar is still at
                     the position it would be at 100% zoom.</li>
-                    <li>Chrome: Cursor-type not honored by browser after mousedown and mousemove begins &mdash; a recent webkit patch (for V27+? perhaps) may finally fix this;</li>
-                    <li>Chrome: re-use of external SVG-file definitions (of filters,etc) by url(file#def-name) reference does not work (FF gets this right).</li>
-                    <li><strong>FireFox</strong> (JS version): <b>issues galore!</b>
-                    <br />No resize (of browser-window) event is ever triggered, thus relative-position (to browser-dimensions) hosed.
-                    <br />In general, getting the browser-dimensions in FF is nearly impossible.
-                    <br />Borders not drawing on Widgets (probably position-calc related). Thus, no way to style, move, resize Widgets.
-                    <br />And much more...</li>
+                    <li>Cursor-type not honored by browser after mousedown and mousemove begins &mdash; a recent webkit patch (for V30+? perhaps) may finally fix this;</li>
+                    <li>Re-use of external SVG-file definitions (of filters,etc) by url(file#def-name) reference does not work (FF gets this right).</li>
+                </ul>
+                <br />
+                <strong>FireFox</strong> (JS version): <b>(issues galore!)</b>
+                <br />
+                <ul>
+                    <li>No resize (of browser-window) event is ever triggered, thus Widgets placed in relative-positions (to browser-dimensions) hosed.</li>
+                    <li>In general, getting the browser-dimensions in FF is nearly impossible.</li>
+                    <li>Borders not drawing on Widgets (probably position-calc related). Thus, no way to style, move, resize Widgets.</li>
+                    <li>And much more...</li>
                 </ul>
                 <br />
             </div>

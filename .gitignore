@@ -11,4 +11,5 @@
 *.js.deps
 TODO/
 docs/
+packages/
 *.dll

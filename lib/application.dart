@@ -179,8 +179,8 @@ class Application {
     */
 
     //Implement Hint processing in Widgets; this is to be app-wide default value //TODO - ALLOW CHANGES
-    const bool  showHint            = true;
-    const int   hintPause           = 1000;
+    bool  showHint                  = true;
+    int   hintPause                 = 1000;
 
 
     //▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪▪
@@ -417,7 +417,7 @@ class Application {
         ═══════════════════════════════════════════════════════════════════════════════════════
         */
       window.setImmediate(() {
-         ClientRect _viewportRect;
+        Rect _viewportRect;
         _viewportRect = _canvas.viewportElement.getBoundingClientRect();   //returns size of *entire* SVG; has valid left/top margin info too.
 
         _marginLeft = _viewportRect.left;   //left inset

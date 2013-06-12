@@ -148,7 +148,7 @@ class SvgDefs {
 
                 //MUST get files synchronously or all sorts of issues occur throughout app!
                 HttpRequest request = new HttpRequest();
-                request.open("GET", defItem.defURL, false, '', '' );
+                request.open("GET", defItem.defURL, async:false);
                 request.send();
 
                 if (request.statusText.toUpperCase() == "OK") {
